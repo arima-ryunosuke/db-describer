@@ -1,0 +1,34 @@
+{
+  "compression": "GZ",
+  "chmod": "0755",
+  "files": [
+    "vendor/autoload.php",
+    "template/standard.xlsx"
+  ],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": [
+        "Examples",
+        "tests",
+        "Test",
+        "Tests",
+        "unitTests"
+      ],
+      "in": [
+        "src",
+        "vendor/alom",
+        "vendor/composer",
+        "vendor/doctrine",
+        "vendor/markbaker",
+        "vendor/phpoffice",
+        "vendor/psr",
+        "vendor/ryunosuke",
+        "vendor/symfony/"
+      ]
+    }
+  ],
+  "main": "bin/describe",
+  "output": "describe.phar",
+  "stub": true
+}

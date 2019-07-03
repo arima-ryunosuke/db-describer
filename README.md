@@ -22,7 +22,7 @@ Database Describer
 依存を避けるため phar の利用を推奨します。下記の記述例は phar が前提です。
 
 ```sh
-Usage:
+Usage:                                                                                                   
   describe [options] [--] <dsn> [<outdir>]
 
 Arguments:
@@ -38,7 +38,6 @@ Options:
   -d, --dot=DOT              Specify dot location [default: "dot"]
   -c, --columns=COLUMNS      Specify Erd columns([related|all]) [default: "related"]
   -C, --config=CONFIG        Specify Configuration filepath [default: "config.php"]
-  -r, --relation=RELATION    Specify Additional relation filepath
   -h, --help                 Display this help message
   -q, --quiet                Do not output any message
   -V, --version              Display this application version
@@ -127,38 +126,6 @@ ERD の出力カラムを指定します。
 - all: 全カラム
 
 省略した場合は 'related' です。
-
-### --relation(r)
-
-リレーション（外部キー）を外部ファイルから注入します。
-
-```php
-<?php return [
-    'localtable' => [
-        'foreigntable' => [
-            'fk_name' => [
-                'localcolA' => 'foreigncolA',
-                'localcolB' => 'foreigncolB',
-            ],
-        ],
-    ],
-    't_child' => [
-        't_parent' => [
-            'fk_Child_Parent' => [
-                'parent_id' => 'id',
-            ],
-        ],
-    ],
-];
-```
-
-このような php ファイルを用意して `-r` で読み込ませると
-
-- ALTER TABLE localtable ADD CONSTRAINT fk_name FOREIGN KEY (localcolA, localcolB) REFERENCES foreigntable (foreigncolA, foreigncolB)
-- ALTER TABLE t_child ADD CONSTRAINT fk_Child_Parent FOREIGN KEY (parent_id) REFERENCES t_parent (id)
-
-のような外部キーがあるとみなして生成されます。
-（擬似的にです。実際に ALTER 文は流れません）。
 
 ### --config(C)
 

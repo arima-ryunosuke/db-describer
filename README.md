@@ -16,13 +16,21 @@ Database Describer
 }
 ```
 
+## Demo
+
+```sh
+cd /path/to/clonedir/demo
+mysql < mysql.sql
+php ../describe.phar mysql://localhost/test_describer --delimiter ":"
+```
+
 ## Usage
 
 コマンドラインツールが付属しています。また、 phar もあります。
 依存を避けるため phar の利用を推奨します。下記の記述例は phar が前提です。
 
 ```sh
-Usage:                                                                                                   
+Usage:
   describe [options] [--] <dsn> [<outdir>]
 
 Arguments:

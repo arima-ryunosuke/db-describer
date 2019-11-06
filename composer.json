@@ -18,8 +18,9 @@
     "bin/describe"
   ],
   "require": {
+    "php": ">=7.2",
     "symfony/console": "3.*",
-    "doctrine/dbal": "2.9.x-dev",
+    "doctrine/dbal": "2.10.x-dev",
     "alom/graphviz": "1.1.*",
     "ryunosuke/php-excelate": "1.0.*"
   },

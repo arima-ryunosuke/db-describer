@@ -21,12 +21,12 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
         $mparam = DriverManager::getConnection($config)->getParams();
         $dbname = isset($mparam['dbname']) ? $mparam['dbname'] : (isset($mparam['path']) ? $mparam['path'] : '');
         unset($mparam['url'], $mparam['dbname'], $mparam['path']);
-        DriverManager::getConnection($mparam)->getSchemaManager()->dropAndCreateDatabase($dbname);
+        DriverManager::getConnection($mparam)->createSchemaManager()->dropAndCreateDatabase($dbname);
 
         $connection = DriverManager::getConnection($config);
         $connection->connect();
 
-        $connection->getSchemaManager()->createTable(new Table('t_article',
+        $connection->createSchemaManager()->createTable(new Table('t_article',
             [
                 new Column('article_id', Type::getType('integer'), ['Comment' => "PrimaryKey:summary"]),
                 new Column('title', Type::getType('string')),
@@ -35,6 +35,7 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
                 new Index('PRIMARY', ['article_id'], true, true),
                 new Index('secondary', ['title'])
             ],
+            [],
             [],
             [
                 new Trigger('ThisIsTrigger', 'BEGIN
@@ -46,16 +47,16 @@ END', [
                     'Timing' => 'AFTER',
                 ]),
             ],
-            0,
             ['Comment' => "Article:summary"]
         ));
-        $connection->getSchemaManager()->createTable(new Table('t_comment',
+        $connection->createSchemaManager()->createTable(new Table('t_comment',
             [
                 new Column('comment_id', Type::getType('integer'), ['autoincrement' => true, 'Comment' => "PrimaryKey:summary"]),
                 new Column('article_id', Type::getType('integer')),
                 new Column('comment', Type::getType('text')),
             ],
             [new Index('PRIMARY', ['comment_id'], true, true)],
+            [],
             [
                 new ForeignKeyConstraint(['article_id'], 't_article', ['article_id'], 'fk_articlecomment', [
                     'onUpdate' => 'CASCADE',
@@ -72,10 +73,9 @@ END', [
                     'Timing' => 'AFTER',
                 ]),
             ],
-            0,
             ['Comment' => "Comment:summary"]
         ));
-        $connection->getSchemaManager()->createView(new View('v_blog', '
+        $connection->createSchemaManager()->createView(new View('v_blog', '
             SELECT
               A.article_id,
               A.title,

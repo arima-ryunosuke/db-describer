@@ -108,7 +108,7 @@ class Describer
     private function _detectSchema()
     {
         if (!$this->schema) {
-            $this->schema = $this->connection->getSchemaManager()->createSchema();
+            $this->schema = $this->connection->createSchemaManager()->createSchema();
             call_user_func($this->schemaCallback, $this->schema);
         }
         return $this->schema;
@@ -252,7 +252,7 @@ class Describer
                             'Precision'   => $column->getPrecision(),
                             'Scale'       => $column->getScale(),
                             'Collation'   => @$column->getPlatformOption('collation'),
-                            'NotNull'     => in_array($column->getName(), $pkcols) ? false : $column->getNotnull(),
+                            'NotNull'     => !in_array($column->getName(), $pkcols) && $column->getNotnull(),
                             'Unique'      => implode(',', $uniqueable),
                         ];
                     }),

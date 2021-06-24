@@ -1,4 +1,9 @@
 {
+  "config": {
+    "platform": {
+      "php": "7.4"
+    }
+  },
   "name": "ryunosuke/db-describer",
   "description": "Generate Database.xlsx, ERD.pdf",
   "license": "MIT",
@@ -18,9 +23,9 @@
     "bin/describe"
   ],
   "require": {
-    "php": ">=7.2",
+    "php": ">=7.4",
     "symfony/console": "3.*",
-    "doctrine/dbal": "2.10.x-dev",
+    "doctrine/dbal": "3.1.x-dev",
     "alom/graphviz": "1.1.*",
     "ryunosuke/php-excelate": "1.0.*"
   },
@@ -53,9 +58,7 @@
       "@php bin/clean.php"
     ],
     "pharize": [
-      "@composer dump-autoload --no-dev",
-      "bin/box.phar build -c box.json",
-      "@composer dump-autoload"
+      "bin/box.phar compile -c box.json"
     ]
   }
 }

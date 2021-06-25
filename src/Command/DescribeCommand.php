@@ -52,7 +52,7 @@ class DescribeCommand extends Command
             'node'               => [],
             'edge'               => [],
         ];
-        $config = $default + (file_exists($input->getOption('config')) ? require $input->getOption('config') : []);
+        $config = (file_exists($input->getOption('config')) ? require $input->getOption('config') : []) + $default;
 
         $describer = new Describer($input->getArgument('dsn'), $config);
 

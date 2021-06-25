@@ -20,6 +20,14 @@
 
 - nothing todo
 
+## 1.0.2
+
+- bump version
+  - php: 7.4
+  - doctrine: 3.*
+  - box: 3.*
+- [fixbug] config ファイルが効かない不具合を修正
+
 ## 1.0.1
 
 - php:7.2

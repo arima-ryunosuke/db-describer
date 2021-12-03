@@ -230,7 +230,7 @@ class Describer
                     'ReferenceKeyCount' => count($table->getOption('referenceKeys')),
                     'TriggerCount'      => count($table->getTriggers()),
                     'Columns'           => Variable::arrayize($table->getColumns(), function (Column $column, $n) use ($table) {
-                        $pkcols = $table->getPrimaryKey()->getColumns();
+                        $pkcols = $table->hasPrimaryKey() ? $table->getPrimaryKey()->getColumns() : [];
                         $uniqueable = [];
                         foreach ($table->getIndexes() as $iname => $index) {
                             if ($index->isUnique()) {
@@ -377,7 +377,8 @@ class Describer
                 $columns[$tableName] = array_keys($table->getColumns());
             }
             else {
-                $columns[$tableName] = array_merge($table->getPrimaryKey()->getColumns(), $columns[$tableName]);
+                $pkcols = $table->hasPrimaryKey() ? $table->getPrimaryKey()->getColumns() : [];
+                $columns[$tableName] = array_merge($pkcols, $columns[$tableName]);
                 foreach ($table->getForeignKeys() as $fkey) {
                     $localTableName = $fkey->getLocalTableName();
                     $foreignTableName = $fkey->getForeignTableName();

@@ -20,6 +20,10 @@
 
 - nothing todo
 
+## 1.0.4
+
+- [refactor] composer update
+
 ## 1.0.3
 
 - [fixbug] 主キーがないテーブルが含まれているとエラーになる不具合を修正

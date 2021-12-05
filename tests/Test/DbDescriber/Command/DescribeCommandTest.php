@@ -18,7 +18,7 @@ class DescribeCommandTest extends \ryunosuke\Test\AbstractUnitTestCase
 
     protected $defaultArgs = [];
 
-    protected function setup()
+    protected function setup(): void
     {
         parent::setUp();
 

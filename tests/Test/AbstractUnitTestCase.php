@@ -10,10 +10,12 @@ use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\Trigger;
 use Doctrine\DBAL\Schema\View;
 use Doctrine\DBAL\Types\Type;
+use PHPUnit\Framework\Error\Error;
+use PHPUnit\Framework\Exception;
 
 abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -21,7 +23,9 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
         $mparam = DriverManager::getConnection($config)->getParams();
         $dbname = isset($mparam['dbname']) ? $mparam['dbname'] : (isset($mparam['path']) ? $mparam['path'] : '');
         unset($mparam['url'], $mparam['dbname'], $mparam['path']);
-        DriverManager::getConnection($mparam)->createSchemaManager()->dropAndCreateDatabase($dbname);
+        $schema_manager = DriverManager::getConnection($mparam)->createSchemaManager();
+        $schema_manager->dropDatabase($dbname);
+        $schema_manager->createDatabase($dbname);
 
         $connection = DriverManager::getConnection($config);
         $connection->connect();
@@ -97,14 +101,17 @@ END', [
         try {
             $callback(...array_slice(func_get_args(), 2));
         }
-        catch (\PHPUnit_Framework_Error $ex) {
+        catch (Error $ex) {
+            throw $ex;
+        }
+        catch (Exception $ex) {
             throw $ex;
         }
         catch (\Exception $ex) {
             self::assertInstanceOf(get_class($e), $ex);
             self::assertEquals($e->getCode(), $ex->getCode());
             if (strlen($e->getMessage()) > 0) {
-                self::assertContains($e->getMessage(), $ex->getMessage());
+                self::assertStringContainsString($e->getMessage(), $ex->getMessage());
             }
             return;
         }

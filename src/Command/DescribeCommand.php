@@ -66,5 +66,7 @@ class DescribeCommand extends Command
         if (in_array('all', $mode, true) || in_array('erd', $mode, true)) {
             $describer->generateErd($outdir);
         }
+
+        return 0;
     }
 }

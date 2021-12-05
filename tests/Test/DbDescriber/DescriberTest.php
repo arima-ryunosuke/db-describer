@@ -46,18 +46,20 @@ password = fuga
 
         // my.cnf
         $describer = new Describer('mysql://localhost', $this->getConfig());
-        $connection = self::readAttribute($describer, 'connection');
-        $this->assertArraySubset([
+        $connection = (fn() => $this->connection)->call($describer);
+        $expected = [
             'user'     => 'hoge',
             'password' => 'fuga',
-        ], $connection->getParams());
+        ];
+        $this->assertEquals($expected, array_intersect_key($connection->getParams(), $expected));
 
         // posix_geteuid
         $describer = new Describer('sqlite://localhost:1234/:memory:', $this->getConfig());
-        $connection = self::readAttribute($describer, 'connection');
-        $this->assertArraySubset([
+        $connection = (fn() => $this->connection)->call($describer);
+        $expected = [
             'user' => (posix_getpwuid(posix_geteuid())['name']),
-        ], $connection->getParams());
+        ];
+        $this->assertEquals($expected, array_intersect_key($connection->getParams(), $expected));
     }
 
     function test_all()
@@ -70,8 +72,8 @@ password = fuga
 
         $dot = $describer->generateErd($this->outdir);
         $content = file_get_contents($dot);
-        $this->assertContains('t_article', $content);
-        $this->assertContains('t_comment', $content);
+        $this->assertStringContainsString('t_article', $content);
+        $this->assertStringContainsString('t_comment', $content);
     }
 
     function test_include()
@@ -86,8 +88,8 @@ password = fuga
 
         $dot = $describer->generateErd($this->outdir);
         $content = file_get_contents($dot);
-        $this->assertContains('t_article', $content);
-        $this->assertNotContains('t_comment', $content);
+        $this->assertStringContainsString('t_article', $content);
+        $this->assertStringNotContainsString('t_comment', $content);
     }
 
     function test_exclude()
@@ -102,8 +104,8 @@ password = fuga
 
         $dot = $describer->generateErd($this->outdir);
         $content = file_get_contents($dot);
-        $this->assertContains('t_article', $content);
-        $this->assertNotContains('t_comment', $content);
+        $this->assertStringContainsString('t_article', $content);
+        $this->assertStringNotContainsString('t_comment', $content);
     }
 
     function test_callback()
@@ -136,8 +138,8 @@ password = fuga
 
         $dot = $describer->generateErd($this->outdir);
         $content = file_get_contents($dot);
-        $this->assertContains('t_articleccc', $content);
-        $this->assertContains('cluster_tmptable', $content);
+        $this->assertStringContainsString('t_articleccc', $content);
+        $this->assertStringContainsString('cluster_tmptable', $content);
     }
 
     function test_template()
@@ -188,14 +190,14 @@ password = fuga
         ]));
         $dot = $describer->generateErd($this->outdir);
         $content = file_get_contents($dot);
-        $this->assertContains('title', $content);
+        $this->assertStringContainsString('title', $content);
 
         $describer = new Describer(TEST_DSN, $this->getConfig([
             'columns' => 'related',
         ]));
         $dot = $describer->generateErd($this->outdir);
         $content = file_get_contents($dot);
-        $this->assertNotContains('title', $content);
+        $this->assertStringNotContainsString('title', $content);
     }
 
     function test_relation()
@@ -215,8 +217,8 @@ password = fuga
 
         $dot = $describer->generateErd($this->outdir);
         $content = file_get_contents($dot);
-        $this->assertContains('column_t_comment_article_id', $content);
-        $this->assertContains('column_t_comment_comment_id', $content);
+        $this->assertStringContainsString('column_t_comment_article_id', $content);
+        $this->assertStringContainsString('column_t_comment_comment_id', $content);
     }
 
     function test_delimiter()
@@ -228,8 +230,8 @@ password = fuga
 
         $dot = $describer->generateErd($this->outdir);
         $content = file_get_contents($dot);
-        $this->assertContains('PrimaryKey', $content);
-        $this->assertNotContains('summary', $content);
+        $this->assertStringContainsString('PrimaryKey', $content);
+        $this->assertStringNotContainsString('summary', $content);
     }
 
     function test_dot()
@@ -249,9 +251,9 @@ password = fuga
 
         $dot = $describer->generateErd($this->outdir);
         $content = file_get_contents($dot);
-        $this->assertContains('nodesep="99"', $content);
-        $this->assertContains('width="99"', $content);
-        $this->assertContains('arrowsize="99"', $content);
+        $this->assertStringContainsString('nodesep="99"', $content);
+        $this->assertStringContainsString('width="99"', $content);
+        $this->assertStringContainsString('arrowsize="99"', $content);
     }
 
     function test_pdf()
@@ -262,6 +264,6 @@ password = fuga
 
         $dot = $describer->generateErd($this->outdir);
         $content = file_get_contents($dot);
-        $this->assertContains(PHP_VERSION, $content);
+        $this->assertStringContainsString(PHP_VERSION, $content);
     }
 }

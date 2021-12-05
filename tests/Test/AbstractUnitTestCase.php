@@ -37,7 +37,7 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
             ],
             [
                 new Index('PRIMARY', ['article_id'], true, true),
-                new Index('secondary', ['title'])
+                new Index('secondary', ['title']),
             ],
             [],
             [],
@@ -64,8 +64,8 @@ END', [
             [
                 new ForeignKeyConstraint(['article_id'], 't_article', ['article_id'], 'fk_articlecomment', [
                     'onUpdate' => 'CASCADE',
-                    'onDelete' => 'CASCADE'
-                ])
+                    'onDelete' => 'CASCADE',
+                ]),
             ],
             [
                 new Trigger('insert_before', 'INSERT INTO t_comment VALUES()', [

@@ -79,7 +79,7 @@ password = fuga
     function test_include()
     {
         $describer = new Describer(TEST_DSN, $this->getConfig([
-            'include' => ['t_article']
+            'include' => ['t_article'],
         ]));
 
         $xls = $describer->generateSpec($this->outdir);
@@ -95,7 +95,7 @@ password = fuga
     function test_exclude()
     {
         $describer = new Describer(TEST_DSN, $this->getConfig([
-            'exclude' => ['t_comment']
+            'exclude' => ['t_comment'],
         ]));
 
         $xls = $describer->generateSpec($this->outdir);

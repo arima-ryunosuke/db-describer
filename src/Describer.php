@@ -215,7 +215,7 @@ class Describer
         $schemaObjects = [
             'Schema' => $dbname,
             'Tables' => Variable::arrayize($tables, function (Table $table, $n) use ($tables) {
-                list($logicalName, $summary) = $this->_delimitComment($table->getOption('comment'));
+                [$logicalName, $summary] = $this->_delimitComment($table->getOption('comment'));
                 return [
                     'No'                => $n + 1,
                     'Name'              => $table->getName(),
@@ -239,7 +239,7 @@ class Describer
                                 }
                             }
                         }
-                        list($logicalName, $summary) = $this->_delimitComment($column->getComment());
+                        [$logicalName, $summary] = $this->_delimitComment($column->getComment());
                         return [
                             'No'          => $n + 1,
                             'Name'        => $column->getName(),
@@ -318,7 +318,7 @@ class Describer
             $cell->getWorksheet()->getRowDimension($cell->getRow())->setRowHeight($height);
         });
 
-        $unsetget = function(&$array, $key){
+        $unsetget = function (&$array, $key) {
             $value = $array[$key] ?? [];
             unset($array[$key]);
             return $value;

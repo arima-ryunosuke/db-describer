@@ -35,7 +35,7 @@ class DescribeCommandTest extends \ryunosuke\Test\AbstractUnitTestCase
     protected function runApp($inputArray)
     {
         $inputArray = [
-                'command' => $this->commandName
+                'command' => $this->commandName,
             ] + $inputArray + $this->defaultArgs;
 
         $input = new ArrayInput($inputArray);

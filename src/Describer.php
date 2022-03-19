@@ -169,6 +169,20 @@ class Describer
 
                 $this->tables[$tableName] = $table;
             }
+
+            // ランク算出クロージャ
+            $rank = function (Table $table, array $parents) use (&$rank) {
+                $ranks = [];
+                foreach ($table->getForeignKeys() as $fkey) {
+                    if (isset($this->tables[$fkey->getForeignTableName()])) {
+                        $ftable = $this->tables[$fkey->getForeignTableName()];
+                        if (!isset($parents[$ftable->getName()])) {
+                            $ranks[$fkey->getName()] = min($rank($ftable, $parents + [$ftable->getName() => []]) ?: [0]) + 1;
+                        }
+                    }
+                }
+                return $ranks;
+            };
             // 外部キーのための2パス目
             foreach ($this->tables as $table) {
                 foreach ($table->getForeignKeys() as $fkey) {
@@ -182,6 +196,7 @@ class Describer
                         $ftable->addOption('referenceKeys', $fkeys);
                     }
                 }
+                $table->addOption('ranks', $rank($table, [$table->getName() => []]));
             }
         }
         return $this->tables;
@@ -351,9 +366,11 @@ class Describer
         return "$outdir/$dbname.xlsx";
     }
 
-    public function generateErd($outdir)
+    public function generateDot($options = [])
     {
-        $dbname = $this->connection->getDatabase();
+        $options += [
+            'skipNoRelation' => false,
+        ];
 
         $getRandomColor = function ($source) {
             $hex = md5($source);
@@ -370,8 +387,8 @@ class Describer
         $tables = $this->_detectTable();
         $columns = array_fill_keys(array_keys($tables), []);
 
-        // グラフ作成のために幅の最大値が必要
-        $widths = [1];
+        // グラフ作成のためにランクごとの幅の最大値が必要
+        $widths = [];
         foreach ($tables as $tableName => $table) {
             if ($this->columns === 'all') {
                 $columns[$tableName] = array_keys($table->getColumns());
@@ -391,9 +408,10 @@ class Describer
                 }
             }
 
-            $widths[] = mb_strwidth($tableName . $this->_delimitComment($table->getOption('comment'))[0]);
+            $rank = min($table->getOption('ranks') ?: [0]);
+            $widths[$rank][] = mb_strwidth($tableName . $this->_delimitComment($table->getOption('comment'))[0]);
             foreach ($columns[$tableName] as $column) {
-                $widths[] = mb_strwidth($column . $this->_delimitComment($table->getColumn($column)->getComment())[0]);
+                $widths[$rank][] = mb_strwidth($column . $this->_delimitComment($table->getColumn($column)->getComment())[0]);
             }
         }
 
@@ -401,11 +419,12 @@ class Describer
         $graph_attrs = array_replace([
             'charset'  => 'UTF-8',
             'rankdir'  => 'LR',
-            'ranksep'  => 3,
+            'ranksep'  => 1.5,
             'nodesep'  => 0,
             'splines'  => 'ortho',
             'fontname' => 'IPAGothic',
             'fontsize' => 15,
+            'dpi'      => 72,
         ], $this->graphAttrs);
 
         // ノード共通属性
@@ -413,13 +432,15 @@ class Describer
             'shape'     => 'box',
             'style'     => 'filled',
             'fillcolor' => 'white',
-            'width'     => $graph_attrs['fontsize'] / 2 * (max($widths) + 4) / 72,
             'color'     => '#aaaaaa',
+            'fontname'  => 'IPAGothic',
+            'fontsize'  => '12',
         ], $this->nodeAttrs);
 
         // エッジ共通属性
         $edge_attrs = array_replace([
-            'arrowtail' => 'none',
+            'dir'       => 'back',
+            'arrowtail' => 'vee',
             'arrowsize' => 1,
         ], $this->edgehAttrs);
 
@@ -431,29 +452,42 @@ class Describer
 
         // サブグラフとノードとエッジを設定
         foreach ($tables as $table) {
+            if ($options['skipNoRelation'] && !($table->getOption('foreignKeys') || $table->getOption('referenceKeys'))) {
+                continue;
+            }
             $tableName = $table->getName();
+            $tableComment = $table->getOption('comment');
+            $tableColumns = array_unique($columns[$tableName]);
+            $ranks = $table->getOption('ranks');
 
             // サブグラフ
-            $tableGraph = $graph->subgraph("cluster_$tableName");
+            $tableGraph = $graph->subgraph("cluster_{$tableName}");
             $tableGraph->attr('graph', [
+                'id'        => "relationship:table-$tableName",
+                'class'     => implode(' ', array_map(fn($c) => "column-$tableName-$c", $tableColumns)),
                 'labelloc'  => 't',
                 'labeljust' => 'l',
                 'margin'    => 1,
                 'bgcolor'   => '#eeeeee',
                 'color'     => '#606060',
-                'label'     => $tableName . ': ' . $this->_delimitComment($table->getOption('comment'))[0],
+                'label'     => $tableName . ': ' . $this->_delimitComment($tableComment)[0],
                 'style'     => 'bold',
             ]);
 
             // ノード
-            foreach (array_unique($columns[$tableName]) as $c) {
+            foreach ($tableColumns as $c) {
                 $column = $table->getColumn($c);
                 $columnName = $column->getName();
                 $columnComment = $this->_delimitComment($column->getComment())[0];
 
                 $tableGraph->node("column_{$tableName}_{$columnName}", [
-                    'label'    => "\"{$columnName}: {$columnComment}\\l\"",
-                    '_escaped' => false,
+                    'id'        => "relationship:column-{$tableName}.{$columnName}",
+                    'class'     => "column-{$tableName}-{$columnName}",
+                    'label'     => "\"{$columnName}: {$columnComment}\\l\"",
+                    'width'     => $graph_attrs['fontsize'] / 2 * (max($widths[min($ranks ?: [0])]) + 4) / 72,
+                    'fixedsize' => true,
+                    'height'    => 0.36,
+                    '_escaped'  => false,
                 ]);
             }
 
@@ -465,33 +499,47 @@ class Describer
                 $localColumns = $fkey->getLocalColumns();
                 $foreignColumns = $fkey->getForeignColumns();
 
+                $constraint = $ranks[$fkey->getName()] <= min($ranks ?: [0]);
+
                 foreach ($localColumns as $i => $lcolumn) {
                     $fcolumn = $foreignColumns[$i];
                     $from = "column_{$foreignTableName}_{$fcolumn}";
                     $to = "column_{$localTableName}_{$lcolumn}";
 
                     $graph->edge([$from, $to], [
-                        'color' => $getRandomColor("{$foreignTableName}.{$fcolumn}"),
+                        'id'         => "relationship:fkey-{$fkey->getName()}",
+                        'class'      => "fkey-{$fkey->getName()} column-{$foreignTableName}-{$fcolumn} column-{$localTableName}-{$lcolumn}",
+                        'color'      => $getRandomColor("{$foreignTableName}.{$fcolumn}"),
+                        'constraint' => $constraint ? 'true' : 'false',
                     ]);
                 }
             }
         }
 
+        return $graph->render();
+    }
+
+    public function generateErd($outdir, $options = [])
+    {
+        assert(isset($options['format']));
+
+        $dbname = $this->connection->getDatabase();
+
+        $dot = $this->generateDot($options);
         $dotfile = "$outdir/$dbname.dot";
-        file_put_contents($dotfile, $graph->render());
+        file_put_contents($dotfile, $dot);
 
         if ($this->dot) {
-            $pdffile = "$outdir/$dbname.pdf";
+            $erdfile = "$outdir/$dbname.{$options['format']}";
             ob_start();
-            passthru("{$this->dot} $dotfile -Tpdf", $return);
+            passthru("{$this->dot} $dotfile -T{$options['format']}", $return);
             $output = ob_get_clean();
             if (!$return) {
-                file_put_contents($pdffile, $output);
+                file_put_contents($erdfile, $output);
                 unlink($dotfile);
-                return $pdffile;
+                return $erdfile;
             }
         }
-
         return $dotfile;
     }
 }

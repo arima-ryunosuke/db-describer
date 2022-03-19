@@ -70,7 +70,7 @@ password = fuga
         $book = IOFactory::load($xls);
         $this->assertEquals(3, $book->getSheetCount());
 
-        $dot = $describer->generateErd($this->outdir);
+        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
         $content = file_get_contents($dot);
         $this->assertStringContainsString('t_article', $content);
         $this->assertStringContainsString('t_comment', $content);
@@ -86,7 +86,7 @@ password = fuga
         $book = IOFactory::load($xls);
         $this->assertEquals(2, $book->getSheetCount());
 
-        $dot = $describer->generateErd($this->outdir);
+        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
         $content = file_get_contents($dot);
         $this->assertStringContainsString('t_article', $content);
         $this->assertStringNotContainsString('t_comment', $content);
@@ -102,7 +102,7 @@ password = fuga
         $book = IOFactory::load($xls);
         $this->assertEquals(2, $book->getSheetCount());
 
-        $dot = $describer->generateErd($this->outdir);
+        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
         $content = file_get_contents($dot);
         $this->assertStringContainsString('t_article', $content);
         $this->assertStringNotContainsString('t_comment', $content);
@@ -136,7 +136,7 @@ password = fuga
         $book = IOFactory::load($xls);
         $this->assertEquals(3, $book->getSheetCount());
 
-        $dot = $describer->generateErd($this->outdir);
+        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
         $content = file_get_contents($dot);
         $this->assertStringContainsString('t_articleccc', $content);
         $this->assertStringContainsString('cluster_tmptable', $content);
@@ -188,14 +188,14 @@ password = fuga
         $describer = new Describer(TEST_DSN, $this->getConfig([
             'columns' => 'all',
         ]));
-        $dot = $describer->generateErd($this->outdir);
+        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
         $content = file_get_contents($dot);
         $this->assertStringContainsString('title', $content);
 
         $describer = new Describer(TEST_DSN, $this->getConfig([
             'columns' => 'related',
         ]));
-        $dot = $describer->generateErd($this->outdir);
+        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
         $content = file_get_contents($dot);
         $this->assertStringNotContainsString('title', $content);
     }
@@ -215,7 +215,7 @@ password = fuga
             'columns'  => 'related',
         ]));
 
-        $dot = $describer->generateErd($this->outdir);
+        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
         $content = file_get_contents($dot);
         $this->assertStringContainsString('column_t_comment_article_id', $content);
         $this->assertStringContainsString('column_t_comment_comment_id', $content);
@@ -228,7 +228,7 @@ password = fuga
             'columns'   => 'related',
         ]));
 
-        $dot = $describer->generateErd($this->outdir);
+        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
         $content = file_get_contents($dot);
         $this->assertStringContainsString('PrimaryKey', $content);
         $this->assertStringNotContainsString('summary', $content);
@@ -249,7 +249,7 @@ password = fuga
             'columns' => 'related',
         ]));
 
-        $dot = $describer->generateErd($this->outdir);
+        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
         $content = file_get_contents($dot);
         $this->assertStringContainsString('nodesep="99"', $content);
         $this->assertStringContainsString('width="99"', $content);
@@ -262,7 +262,7 @@ password = fuga
             'dot' => PHP_BINARY . ' --version',
         ]));
 
-        $dot = $describer->generateErd($this->outdir);
+        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
         $content = file_get_contents($dot);
         $this->assertStringContainsString(PHP_VERSION, $content);
     }

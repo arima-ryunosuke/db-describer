@@ -17,7 +17,7 @@ class DescribeCommand extends Command
         $this->setDefinition([
             new InputArgument('dsn', InputArgument::REQUIRED, 'Specify Database DSN'),
             new InputArgument('outdir', InputArgument::OPTIONAL, 'Specify Output directory'),
-            new InputOption('mode', 'm', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify Output file([spec|erd|all])', ['all']),
+            new InputOption('mode', 'm', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify Output file([html|spec|erd|all])', ['all']),
             new InputOption('include', 'i', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify Include table', []),
             new InputOption('exclude', 'e', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify Exclude table', []),
             new InputOption('delimiter', 'l', InputOption::VALUE_REQUIRED, 'Specify Comment delimiter for summary', "\n"),
@@ -43,7 +43,6 @@ class DescribeCommand extends Command
             'tableCallback'      => function () { },
             'viewCallback'       => function () { },
             // spec 用
-            'template'           => $input->getOption('template') ?: __DIR__ . '/../../template/standard.xlsx',
             'sheets'             => [],
             // erd 用
             'dot'                => $input->getOption('dot'),
@@ -52,19 +51,24 @@ class DescribeCommand extends Command
             'node'               => [],
             'edge'               => [],
         ];
+        $mode = $input->getOption('mode');
+        $default['template'] = $input->getOption('template') ?: __DIR__ . '/../../template/standard.' . (in_array('html', $mode, true) ? 'phtml' : 'xlsx');
+
         $config = (file_exists($input->getOption('config')) ? require $input->getOption('config') : []) + $default;
 
         $describer = new Describer($input->getArgument('dsn'), $config);
 
-        $mode = $input->getOption('mode');
         $outdir = $input->getArgument('outdir') ?: getcwd();
         @mkdir($outdir, 0777, true);
 
-        if (in_array('all', $mode, true) || in_array('spec', $mode, true)) {
+        if (in_array('html', $mode, true)) {
+            $describer->generateHtml($outdir);
+        }
+        elseif (in_array('all', $mode, true) || in_array('spec', $mode, true)) {
             $describer->generateSpec($outdir);
         }
-        if (in_array('all', $mode, true) || in_array('erd', $mode, true)) {
-            $describer->generateErd($outdir);
+        elseif (in_array('all', $mode, true) || in_array('erd', $mode, true)) {
+            $describer->generateErd($outdir, ['format' => 'pdf']);
         }
 
         return 0;

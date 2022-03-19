@@ -223,12 +223,11 @@ class Describer
         return explode($this->delimiter, $comment, 2) + [1 => ''];
     }
 
-    public function generateSpec($outdir)
+    private function _gatherSchemaObject($dbname)
     {
-        $dbname = $this->connection->getDatabase();
         $tables = $this->_detectTable();
 
-        $schemaObjects = [
+        return [
             'Schema' => $dbname,
             'Tables' => Variable::arrayize($tables, function (Table $table, $n) use ($tables) {
                 [$logicalName, $summary] = $this->_delimitComment($table->getOption('comment'));
@@ -359,6 +358,35 @@ class Describer
                 ];
             }),
         ];
+    }
+
+    public function generateHtml($outdir)
+    {
+        $dbname = $this->connection->getDatabase();
+
+        $schemaObjects = $this->_gatherSchemaObject($dbname);
+        $schemaObjects['Erdsvg'] = $this->generateErd(sys_get_temp_dir(), [
+            'skipNoRelation' => true,
+            'format'         => 'svg',
+        ]);
+
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        $output = (static function () {
+            extract(func_get_arg(1));
+            ob_start();
+            include func_get_arg(0);
+            return ob_get_clean();
+        })($this->template, $schemaObjects);
+
+        file_put_contents("$outdir/$dbname.html", $output);
+        return "$outdir/$dbname.html";
+    }
+
+    public function generateSpec($outdir)
+    {
+        $dbname = $this->connection->getDatabase();
+
+        $schemaObjects = $this->_gatherSchemaObject($dbname);
 
         // PhpSpreadsheet が内部で ZipArchive を使用してるので phar の中身は読めない（のでコピーする）
         $template = sys_get_temp_dir() . '/standard.xlsx';

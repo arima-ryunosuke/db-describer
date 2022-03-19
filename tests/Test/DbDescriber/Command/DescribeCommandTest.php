@@ -55,9 +55,17 @@ class DescribeCommandTest extends \ryunosuke\Test\AbstractUnitTestCase
             'dsn'    => TEST_DSN,
             'outdir' => $outdir,
             '--dot'  => PHP_BINARY . ' --version',
+            '--mode' => ["html"],
+        ]);
+        $this->assertFileExists("$outdir/" . parse_url(TEST_DSN)['path'] . '.html');
+
+        $this->runApp([
+            'dsn'    => TEST_DSN,
+            'outdir' => $outdir,
+            '--dot'  => PHP_BINARY . ' --version',
             '--mode' => ["spec"],
         ]);
-        $this->assertCount(1, glob("$outdir/*"));
+        $this->assertFileExists("$outdir/" . parse_url(TEST_DSN)['path'] . '.xlsx');
 
         $this->runApp([
             'dsn'    => TEST_DSN,
@@ -65,6 +73,6 @@ class DescribeCommandTest extends \ryunosuke\Test\AbstractUnitTestCase
             '--dot'  => PHP_BINARY . ' --version',
             '--mode' => ["erd"],
         ]);
-        $this->assertCount(2, glob("$outdir/*"));
+        $this->assertFileExists("$outdir/" . parse_url(TEST_DSN)['path'] . '.pdf');
     }
 }

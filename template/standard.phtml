@@ -1,0 +1,474 @@
+<?php
+/**
+ * @var string $Schema
+ * @var string $Erdsvg
+ * @var ryunosuke\Excelate\Variable $Tables
+ * @var ryunosuke\Excelate\Variable $Views
+ */
+$h = function ($string) { return htmlspecialchars($string, ENT_QUOTES, 'UTF-8'); };
+?>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><?= $h($Schema) ?></title>
+
+    <link id="sphinx_rtd_theme" href="https://cdn.jsdelivr.net/npm/sphinx_rtd_theme@0.4.2/css/theme.css" rel="stylesheet">
+    <style><?php include __DIR__ . '/html/style.css.php' ?></style>
+
+    <script defer><?php include __DIR__ . '/html/script.js.php' ?></script>
+</head>
+
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+        <div class="wy-side-scroll">
+            <div class="wy-side-nav-search">
+                <a href="" class="icon icon-home"> <?= $h($Schema) ?></a>
+                <div class="version">
+                    最終更新日 <?= $h(date('Y/m/d H:i:s')) ?>
+                </div>
+            </div>
+            <div class="wy-menu wy-menu-vertical markdown-toc">
+                <p class="caption"><span class="caption-text">Table of Contents</span></p>
+            </div>
+        </div>
+    </nav>
+    <div data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+        <div class="wy-nav-content">
+            <div class="rst-content">
+                <header class="hidden-single">
+                </header>
+                <main class="markdown-body">
+                    <article>
+                        <section id="schema" class="section section-level-h1" data-section-level="1">
+                            <h1 class="section-header"><?= $h($Schema) ?></h1>
+                        </section>
+                        <section id="overview" class="section section-level-h2" data-section-level="2">
+                            <h2 class="section-header">概要</h2>
+                        </section>
+                        <section id="relationship" class="sheet section section-level-h3" data-section-level="3">
+                            <div class="relation-button" style="float: right">
+                                <button class="toggle-full" type="button">🗖</button>
+                            </div>
+                            <h3 class="section-header">リレーション</h3>
+                            <div class="relation-button">
+                                <span><button id="toggle-edge" type="button" class="on">📊</button></span
+                                ><span><button id="toggle-active" type="button" class="on">📌</button></span
+                                ><span><button id="clear-all" type="button" class="oneshot">❌</button></span
+                                >
+                                <small style="float: right">
+                                    ドラッグ: 移動, ホイール: 拡縮, クリック: 強調, ミドルクリック: 全画面
+                                </small>
+                            </div>
+                            <div class="relationship">
+                                <?= file_get_contents($Erdsvg) ?>
+                            </div>
+                        </section>
+                        <section id="objectlist" class="sheet section section-level-h3" data-section-level="3">
+                            <div class="relation-button" style="float: right">
+                                <button class="toggle-full" type="button">🗖</button>
+                            </div>
+                            <h3 class="section-header">オブジェクト一覧</h3>
+                            <div class="table_wrapper">
+                                <table>
+                                    <caption>テーブル一覧</caption>
+                                    <thead>
+                                    <tr>
+                                        <th class="no">No</th>
+                                        <th>物理名</th>
+                                        <th>論理名</th>
+                                        <th>カラム数</th>
+                                        <th>インデックス数</th>
+                                        <th>外部キー数</th>
+                                        <th>被外部キー数</th>
+                                        <th>トリガー数</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody><?php foreach ($Tables as $Table): ?>
+                                        <tr>
+                                            <td class="no"><?= $h($Table['No']) ?></td>
+                                            <td><a href="#table-<?= $h($Table['Name']) ?>" class="reference"><?= $h($Table['Name']) ?></a></td>
+                                            <td><?= $h($Table['LogicalName']) ?></td>
+                                            <td><?= $h($Table['ColumnCount']) ?></td>
+                                            <td><?= $h($Table['IndexCount']) ?></td>
+                                            <td><?= $h($Table['ForeignKeyCount']) ?></td>
+                                            <td><?= $h($Table['ReferenceKeyCount']) ?></td>
+                                            <td><?= $h($Table['TriggerCount']) ?></td>
+                                        </tr>
+                                    <?php endforeach ?></tbody>
+                                </table>
+                            </div>
+                            <div class="table_wrapper">
+                                <table>
+                                    <caption>ビュー一覧</caption>
+                                    <thead>
+                                    <tr>
+                                        <th class="no">No</th>
+                                        <th>物理名</th>
+                                        <th>カラム数</th>
+                                        <th>インデックス数</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody><?php foreach ($Views as $View): ?>
+                                        <tr>
+                                            <td class="no"><?= $h($View['No']) ?></td>
+                                            <td><a href="#view-<?= $h($View['Name']) ?>" class="reference"><?= $h($View['Name']) ?></a></td>
+                                            <td><?= $h($View['ColumnCount']) ?></td>
+                                            <td><?= $h($View['IndexCount']) ?></td>
+                                        </tr>
+                                    <?php endforeach ?></tbody>
+                                </table>
+                            </div>
+                        </section>
+                        <section id="tabledetails" class="section section-level-h2" data-section-level="2">
+                            <h2 class="section-header">テーブル詳細</h2>
+                        </section>
+                        <?php foreach ($Tables as $Table): ?>
+                            <section id="table-<?= $h($Table['Name']) ?>" class="sheet section section-level-h3" data-section-level="3">
+                                <div class="relation-button" style="float: right">
+                                    <button class="toggle-full" type="button">🗖</button>
+                                </div>
+                                <h3 class="section-header"><?= $h($Table['Name']) ?>: <?= $h($Table['LogicalName']) ?></h3>
+                                <div class="table_info">
+                                    <table>
+                                        <caption>テーブル情報</caption>
+                                        <colgroup>
+                                            <col style="width: 160px">
+                                            <col style="width: calc(60% - 160px)">
+                                            <col style="width: 130px">
+                                            <col style="width: calc(40% - 130px)">
+                                        </colgroup>
+                                        <tbody>
+                                        <tr>
+                                            <th>物理名</th>
+                                            <td><?= $h($Table['Name']) ?></td>
+                                            <th>カラム数</th>
+                                            <td><?= $h($Table['ColumnCount']) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>論理名</th>
+                                            <td><?= $h($Table['LogicalName']) ?></td>
+                                            <th>インデックス数</th>
+                                            <td><?= $h($Table['IndexCount']) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>ストレージエンジン</th>
+                                            <td><?= $h($Table['Engine']) ?></td>
+                                            <th>外部キー数</th>
+                                            <td><?= $h($Table['ForeignKeyCount']) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>照合順序</th>
+                                            <td><?= $h($Table['Collation']) ?></td>
+                                            <th>被外部キー数</th>
+                                            <td><?= $h($Table['ReferenceKeyCount']) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>行フォーマット</th>
+                                            <td><?= $h($Table['Format']) ?></td>
+                                            <th>トリガー数</th>
+                                            <td><?= $h($Table['TriggerCount']) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>備考</th>
+                                            <td colspan="3"><?= $h($Table['Summary']) ?></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="table_wrapper">
+                                    <table>
+                                        <caption>カラム情報</caption>
+                                        <thead>
+                                        <tr>
+                                            <th class="no">No</th>
+                                            <th>物理名</th>
+                                            <th>論理名</th>
+                                            <th>データ型</th>
+                                            <th>制約</th>
+                                            <th>デフォルト</th>
+                                            <th>精度</th>
+                                            <th>列長</th>
+                                            <th>照合順序</th>
+                                            <th>備考</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody><?php foreach ($Table['Columns'] as $Column): ?>
+                                            <tr>
+                                                <td class="no"><?= $h($Column['No']) ?></td>
+                                                <td><?= $h($Column['Name']) ?></td>
+                                                <td><?= $h($Column['LogicalName']) ?></td>
+                                                <td><?= $h($Column['Unsigned'] ? "Unsigned" : "") ?> <?= $h($Column['Type']->getName()) ?></td>
+                                                <td><?= $h($Column['NotNull'] ? "NotNull " : ""), $h($Column['Unique']) ?></td>
+                                                <td><?= $h($Column['Default'] === false ? "" : var_export($Column['Default'], true)) ?></td>
+                                                <td><?= $h($Column['Precision']) ?>, <?= $h($Column['Scale']) ?></td>
+                                                <td><?= $h($Column['Length']) ?></td>
+                                                <td><?= $h($Column['Collation']) ?></td>
+                                                <td><?= $h($Column['Summary']) ?></td>
+                                            </tr>
+                                        <?php endforeach ?></tbody>
+                                    </table>
+                                </div>
+                                <div class="table_wrapper">
+                                    <table>
+                                        <caption>インデックス情報</caption>
+                                        <thead>
+                                        <tr>
+                                            <th class="no">No</th>
+                                            <th>インデックス名</th>
+                                            <th>カラムリスト</th>
+                                            <th>ユニーク</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody><?php foreach ($Table['Indexes'] as $Index): ?>
+                                            <tr>
+                                                <td class="no"><?= $h($Index['No']) ?></td>
+                                                <td><?= $h($Index['Name']) ?></td>
+                                                <td><?= $h(implode(', ', $Index['Columns'])) ?></td>
+                                                <td><?= $h($Index['Unique'] ? 'yes' : 'no') ?></td>
+                                            </tr>
+                                        <?php endforeach ?></tbody>
+                                    </table>
+                                </div>
+                                <div class="table_wrapper">
+                                    <table>
+                                        <caption>外部キー情報</caption>
+                                        <thead>
+                                        <tr>
+                                            <th class="no">No</th>
+                                            <th>外部キー名</th>
+                                            <th>カラムリスト</th>
+                                            <th>参照先テーブル名</th>
+                                            <th>参照先カラムリスト</th>
+                                            <th>On Update</th>
+                                            <th>On Delete</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody><?php foreach ($Table['ForeignKeys'] as $ForeignKey): ?>
+                                            <tr>
+                                                <td class="no"><?= $h($ForeignKey['No']) ?></td>
+                                                <td><?= $h($ForeignKey['Name']) ?></td>
+                                                <td><?= $h(implode(', ', $ForeignKey['Columns'])) ?></td>
+                                                <td><a href="#table-<?= $h($ForeignKey['ReferenceTable']) ?>" class="reference"><?= $h($ForeignKey['ReferenceTable']) ?></a></td>
+                                                <td><?= $h(implode(', ', $ForeignKey['ReferenceColumns'])) ?></td>
+                                                <td><?= $h($ForeignKey['OnUpdate']) ?></td>
+                                                <td><?= $h($ForeignKey['OnDelete']) ?></td>
+                                            </tr>
+                                        <?php endforeach ?></tbody>
+                                    </table>
+                                </div>
+                                <div class="table_wrapper">
+                                    <table class="table_foreign">
+                                        <caption>被外部キー情報</caption>
+                                        <thead>
+                                        <tr>
+                                            <th class="no">No</th>
+                                            <th>外部キー名</th>
+                                            <th>カラムリスト</th>
+                                            <th>参照元テーブル名</th>
+                                            <th>参照元カラムリスト</th>
+                                            <th>On Update</th>
+                                            <th>On Delete</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody><?php foreach ($Table['ReferenceKeys'] as $ReferenceKey): ?>
+                                            <tr>
+                                                <td class="no"><?= $h($ReferenceKey['No']) ?></td>
+                                                <td><?= $h($ReferenceKey['Name']) ?></td>
+                                                <td><?= $h(implode(', ', $ReferenceKey['Columns'])) ?></td>
+                                                <td><a href="#table-<?= $h($ReferenceKey['ReferenceTable']) ?>" class="reference"><?= $h($ReferenceKey['ReferenceTable']) ?></a></td>
+                                                <td><?= $h(implode(', ', $ReferenceKey['ReferenceColumns'])) ?></td>
+                                                <td><?= $h($ReferenceKey['OnUpdate']) ?></td>
+                                                <td><?= $h($ReferenceKey['OnDelete']) ?></td>
+                                            </tr>
+                                        <?php endforeach ?></tbody>
+                                    </table>
+                                </div>
+                                <div class="table_wrapper">
+                                    <table>
+                                        <caption>トリガー情報</caption>
+                                        <thead>
+                                        <tr>
+                                            <th class="no">No</th>
+                                            <th>トリガー名</th>
+                                            <th>タイミング</th>
+                                            <th>クエリ</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody><?php foreach ($Table['Triggers'] as $Trigger): ?>
+                                            <tr>
+                                                <td class="no"><?= $h($Trigger['No']) ?></td>
+                                                <td><?= $h($Trigger['Name']) ?></td>
+                                                <td><?= $h($Trigger['Timing']) ?> <?= $h($Trigger['Event']) ?></td>
+                                                <td class="wrap"><?= $h($Trigger['Statement']) ?></td>
+                                            </tr>
+                                        <?php endforeach ?></tbody>
+                                    </table>
+                                </div>
+                            </section>
+                        <?php endforeach ?>
+
+                        <section id="viewdetails" class="section section-level-h2" data-section-level="2">
+                            <h2 class="section-header">ビュー詳細</h2>
+                        </section>
+                        <?php foreach ($Views as $Table): ?>
+                            <section id="view-<?= $h($Table['Name']) ?>" class="sheet section section-level-h3" data-section-level="3">
+                                <h3 class="section-header"><?= $h($Table['Name']) ?>
+                                    <div class="relation-button" style="float: right">
+                                        <button class="toggle-full" type="button">🗖</button>
+                                    </div>
+                                </h3>
+                                <div class="table_info">
+                                    <table>
+                                        <caption>ビュー情報</caption>
+                                        <colgroup>
+                                            <col style="width: 160px">
+                                            <col style="width: calc(60% - 160px)">
+                                            <col style="width: 130px">
+                                            <col style="width: calc(40% - 130px)">
+                                        </colgroup>
+                                        <tbody>
+                                        <tr>
+                                            <th>物理名</th>
+                                            <td><?= $h($Table['Name']) ?></td>
+                                            <th>カラム数</th>
+                                            <td><?= $h($Table['ColumnCount']) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th></th>
+                                            <td></td>
+                                            <th>インデックス数</th>
+                                            <td><?= $h($Table['IndexCount']) ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th>SQL</th>
+                                            <td colspan="3"><?= $h($Table['Sql']) ?></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="table_wrapper">
+                                    <table>
+                                        <caption>カラム情報</caption>
+                                        <thead>
+                                        <tr>
+                                            <th class="no">No</th>
+                                            <th>物理名</th>
+                                            <th>論理名</th>
+                                            <th>データ型</th>
+                                            <th>制約</th>
+                                            <th>デフォルト</th>
+                                            <th>精度</th>
+                                            <th>列長</th>
+                                            <th>照合順序</th>
+                                            <th>備考</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody><?php foreach ($Table['Columns'] as $Column): ?>
+                                            <tr>
+                                                <td class="no"><?= $h($Column['No']) ?></td>
+                                                <td><?= $h($Column['Name']) ?></td>
+                                                <td><?= $h($Column['LogicalName']) ?></td>
+                                                <td><?= $h($Column['Unsigned'] ? "Unsigned" : "") ?> <?= $h($Column['Type']->getName()) ?></td>
+                                                <td><?= $h($Column['NotNull'] ? "NotNull " : ""), $h($Column['Unique']) ?></td>
+                                                <td><?= $h($Column['Default'] === false ? "" : var_export($Column['Default'], true)) ?></td>
+                                                <td><?= $h($Column['Precision']) ?>, <?= $h($Column['Scale']) ?></td>
+                                                <td><?= $h($Column['Length']) ?></td>
+                                                <td><?= $h($Column['Collation']) ?></td>
+                                                <td><?= $h($Column['Summary']) ?></td>
+                                            </tr>
+                                        <?php endforeach ?></tbody>
+                                    </table>
+                                </div>
+                                <div class="table_wrapper">
+                                    <table>
+                                        <caption>インデックス情報</caption>
+                                        <thead>
+                                        <tr>
+                                            <th class="no">No</th>
+                                            <th>インデックス名</th>
+                                            <th>カラムリスト</th>
+                                            <th>ユニーク</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody><?php foreach ($Table['Indexes'] as $Index): ?>
+                                            <tr>
+                                                <td class="no"><?= $h($Index['No']) ?></td>
+                                                <td><?= $h($Index['Name']) ?></td>
+                                                <td><?= $h(implode(', ', $Index['Columns'])) ?></td>
+                                                <td><?= $h($Index['Unique'] ? 'yes' : 'no') ?></td>
+                                            </tr>
+                                        <?php endforeach ?></tbody>
+                                    </table>
+                                </div>
+                            </section>
+                        <?php endforeach ?>
+                    </article>
+                </main>
+                <footer>
+                    <div role="contentinfo">
+                        <p>© Copyright Dave Snider, Read the Docs, Inc. &amp; contributors.</p>
+                    </div>
+                    Built with htmarkdown Using a
+                    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+                    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+                </footer>
+            </div>
+        </div>
+        <div class="sentinel"></div>
+    </div>
+</div>
+<div data-toggle="wy-nav-shift" class="rst-versions">
+    <span class="rst-current-version" data-toggle-target=".rst-versions" data-toggle-class="shift-up">
+        <span class="fa fa-cog pull-left"> コントロールパネル</span>
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <form class="control-panel">
+            <dl>
+                <dt>View</dt>
+                <dd>
+                    <label class="option-title" for="font_family">フォント</label>
+                    <input id="fontFamily" class="option-input savedata" data-default-value="" type="search" list="fonts">
+                    <datalist id="fonts">
+                        <?php foreach (['serif', 'sans-serif', 'monospace', /* and more */] as $family): ?>
+                            <option value="<?= $h($family) ?>"><?= $h($family) ?></option>
+                        <?php endforeach ?>
+                    </datalist>
+                </dd>
+                <dt>Head</dt>
+                <dd>
+                    <label class="option-title" for="toc_width">見出しサイズ</label>
+                    <input id="tocWidth" class="option-input savedata" data-default-value="300" type="number" min="10" max="700">
+                </dd>
+                <dd>
+                    <label class="option-title" for="toc_level">見出しレベル</label>
+                    <input id="tocLevel" class="option-input savedata" data-default-value="5" type="number" min="1" max="6">
+                </dd>
+                <dd>
+                    <label class="option-title" for="toc_number">見出し番号を表示する</label>
+                    <input id="tocNumber" class="option-input savedata" data-default-value="true" type="checkbox" value="1">
+                </dd>
+                <dd>
+                    <label class="option-title" for="toc_follow">見出しメニューを追従する</label>
+                    <input id="tocFollow" class="option-input savedata" data-default-value="true" type="checkbox" value="1">
+                </dd>
+                <dd>
+                    <label class="option-title" for="toc_active">アクティブなレベルは常に表示する</label>
+                    <input id="tocActive" class="option-input savedata" data-default-value="true" type="checkbox" value="1">
+                </dd>
+                <dt>Body</dt>
+                <dd>
+                    <label class="option-title" for="section_indent">セクションごとのインデント</label>
+                    <input id="sectionIndent" class="option-input savedata" data-default-value="0" type="number" min="0" max="6">
+                </dd>
+            </dl>
+        </form>
+    </div>
+</div>
+</body>
+
+</html>

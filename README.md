@@ -38,7 +38,7 @@ Arguments:
   outdir                     Specify Output directory
 
 Options:
-  -m, --mode[=MODE]          Specify Output file([spec|erd|all]) [default: ["all"]] (multiple values allowed)
+  -m, --mode[=MODE]          Specify Output file([html|spec|erd|all]) [default: ["all"]] (multiple values allowed)
   -i, --include=INCLUDE      Specify Include table (multiple values allowed)
   -e, --exclude=EXCLUDE      Specify Exclude table (multiple values allowed)
   -l, --delimiter=DELIMITER  Specify Comment delimiter for summary [default: "\n"]

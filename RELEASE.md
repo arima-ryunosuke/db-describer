@@ -18,7 +18,14 @@
 
 ## x.y.z
 
-- nothing todo
+- コードが汚すぎるのでバージョンを上げてリファクタ
+- xlsx+pdf も廃止したい
+
+## 1.0.5
+
+- [feature] html 出力に対応
+- [feature] view の詳細化
+- [feature] dot の出力を変更
 
 ## 1.0.4
 

@@ -10,7 +10,6 @@ use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\Trigger;
-use Doctrine\DBAL\Schema\View;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use ryunosuke\Excelate\Renderer;
@@ -27,7 +26,7 @@ class Describer
     /** @var Table[] */
     private $tables = [];
 
-    /** @var View[] */
+    /** @var Table[] */
     private $views = [];
 
     /** @var array */
@@ -211,7 +210,9 @@ class Describer
                     continue;
                 }
 
-                $this->views[$viewName] = $view;
+                $table = $this->connection->createSchemaManager()->listTableDetails($viewName);
+                $table->addOption('sql', $view->getSql());
+                $this->views[$viewName] = $table;
             }
         }
         return $this->views;
@@ -314,11 +315,47 @@ class Describer
                     }),
                 ];
             }),
-            'Views'  => Variable::arrayize($this->_detectView(), function (View $view, $n) {
+            'Views'  => Variable::arrayize($this->_detectView(), function (Table $view, $n) {
                 return [
-                    'No'   => $n + 1,
-                    'Name' => $view->getName(),
-                    'Sql'  => $view->getSql(),
+                    'No'          => $n + 1,
+                    'Name'        => $view->getName(),
+                    'Sql'         => $view->getOption('sql'),
+                    'ColumnCount' => count($view->getColumns()),
+                    'IndexCount'  => count($view->getIndexes()),
+                    'Columns'     => Variable::arrayize($view->getColumns(), function (Column $column, $n) use ($view) {
+                        $uniqueable = [];
+                        foreach ($view->getIndexes() as $iname => $index) {
+                            if ($index->isUnique()) {
+                                if (($m = array_search($column->getName(), $index->getColumns())) !== false) {
+                                    $uniqueable[] = "$iname-" . ($m + 1);
+                                }
+                            }
+                        }
+                        [$logicalName, $summary] = $this->_delimitComment($column->getComment());
+                        return [
+                            'No'          => $n + 1,
+                            'Name'        => $column->getName(),
+                            'LogicalName' => $logicalName,
+                            'Summary'     => $summary,
+                            'Type'        => $column->getType(),
+                            'Default'     => $column->getDefault() === null && $column->getNotnull() ? false : $column->getDefault(),
+                            'Length'      => $column->getLength(),
+                            'Unsigned'    => $column->getUnsigned(),
+                            'Precision'   => $column->getPrecision(),
+                            'Scale'       => $column->getScale(),
+                            'Collation'   => @$column->getPlatformOption('collation'),
+                            'NotNull'     => $column->getNotnull(),
+                            'Unique'      => implode(',', $uniqueable),
+                        ];
+                    }),
+                    'Indexes'     => Variable::arrayize($view->getIndexes(), function (Index $index, $n) {
+                        return [
+                            'No'      => $n + 1,
+                            'Name'    => $index->getName(),
+                            'Columns' => $index->getColumns(),
+                            'Unique'  => $index->isUnique(),
+                        ];
+                    }),
                 ];
             }),
         ];

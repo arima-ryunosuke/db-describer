@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const currentLevels = levels.slice(leading, trailing + 1);
         const blockId = currentLevels.join('.');
         const parentId = currentLevels.slice(0, -1).join('.');
-        section.firstElementChild.dataset.blockId = blockId;
+        section.querySelector('.section-header').dataset.blockId = blockId;
 
         idmap[blockId] = sectionId;
         const parent = document.getElementById(idmap[parentId]);
@@ -469,9 +469,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     relationship.on('auxclick', 'text', function (e) {
-        const cluster = e.target.closest('.cluster');
-        if (cluster) {
-            $('#' + cluster.id.replace('relationship:', '')).classList.add('fullscreen');
+        if (e.which === 2) {
+            const cluster = e.target.closest('.cluster');
+            if (cluster) {
+                $('#' + cluster.id.replace('relationship:', '')).classList.add('fullscreen');
+            }
         }
     });
     relationship.on('click', '#toggle-edge', function () {

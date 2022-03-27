@@ -51,13 +51,13 @@ $h = function ($string) { return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
                         </section>
                         <section id="relationship" class="sheet section section-level-h3" data-section-level="3">
                             <div class="relation-button" style="float: right">
-                                <button class="toggle-full" type="button">🗖</button>
+                                <button class="toggle-full" type="button">&#128470;</button>
                             </div>
                             <h3 class="section-header">リレーション</h3>
                             <div class="relation-button">
-                                <span><button id="toggle-edge" type="button" class="on">📊</button></span
-                                ><span><button id="toggle-active" type="button" class="on">📌</button></span
-                                ><span><button id="clear-all" type="button" class="oneshot">❌</button></span
+                                <span><button id="toggle-edge" type="button" class="on">&#128202;</button></span
+                                ><span><button id="toggle-active" type="button" class="on">&#128204;</button></span
+                                ><span><button id="clear-all" type="button" class="oneshot">&#10060;</button></span
                                 >
                                 <small style="float: right">
                                     ドラッグ: 移動, ホイール: 拡縮, クリック: 強調, ミドルクリック: 全画面
@@ -69,7 +69,7 @@ $h = function ($string) { return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
                         </section>
                         <section id="objectlist" class="sheet section section-level-h3" data-section-level="3">
                             <div class="relation-button" style="float: right">
-                                <button class="toggle-full" type="button">🗖</button>
+                                <button class="toggle-full" type="button">&#128470;</button>
                             </div>
                             <h3 class="section-header">オブジェクト一覧</h3>
                             <div class="table_wrapper">
@@ -129,7 +129,7 @@ $h = function ($string) { return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
                         <?php foreach ($Tables as $Table): ?>
                             <section id="table-<?= $h($Table['Name']) ?>" class="sheet section section-level-h3" data-section-level="3">
                                 <div class="relation-button" style="float: right">
-                                    <button class="toggle-full" type="button">🗖</button>
+                                    <button class="toggle-full" type="button">&#128470;</button>
                                 </div>
                                 <h3 class="section-header"><?= $h($Table['Name']) ?>: <?= $h($Table['LogicalName']) ?></h3>
                                 <div class="table_info">
@@ -318,7 +318,7 @@ $h = function ($string) { return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
                             <section id="view-<?= $h($Table['Name']) ?>" class="sheet section section-level-h3" data-section-level="3">
                                 <h3 class="section-header"><?= $h($Table['Name']) ?>
                                     <div class="relation-button" style="float: right">
-                                        <button class="toggle-full" type="button">🗖</button>
+                                        <button class="toggle-full" type="button">&#128470;</button>
                                     </div>
                                 </h3>
                                 <div class="table_info">

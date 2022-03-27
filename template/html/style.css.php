@@ -293,6 +293,22 @@ td {
     border-bottom: 1px dotted #ddd;
 }
 
+div.cards {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.cards .card {
+    width: 25%;
+    min-width: 300px;
+}
+
+dl.side-by-side {
+    display: grid;
+    grid-template-columns: max-content auto;
+    margin: 0;
+}
+
 .table_info {
     margin-top: 16px;
 }

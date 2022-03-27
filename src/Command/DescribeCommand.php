@@ -43,6 +43,7 @@ class DescribeCommand extends Command
             'tableCallback'      => function () { },
             'viewCallback'       => function () { },
             // spec 用
+            'vars'               => [],
             'sheets'             => [],
             // erd 用
             'dot'                => $input->getOption('dot'),

@@ -24,6 +24,7 @@ class DescriberTest extends \ryunosuke\Test\AbstractUnitTestCase
                 'tableCallback'      => function () { },
                 'viewCallback'       => function () { },
                 'template'           => __DIR__ . '/../../../template/standard.xlsx',
+                'vars'               => [],
                 'sheets'             => [],
                 'dot'                => null,
                 'columns'            => 'all',

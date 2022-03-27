@@ -42,6 +42,9 @@ class Describer
     private $template;
 
     /** @var array */
+    private $vars;
+
+    /** @var array */
     private $sheets;
 
     /** @var string */
@@ -94,6 +97,7 @@ class Describer
         $this->tableCallback = $config['tableCallback'];
         $this->viewCallback = $config['viewCallback'];
         $this->template = $config['template'];
+        $this->vars = $config['vars'];
         $this->sheets = $config['sheets'];
         $this->dot = $config['dot'];
         $this->graphAttrs = $config['graph'];
@@ -357,6 +361,7 @@ class Describer
                     }),
                 ];
             }),
+            'Vars'   => $this->vars,
         ];
     }
 

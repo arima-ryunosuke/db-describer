@@ -21,6 +21,12 @@
 - コードが汚すぎるのでバージョンを上げてリファクタ
 - xlsx+pdf も廃止したい
 
+## 1.0.6
+
+- [feature][box.json] 外部からテンプレートを指定する時に html 以下を指定するのが大変なので alias を指定する
+- [fixbug][template/html] おかしな挙動を修正
+- [feature][Describer] vars でカスタム変数を流し込めるように変更
+
 ## 1.0.5
 
 - [feature] html 出力に対応

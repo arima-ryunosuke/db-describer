@@ -12,7 +12,7 @@
 
 /*!40000 DROP DATABASE IF EXISTS `test_describer`*/;
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `test_describer` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `test_describer` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE `test_describer`;
 DROP TABLE IF EXISTS `t_article`;
@@ -21,15 +21,37 @@ DROP TABLE IF EXISTS `t_article`;
 CREATE TABLE `t_article` (
   `article_id` int NOT NULL COMMENT '主キー:説明です',
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'タイトル:説明です',
+  `content` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci COMMENT '内容:説明です',
+  `fullcontents` longtext COLLATE utf8_unicode_ci GENERATED ALWAYS AS (concat(`title`,`content`)) STORED COMMENT 'storedのフルテキスト:説明です',
   PRIMARY KEY (`article_id`),
-  KEY `secondary` (`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='記事テーブル:説明です';
+  KEY `secondary` (`title`),
+  FULLTEXT KEY `fulltext_index` (`fullcontents`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci COMMENT='記事テーブル:説明です';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `t_article` WRITE;
 /*!40000 ALTER TABLE `t_article` DISABLE KEYS */;
 /*!40000 ALTER TABLE `t_article` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017  FOR EACH ROW BEGIN
+  INSERT INTO t_comment VALUES();
+  INSERT INTO t_comment VALUES();
+  INSERT INTO t_comment VALUES();
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 DROP TABLE IF EXISTS `t_comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -40,7 +62,7 @@ CREATE TABLE `t_comment` (
   PRIMARY KEY (`comment_id`),
   KEY `IDX_CE58EA0F7294869C` (`article_id`),
   CONSTRAINT `fk_articlecomment` FOREIGN KEY (`article_id`) REFERENCES `t_article` (`article_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='コメントテーブル:説明です';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci COMMENT='コメントテーブル:説明です';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 LOCK TABLES `t_comment` WRITE;
@@ -50,8 +72,8 @@ UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
@@ -65,8 +87,8 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
@@ -84,6 +106,8 @@ SET @saved_cs_client     = @@character_set_client;
 /*!50001 CREATE VIEW `v_blog` AS SELECT 
  1 AS `article_id`,
  1 AS `title`,
+ 1 AS `content`,
+ 1 AS `fullcontents`,
  1 AS `comment_id`,
  1 AS `comment`*/;
 SET character_set_client = @saved_cs_client;
@@ -93,12 +117,12 @@ USE `test_describer`;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8 */;
-/*!50001 SET character_set_results     = utf8 */;
-/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013  SQL SECURITY DEFINER */
-/*!50001 VIEW `v_blog` AS select `A`.`article_id` AS `article_id`,`A`.`title` AS `title`,`C`.`comment_id` AS `comment_id`,`C`.`comment` AS `comment` from (`t_article` `A` join `t_comment` `C` on((`A`.`article_id` = `C`.`article_id`))) */;
+/*!50001 VIEW `v_blog` AS select `A`.`article_id` AS `article_id`,`A`.`title` AS `title`,`A`.`content` AS `content`,`A`.`fullcontents` AS `fullcontents`,`C`.`comment_id` AS `comment_id`,`C`.`comment` AS `comment` from (`t_article` `A` join `t_comment` `C` on((`A`.`article_id` = `C`.`article_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;

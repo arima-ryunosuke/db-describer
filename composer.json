@@ -25,7 +25,7 @@
   "require": {
     "php": ">=7.4",
     "symfony/console": "5.*",
-    "doctrine/dbal": "3.2.x-dev",
+    "doctrine/dbal": "3.3.x-dev",
     "alom/graphviz": "1.1.*",
     "ryunosuke/php-excelate": "1.0.*"
   },

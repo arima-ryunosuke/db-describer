@@ -259,6 +259,7 @@ class Describer
                             }
                         }
                         [$logicalName, $summary] = $this->_delimitComment($column->getComment());
+                        $platformOptions = $column->getPlatformOptions() + ['generation' => ['type' => '', 'expression' => '']];
                         return [
                             'No'          => $n + 1,
                             'Name'        => $column->getName(),
@@ -273,6 +274,7 @@ class Describer
                             'Collation'   => @$column->getPlatformOption('collation'),
                             'NotNull'     => !in_array($column->getName(), $pkcols) && $column->getNotnull(),
                             'Unique'      => implode(',', $uniqueable),
+                            'Generated'   => $platformOptions['generation'],
                         ];
                     }),
                     'Indexes'           => Variable::arrayize($table->getIndexes(), function (Index $index, $n) {
@@ -281,6 +283,8 @@ class Describer
                             'Name'    => $index->getName(),
                             'Columns' => $index->getColumns(),
                             'Unique'  => $index->isUnique(),
+                            'Type'    => $index->getFlags(),
+                            'Options' => $index->getOptions(),
                         ];
                     }),
                     'ForeignKeys'       => Variable::arrayize($table->getOption('foreignKeys'), function (ForeignKeyConstraint $foreignKey, $n) use ($tables) {
@@ -357,6 +361,8 @@ class Describer
                             'Name'    => $index->getName(),
                             'Columns' => $index->getColumns(),
                             'Unique'  => $index->isUnique(),
+                            'Type'    => $index->getFlags(),
+                            'Options' => $index->getOptions(),
                         ];
                     }),
                 ];

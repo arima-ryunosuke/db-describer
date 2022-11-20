@@ -2,6 +2,7 @@
 
 namespace ryunosuke\DbDescriber;
 
+use Alom\Graphviz\AttributeSet;
 use Alom\Graphviz\Digraph;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Column;
@@ -390,7 +391,8 @@ class Describer
         if ($this->dot === 'viz.js') {
             $schemaObjects['Erddot'] = $this->generateDot([
                 'skipNoRelation' => true,
-            ]);
+            ], $generated);
+            $schemaObjects['TableNames'] = array_keys($generated);
         }
         else {
             $schemaObjects['Erdsvg'] = $this->generateErd(sys_get_temp_dir(), [
@@ -460,7 +462,7 @@ class Describer
         return "$outdir/$dbname.xlsx";
     }
 
-    public function generateDot($options = [])
+    public function generateDot($options = [], &$generated_columns = [])
     {
         $options += [
             'skipNoRelation' => false,
@@ -544,6 +546,10 @@ class Describer
         $graph->attr('node', $node_attrs);
         $graph->attr('edge', $edge_attrs);
 
+        $generated_columns = [];
+        $subgraphs = [];
+        $edges = [];
+
         // サブグラフとノードとエッジを設定
         foreach ($tables as $table) {
             if ($options['skipNoRelation'] && !($table->getOption('foreignKeys') || $table->getOption('referenceKeys'))) {
@@ -555,10 +561,10 @@ class Describer
             $ranks = $table->getOption('ranks');
 
             // サブグラフ
-            $tableGraph = $graph->subgraph("cluster_{$tableName}");
+            $subgraphs[$tableName] = $tableGraph = $graph->subgraph("cluster_{$tableName}");
             $tableGraph->attr('graph', [
                 'id'        => "relationship:table-$tableName",
-                'class'     => implode(' ', array_map(fn($c) => "column-$tableName-$c", $tableColumns)),
+                'class'     => "table-$tableName " . implode(' ', array_map(fn($c) => "column-$tableName-$c", $tableColumns)),
                 'labelloc'  => 't',
                 'labeljust' => 'l',
                 'margin'    => 1,
@@ -574,9 +580,10 @@ class Describer
                 $columnName = $column->getName();
                 $columnComment = $this->_delimitComment($column->getComment())[0];
 
+                $generated_columns[$tableName][$c] = $column;
                 $tableGraph->node("column_{$tableName}_{$columnName}", [
                     'id'        => "relationship:column-{$tableName}.{$columnName}",
-                    'class'     => "column-{$tableName}-{$columnName}",
+                    'class'     => "table-{$tableName} column-{$tableName}-{$columnName}",
                     'label'     => "\"{$columnName}: {$columnComment}\\l\"",
                     'width'     => $graph_attrs['fontsize'] / 2 * (max($widths[min($ranks ?: [0])]) + 4) / 72,
                     'fixedsize' => true,
@@ -600,9 +607,9 @@ class Describer
                     $from = "column_{$foreignTableName}_{$fcolumn}";
                     $to = "column_{$localTableName}_{$lcolumn}";
 
-                    $graph->edge([$from, $to], [
+                    $edges["$localTableName -> $foreignTableName"] = $graph->beginEdge([$from, $to], [
                         'id'         => "relationship:fkey-{$fkey->getName()}",
-                        'class'      => "fkey-{$fkey->getName()} column-{$foreignTableName}-{$fcolumn} column-{$localTableName}-{$lcolumn}",
+                        'class'      => "fkey-{$fkey->getName()} table-{$localTableName} table-{$foreignTableName} column-{$foreignTableName}-{$fcolumn} column-{$localTableName}-{$lcolumn}",
                         'color'      => $getRandomColor("{$foreignTableName}.{$fcolumn}"),
                         'constraint' => $constraint ? 'true' : 'false',
                     ]);
@@ -610,7 +617,25 @@ class Describer
             }
         }
 
-        return $graph->render();
+        // コメントを打ちたいので自前でレンダリング
+        $dot = "digraph {$graph->getId()} {\n";
+        foreach ($graph->getInstructions() as $instruction) {
+            if ($instruction instanceof AttributeSet) {
+                $dot .= $instruction->render(1, '  ');
+            }
+        }
+        foreach ($subgraphs as $id => $subgraph) {
+            $dot .= "# subgraph-begin: $id \n";
+            $dot .= $subgraph->render(1, '  ');
+            $dot .= "# subgraph-end: $id \n";
+        }
+        foreach ($edges as $id => $edge) {
+            $dot .= "# edge-begin: $id \n";
+            $dot .= $edge->render(1, '  ');
+            $dot .= "# edge-end: $id \n";
+        }
+        $dot .= "}\n";
+        return $dot;
     }
 
     public function generateErd($outdir, $options = [])

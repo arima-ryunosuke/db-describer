@@ -740,14 +740,9 @@ select.option-input {
     height: 100%;
 }
 
-.fullscreen .relationship svg {
-    width: 100%;
-    height: 100%;
-}
-
 .relationship svg {
     width: 100%;
-    height: auto;
+    height: 100%;
 }
 
 .relation-button {
@@ -771,8 +766,23 @@ select.option-input {
     border: 3px inset #ddd;
 }
 
+.relationship-list  {
+}
+
+.relationship-list label {
+    white-space: nowrap;
+}
+
+.relationship-list .all-checkbox {
+    accent-color: red;
+}
+.relationship-svg {
+    position: relative;
+    flex-basis: 100%;
+}
+
 .relationship {
-    width: 100%;
+    display: flex;
     max-height: 90vh;
     overflow: auto;
     background: white;
@@ -780,6 +790,7 @@ select.option-input {
 
 .relationship svg {
     cursor: move;
+    top: 0;
 }
 
 .relationship.invisible-edge g.edge:not(.active) * {
@@ -790,12 +801,24 @@ select.option-input {
     pointer-events: none;
 }
 
+.relationship g polygon {
+    cursor: default;
+}
+
 .relationship g text {
     cursor: pointer;
 }
 
+.relationship g.cluster polygon {
+    cursor: not-allowed;
+}
+
 .relationship:not(.noactive-edge) g.active path {
     stroke-width: 3px;
+}
+
+.relationship:not(.noactive-edge) g.active polygon {
+    fill: #ccf;
 }
 
 .relationship:not(.noactive-edge) g.active text {

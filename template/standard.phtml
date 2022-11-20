@@ -3,6 +3,7 @@
  * @var string $Schema
  * @var string $Erddot
  * @var string $Erdsvg
+ * @var string[] $TableNames
  * @var ryunosuke\Excelate\Variable $Tables
  * @var ryunosuke\Excelate\Variable $Views
  */
@@ -78,12 +79,18 @@ $a = function ($array) use (&$a, $h) {
                                 ><span><button id="clear-all" type="button" class="oneshot">&#10060;</button></span
                                 >
                                 <small style="float: right">
-                                    ドラッグ: 移動, ホイール: 拡縮, クリック: 強調, ミドルクリック: 全画面
+                                    ドラッグ: 移動, ホイール: 拡縮, クリック: 強調, ミドルクリック: 全画面, ダブルクリック: 非表示
                                 </small>
                             </div>
                             <div class="relationship">
                                 <?php if (isset($Erddot)): ?>
                                     <div class="relationship-dot" style="display:none"><?= $h($Erddot) ?></div>
+                                    <div class="relationship-list">
+                                        <label><input class="all-checkbox" type="checkbox" checked>ALL</label>
+                                        <?php foreach ($TableNames as $tableName): ?>
+                                            <label data-table-name="<?= $h($tableName) ?>"><input type="checkbox" checked><?= $h($tableName) ?></label>
+                                        <?php endforeach ?>
+                                    </div>
                                     <div class="relationship-svg"></div>
                                 <?php endif ?>
                                 <?php if (isset($Erdsvg)): ?>

@@ -429,13 +429,51 @@ document.addEventListener('DOMContentLoaded', function () {
     const viz = new window.Viz();
     const relationship_dot = $('.relationship-dot');
     const relationship_svg = $('.relationship-svg');
+    const fade = function (node, eitherIn_Out, duration, callback) {
+        const target = +eitherIn_Out;
+        const start = performance.now();
+
+        node.style.opacity = 1 - target;
+        requestAnimationFrame(function tick(timestamp) {
+            const easing = (timestamp - start) / duration;
+            if (easing < 1) {
+                node.style.opacity = Math.abs(1 - target - Math.min(easing, 1));
+                requestAnimationFrame(tick);
+            }
+            else {
+                node.style.opacity = target;
+                callback(node);
+            }
+        });
+    };
     const renderDot = function () {
         if (!relationship_dot) {
             return;
         }
-        viz.renderSVGElement(relationship_dot.textContent)
+        const filter_names = Array.from(relationship.$$('[data-table-name]'))
+            .filter(e => !e.$('input').checked)
+            .map(e => e.dataset.tableName)
+        ;
+        let dot = relationship_dot.textContent;
+        if (filter_names && filter_names.length) {
+            const filter_name = filter_names.map(s => ` ${s} `).join('|');
+            const subgraphs = `# subgraph-begin:[^\n]*?(${filter_name}).*?# subgraph-end:[^\n]*?(${filter_name})`;
+            const relations = `# edge-begin:[^\n]*?(${filter_name}).*?# edge-end:[^\n]*?(${filter_name})`;
+            dot = dot.replaceAll(new RegExp(`(${subgraphs})|(${relations})`, 'sg'), '# filtered');
+        }
+        viz.renderSVGElement(dot)
             .then(function (svg) {
-                relationship_svg.textContent = '';
+                const old = relationship_svg.$('svg:last-child');
+                if (old) {
+                    const duration = 444;
+                    svg.setAttribute('viewBox', old.getAttribute('viewBox'));
+
+                    svg.style.position = 'relative';
+                    fade(svg, true, duration, function () {});
+
+                    old.style.position = 'absolute';
+                    fade(old, false, duration, node => node.remove());
+                }
                 relationship_svg.appendChild(svg);
             })
             .catch(error => console.error(error))
@@ -443,6 +481,37 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     renderDot();
 
+    relationship.on('mouseover', '[data-table-name]', function (e) {
+        $('.relationship').$$(`.table-${e.target.dataset.tableName}`).forEach(function (node) {
+            node.classList.add('active');
+        });
+    });
+    relationship.on('mouseout', '[data-table-name]', function (e) {
+        $('.relationship').$$(`.table-${e.target.dataset.tableName}`).forEach(function (node) {
+            node.classList.remove('active');
+        });
+    });
+
+    relationship.on('change', '.all-checkbox', function (e) {
+        $('.relationship').$$('[data-table-name]>input').forEach(function (node) {
+            node.checked = e.target.checked;
+        });
+        renderDot();
+    });
+    relationship.on('change', '[data-table-name]', function (e) {
+        const checkboxes = Array.from($('.relationship').$$('[data-table-name]>input'));
+        const all_checked = checkboxes.every(e => e.checked);
+        const any_checked = checkboxes.some(e => e.checked);
+        const all_checkbox = relationship.$('.all-checkbox');
+        if (all_checked) {
+            all_checkbox.checked = true;
+        }
+        if (!any_checked) {
+            all_checkbox.checked = false;
+        }
+        all_checkbox.indeterminate = !all_checked && any_checked;
+        renderDot();
+    });
     relationship.on('mousedown', 'svg', function (e) {
         const [x, y, ,] = this.getAttribute('viewBox').split(' ').map(v => parseFloat(v));
         this.dragging = {startX: x, mouseX: e.offsetX, startY: y, mouseY: e.offsetY};
@@ -475,6 +544,15 @@ document.addEventListener('DOMContentLoaded', function () {
         this.setAttribute('viewBox', [x - targetX, y - targetY, w + targetW, h + targetH].join(' '));
 
         e.preventDefault();
+    });
+    relationship.on('dblclick', 'g.cluster', function (e) {
+        const g = this;
+        relationship.$$('[data-table-name]').forEach(function (elm) {
+            if (g.classList.contains(`table-${elm.dataset.tableName}`)) {
+                elm.$('input').checked = false;
+            }
+        });
+        renderDot();
     });
     relationship.on('click', 'text', function (e) {
         relationship.$('#toggle-active').classList.add('on');

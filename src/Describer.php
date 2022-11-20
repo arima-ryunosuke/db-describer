@@ -235,6 +235,17 @@ class Describer
             'Schema' => $dbname,
             'Tables' => Variable::arrayize($tables, function (Table $table, $n) use ($tables) {
                 [$logicalName, $summary] = $this->_delimitComment($table->getOption('comment'));
+
+                $indexes = $table->getIndexes();
+                usort($indexes, function ($a, $b) {
+                    if ($a->isPrimary()) {
+                        return -1;
+                    }
+                    if ($b->isPrimary()) {
+                        return +1;
+                    }
+                    return $a->getName() <=> $b->getName();
+                });
                 return [
                     'No'                => $n + 1,
                     'Name'              => $table->getName(),
@@ -277,7 +288,7 @@ class Describer
                             'Generated'   => $platformOptions['generation'],
                         ];
                     }),
-                    'Indexes'           => Variable::arrayize($table->getIndexes(), function (Index $index, $n) {
+                    'Indexes'           => Variable::arrayize($indexes, function (Index $index, $n) {
                         return [
                             'No'      => $n + 1,
                             'Name'    => $index->getName(),

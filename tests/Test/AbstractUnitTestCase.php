@@ -38,6 +38,7 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
             [
                 new Index('PRIMARY', ['article_id'], true, true),
                 new Index('secondary', ['title']),
+                new Index('tertiary', ['article_id', 'title']),
             ],
             [],
             [],

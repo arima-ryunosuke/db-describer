@@ -54,7 +54,7 @@ class DescribeCommandTest extends \ryunosuke\Test\AbstractUnitTestCase
         $this->runApp([
             'dsn'    => TEST_DSN,
             'outdir' => $outdir,
-            '--dot'  => PHP_BINARY . ' --version',
+            '--dot'  => 'viz.js',
             '--mode' => ["html"],
         ]);
         $this->assertFileExists("$outdir/" . parse_url(TEST_DSN)['path'] . '.html');

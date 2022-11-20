@@ -423,6 +423,26 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     /// リレーション図
+    if (window.Viz === undefined) {
+        window.Viz = function () {};
+    }
+    const viz = new window.Viz();
+    const relationship_dot = $('.relationship-dot');
+    const relationship_svg = $('.relationship-svg');
+    const renderDot = function () {
+        if (!relationship_dot) {
+            return;
+        }
+        viz.renderSVGElement(relationship_dot.textContent)
+            .then(function (svg) {
+                relationship_svg.textContent = '';
+                relationship_svg.appendChild(svg);
+            })
+            .catch(error => console.error(error))
+        ;
+    };
+    renderDot();
+
     relationship.on('mousedown', 'svg', function (e) {
         const [x, y, ,] = this.getAttribute('viewBox').split(' ').map(v => parseFloat(v));
         this.dragging = {startX: x, mouseX: e.offsetX, startY: y, mouseY: e.offsetY};

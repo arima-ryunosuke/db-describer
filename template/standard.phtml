@@ -1,6 +1,7 @@
 <?php
 /**
  * @var string $Schema
+ * @var string $Erddot
  * @var string $Erdsvg
  * @var ryunosuke\Excelate\Variable $Tables
  * @var ryunosuke\Excelate\Variable $Views
@@ -31,6 +32,10 @@ $a = function ($array) use (&$a, $h) {
     <link id="sphinx_rtd_theme" href="https://cdn.jsdelivr.net/npm/sphinx_rtd_theme@0.4.2/css/theme.css" rel="stylesheet">
     <style><?php include __DIR__ . '/html/style.css.php' ?></style>
 
+    <?php if (isset($Erddot)): ?>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
+    <?php endif ?>
     <script defer><?php include __DIR__ . '/html/script.js.php' ?></script>
 </head>
 
@@ -77,7 +82,13 @@ $a = function ($array) use (&$a, $h) {
                                 </small>
                             </div>
                             <div class="relationship">
-                                <?= file_get_contents($Erdsvg) ?>
+                                <?php if (isset($Erddot)): ?>
+                                    <div class="relationship-dot" style="display:none"><?= $h($Erddot) ?></div>
+                                    <div class="relationship-svg"></div>
+                                <?php endif ?>
+                                <?php if (isset($Erdsvg)): ?>
+                                    <?= file_get_contents($Erdsvg) ?>
+                                <?php endif ?>
                             </div>
                         </section>
                         <section id="objectlist" class="sheet section section-level-h3" data-section-level="3">

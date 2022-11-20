@@ -238,6 +238,19 @@ password = fuga
     function test_dot()
     {
         $describer = new Describer(TEST_DSN, $this->getConfig([
+            'dot' => 'viz.js',
+        ]));
+
+        $content = $describer->generateDot(['format' => 'pdf'], $tables);
+        $this->assertStringContainsString('digraph erd {', $content);
+        $this->assertStringContainsString('# subgraph-begin', $content);
+        $this->assertStringContainsString('# edge-begin', $content);
+        $this->assertEquals(["t_article", "t_comment"], array_keys($tables));
+    }
+
+    function test_erd()
+    {
+        $describer = new Describer(TEST_DSN, $this->getConfig([
             'graph'   => [
                 'nodesep' => '99',
             ],

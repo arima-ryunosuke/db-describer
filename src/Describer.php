@@ -387,10 +387,17 @@ class Describer
         $dbname = $this->connection->getDatabase();
 
         $schemaObjects = $this->_gatherSchemaObject($dbname);
-        $schemaObjects['Erdsvg'] = $this->generateErd(sys_get_temp_dir(), [
-            'skipNoRelation' => true,
-            'format'         => 'svg',
-        ]);
+        if ($this->dot === 'viz.js') {
+            $schemaObjects['Erddot'] = $this->generateDot([
+                'skipNoRelation' => true,
+            ]);
+        }
+        else {
+            $schemaObjects['Erdsvg'] = $this->generateErd(sys_get_temp_dir(), [
+                'skipNoRelation' => true,
+                'format'         => 'svg',
+            ]);
+        }
 
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $output = (static function () {

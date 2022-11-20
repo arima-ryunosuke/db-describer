@@ -321,10 +321,16 @@ dl.side-by-side {
 .table_wrapper {
     margin-top: 16px;
     overflow-x: auto;
+    max-height: 88vh;
 }
 
 .table_wrapper table {
     white-space: nowrap;
+}
+
+.table_wrapper table th {
+    position: sticky;
+    top: 0;
 }
 
 .sheet {
@@ -746,24 +752,24 @@ select.option-input {
 }
 
 .relation-button {
-    margin: 5px 0;
+    margin: 4px 0;
 }
 
 .relation-button button {
     padding: 0;
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     line-height: 0;
-    border: 3px outset #ddd;
+    border: 2px outset #ddd;
     margin-right: 3px;
 }
 
 .relation-button button.on {
-    border: 3px inset #ddd;
+    border: 2px inset #ddd;
 }
 
 .relation-button button.oneshot:active {
-    border: 3px inset #ddd;
+    border: 2px inset #ddd;
 }
 
 .relationship-list  {

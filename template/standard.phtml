@@ -162,7 +162,7 @@ $a = function ($array) use (&$a, $h) {
                                 <div class="relation-button" style="float: right">
                                     <button class="toggle-full" type="button">&#128470;</button>
                                 </div>
-                                <h3 class="section-header"><?= $h($Table['Name']) ?>: <?= $h($Table['LogicalName']) ?></h3>
+                                <h3 class="section-header"><?= $h($Table['Name']) ?><?= (strlen($Table['LogicalName']) ? ': ' : '') . $h($Table['LogicalName']) ?></h3>
                                 <div class="table_info">
                                     <table>
                                         <caption>テーブル情報</caption>
@@ -353,11 +353,10 @@ $a = function ($array) use (&$a, $h) {
                         </section>
                         <?php foreach ($Views as $Table): ?>
                             <section id="view-<?= $h($Table['Name']) ?>" class="sheet section section-level-h3" data-section-level="3">
-                                <h3 class="section-header"><?= $h($Table['Name']) ?>
-                                    <div class="relation-button" style="float: right">
-                                        <button class="toggle-full" type="button">&#128470;</button>
-                                    </div>
-                                </h3>
+                                <div class="relation-button" style="float: right">
+                                    <button class="toggle-full" type="button">&#128470;</button>
+                                </div>
+                                <h3 class="section-header"><?= $h($Table['Name']) ?></h3>
                                 <div class="table_info">
                                     <table>
                                         <caption>ビュー情報</caption>

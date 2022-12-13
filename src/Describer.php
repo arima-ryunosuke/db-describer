@@ -11,10 +11,6 @@ use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\Trigger;
-use PhpOffice\PhpSpreadsheet\Cell\Cell;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use ryunosuke\Excelate\Renderer;
-use ryunosuke\Excelate\Variable;
 
 class Describer
 {
@@ -44,12 +40,6 @@ class Describer
 
     /** @var array */
     private $vars;
-
-    /** @var array */
-    private $sheets;
-
-    /** @var string */
-    private $dot;
 
     /** @var array */
     private $graphAttrs, $nodeAttrs, $edgehAttrs;
@@ -99,8 +89,6 @@ class Describer
         $this->viewCallback = $config['viewCallback'];
         $this->template = $config['template'];
         $this->vars = $config['vars'];
-        $this->sheets = $config['sheets'];
-        $this->dot = $config['dot'];
         $this->graphAttrs = $config['graph'];
         $this->nodeAttrs = $config['node'];
         $this->edgehAttrs = $config['edge'];
@@ -230,11 +218,19 @@ class Describer
 
     private function _gatherSchemaObject($dbname)
     {
+        $arrays = function (array $array, $callback) {
+            $i = 0;
+            foreach ($array as $k => $v) {
+                $array[$k] = $callback($v, $k, $i++);
+            }
+            return $array;
+        };
+
         $tables = $this->_detectTable();
 
         return [
             'Schema' => $dbname,
-            'Tables' => Variable::arrayize($tables, function (Table $table, $n) use ($tables) {
+            'Tables' => $arrays($tables, function (Table $table, $k, $n) use ($tables, $arrays) {
                 [$logicalName, $summary] = $this->_delimitComment($table->getOption('comment'));
 
                 $indexes = $table->getIndexes();
@@ -260,7 +256,7 @@ class Describer
                     'ForeignKeyCount'   => count($table->getOption('foreignKeys')),
                     'ReferenceKeyCount' => count($table->getOption('referenceKeys')),
                     'TriggerCount'      => count($table->getTriggers()),
-                    'Columns'           => Variable::arrayize($table->getColumns(), function (Column $column, $n) use ($table) {
+                    'Columns'           => $arrays($table->getColumns(), function (Column $column, $k, $n) use ($table) {
                         $pkcols = $table->hasPrimaryKey() ? $table->getPrimaryKey()->getColumns() : [];
                         $uniqueable = [];
                         foreach ($table->getIndexes() as $iname => $index) {
@@ -289,7 +285,7 @@ class Describer
                             'Generated'   => $platformOptions['generation'],
                         ];
                     }),
-                    'Indexes'           => Variable::arrayize($indexes, function (Index $index, $n) {
+                    'Indexes'           => $arrays($indexes, function (Index $index, $k, $n) {
                         return [
                             'No'      => $n + 1,
                             'Name'    => $index->getName(),
@@ -299,7 +295,7 @@ class Describer
                             'Options' => $index->getOptions(),
                         ];
                     }),
-                    'ForeignKeys'       => Variable::arrayize($table->getOption('foreignKeys'), function (ForeignKeyConstraint $foreignKey, $n) use ($tables) {
+                    'ForeignKeys'       => $arrays($table->getOption('foreignKeys'), function (ForeignKeyConstraint $foreignKey, $k, $n) use ($tables) {
                         return [
                             'No'                    => $n + 1,
                             'Name'                  => $foreignKey->getName(),
@@ -311,7 +307,7 @@ class Describer
                             'OnDelete'              => $foreignKey->hasOption('onDelete') ? $foreignKey->getOption('onDelete') : '',
                         ];
                     }),
-                    'ReferenceKeys'     => Variable::arrayize($table->getOption('referenceKeys'), function (ForeignKeyConstraint $foreignKey, $n) use ($tables) {
+                    'ReferenceKeys'     => $arrays($table->getOption('referenceKeys'), function (ForeignKeyConstraint $foreignKey, $k, $n) use ($tables) {
                         return [
                             'No'                    => $n + 1,
                             'Name'                  => $foreignKey->getName(),
@@ -323,7 +319,7 @@ class Describer
                             'OnDelete'              => $foreignKey->hasOption('onDelete') ? $foreignKey->getOption('onDelete') : '',
                         ];
                     }),
-                    'Triggers'          => Variable::arrayize($table->getTriggers(), function (Trigger $trigger, $n) {
+                    'Triggers'          => $arrays($table->getOption('triggers'), function (Trigger $trigger, $k, $n) {
                         return [
                             'No'        => $n + 1,
                             'Name'      => $trigger->getName(),
@@ -334,14 +330,14 @@ class Describer
                     }),
                 ];
             }),
-            'Views'  => Variable::arrayize($this->_detectView(), function (Table $view, $n) {
+            'Views'  => $arrays($this->_detectView(), function (Table $view, $k, $n) use ($arrays) {
                 return [
                     'No'          => $n + 1,
                     'Name'        => $view->getName(),
                     'Sql'         => $view->getOption('sql'),
                     'ColumnCount' => count($view->getColumns()),
                     'IndexCount'  => count($view->getIndexes()),
-                    'Columns'     => Variable::arrayize($view->getColumns(), function (Column $column, $n) use ($view) {
+                    'Columns'     => $arrays($view->getColumns(), function (Column $column, $k, $n) use ($view) {
                         $uniqueable = [];
                         foreach ($view->getIndexes() as $iname => $index) {
                             if ($index->isUnique()) {
@@ -367,7 +363,7 @@ class Describer
                             'Unique'      => implode(',', $uniqueable),
                         ];
                     }),
-                    'Indexes'     => Variable::arrayize($view->getIndexes(), function (Index $index, $n) {
+                    'Indexes'     => $arrays($view->getIndexes(), function (Index $index, $k, $n) {
                         return [
                             'No'      => $n + 1,
                             'Name'    => $index->getName(),
@@ -388,18 +384,10 @@ class Describer
         $dbname = $this->connection->getDatabase();
 
         $schemaObjects = $this->_gatherSchemaObject($dbname);
-        if ($this->dot === 'viz.js') {
-            $schemaObjects['Erddot'] = $this->generateDot([
-                'skipNoRelation' => true,
-            ], $generated);
-            $schemaObjects['TableNames'] = array_keys($generated);
-        }
-        else {
-            $schemaObjects['Erdsvg'] = $this->generateErd(sys_get_temp_dir(), [
-                'skipNoRelation' => true,
-                'format'         => 'svg',
-            ]);
-        }
+        $schemaObjects['Erddot'] = $this->generateDot([
+            'skipNoRelation' => true,
+        ], $generated);
+        $schemaObjects['TableNames'] = array_keys($generated);
 
         /** @noinspection PhpMethodParametersCountMismatchInspection */
         $output = (static function () {
@@ -411,55 +399,6 @@ class Describer
 
         file_put_contents("$outdir/$dbname.html", $output);
         return "$outdir/$dbname.html";
-    }
-
-    public function generateSpec($outdir)
-    {
-        $dbname = $this->connection->getDatabase();
-
-        $schemaObjects = $this->_gatherSchemaObject($dbname);
-
-        // PhpSpreadsheet が内部で ZipArchive を使用してるので phar の中身は読めない（のでコピーする）
-        $template = sys_get_temp_dir() . '/standard.xlsx';
-        copy($this->template, $template);
-        $book = IOFactory::load($template);
-
-        $renderer = new Renderer();
-        $renderer->registerEffector('Height', function (Cell $cell, $height) {
-            $cell->getWorksheet()->getRowDimension($cell->getRow())->setRowHeight($height);
-        });
-
-        $unsetget = function (&$array, $key) {
-            $value = $array[$key] ?? [];
-            unset($array[$key]);
-            return $value;
-        };
-        $sheets = $this->sheets;
-        $indexVars = $unsetget($sheets, 'index');
-        $tableVars = $unsetget($sheets, 'table');
-
-        $tablelist = $book->getSheetByName('index');
-        $tablelist->setTitle($dbname);
-        $renderer->render($tablelist, $schemaObjects + $indexVars);
-
-        $templateSheet = $book->getSheetByName('table');
-        $book->removeSheetByIndex($book->getIndex($templateSheet));
-        foreach ($schemaObjects['Tables'] as $table) {
-            $sheet = $templateSheet->copy();
-            $sheet->setTitle($table['LogicalName'] ?: $table['Name']);
-            $book->addSheet($sheet);
-            $renderer->render($sheet, ['Table' => $table] + $tableVars);
-        }
-
-        foreach ($sheets as $name => $vars) {
-            $renderer->render($book->getSheetByName($name), $vars);
-        }
-
-        $book->setActiveSheetIndex(0);
-        $writer = IOFactory::createWriter($book, 'Xlsx');
-        $writer->save("$outdir/$dbname.xlsx");
-
-        return "$outdir/$dbname.xlsx";
     }
 
     public function generateDot($options = [], &$generated_columns = [])
@@ -636,29 +575,5 @@ class Describer
         }
         $dot .= "}\n";
         return $dot;
-    }
-
-    public function generateErd($outdir, $options = [])
-    {
-        assert(isset($options['format']));
-
-        $dbname = $this->connection->getDatabase();
-
-        $dot = $this->generateDot($options);
-        $dotfile = "$outdir/$dbname.dot";
-        file_put_contents($dotfile, $dot);
-
-        if ($this->dot) {
-            $erdfile = "$outdir/$dbname.{$options['format']}";
-            ob_start();
-            passthru("{$this->dot} $dotfile -T{$options['format']}", $return);
-            $output = ob_get_clean();
-            if (!$return) {
-                file_put_contents($erdfile, $output);
-                unlink($dotfile);
-                return $erdfile;
-            }
-        }
-        return $dotfile;
     }
 }

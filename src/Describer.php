@@ -6,8 +6,10 @@ use Alom\Graphviz\AttributeSet;
 use Alom\Graphviz\Digraph;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Event;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\Routine;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\Trigger;
@@ -100,7 +102,7 @@ class Describer
     private function _detectSchema()
     {
         if (!$this->schema) {
-            $this->schema = $this->connection->createSchemaManager()->createSchema();
+            $this->schema = $this->connection->createSchemaManager()->introspectSchema();
             call_user_func($this->schemaCallback, $this->schema);
         }
         return $this->schema;
@@ -133,6 +135,9 @@ class Describer
 
                 return false;
             };
+
+            $triggers = $this->_detectSchema()->getTriggers();
+
             foreach ($this->_detectSchema()->getTables() as $table) {
                 $tableName = $table->getName();
                 if ($skip($tableName)) {
@@ -143,10 +148,17 @@ class Describer
                     continue;
                 }
 
+                $selftriggers = [];
+                foreach ($triggers as $trigger) {
+                    if ($trigger->getTableName() === $tableName) {
+                        $selftriggers[] = $trigger;
+                    }
+                }
+                $table->addOption('triggers', $selftriggers);
+
                 if (!$table->hasOption('comment')) {
                     $table->addOption('comment', '');
                 }
-                /** @var string $empty addOption の @param を騙すための特に意味のないアノテーション */
                 $empty = [];
                 $table->addOption('foreignKeys', $empty);
                 $table->addOption('referenceKeys', $empty);
@@ -203,7 +215,7 @@ class Describer
                     continue;
                 }
 
-                $table = $this->connection->createSchemaManager()->listTableDetails($viewName);
+                $table = $this->connection->createSchemaManager()->introspectViewAsTable($viewName);
                 $table->addOption('sql', $view->getSql());
                 $this->views[$viewName] = $table;
             }
@@ -229,11 +241,11 @@ class Describer
         $tables = $this->_detectTable();
 
         return [
-            'Schema' => $dbname,
-            'Tables' => $arrays($tables, function (Table $table, $k, $n) use ($tables, $arrays) {
+            'Schema'   => $dbname,
+            'Tables'   => $arrays($tables, function (Table $table, $k, $n) use ($tables, $arrays) {
                 [$logicalName, $summary] = $this->_delimitComment($table->getOption('comment'));
 
-                $indexes = $table->getIndexes();
+                $indexes = array_filter($table->getIndexes(), fn(Index $index) => !$index->hasFlag('implicit'));
                 usort($indexes, function ($a, $b) {
                     if ($a->isPrimary()) {
                         return -1;
@@ -249,15 +261,15 @@ class Describer
                     'LogicalName'       => $logicalName,
                     'Summary'           => $summary,
                     'Collation'         => $table->getOption('collation'),
-                    'Format'            => $table->getOption('create_options')['row_format'] ?? null,
+                    'Format'            => $table->getOption('row_format'),
                     'Engine'            => $table->getOption('engine'),
                     'ColumnCount'       => count($table->getColumns()),
                     'IndexCount'        => count($table->getIndexes()),
                     'ForeignKeyCount'   => count($table->getOption('foreignKeys')),
                     'ReferenceKeyCount' => count($table->getOption('referenceKeys')),
-                    'TriggerCount'      => count($table->getTriggers()),
+                    'TriggerCount'      => count($table->getOption('triggers')),
                     'Columns'           => $arrays($table->getColumns(), function (Column $column, $k, $n) use ($table) {
-                        $pkcols = $table->hasPrimaryKey() ? $table->getPrimaryKey()->getColumns() : [];
+                        $pkcols = $table->getPrimaryKey() ? $table->getPrimaryKey()->getColumns() : [];
                         $uniqueable = [];
                         foreach ($table->getIndexes() as $iname => $index) {
                             if ($index->isUnique()) {
@@ -324,17 +336,19 @@ class Describer
                             'No'        => $n + 1,
                             'Name'      => $trigger->getName(),
                             'Statement' => $trigger->getStatement(),
-                            'Event'     => $trigger->getOption('Event'),
-                            'Timing'    => $trigger->getOption('Timing'),
+                            'Event'     => $trigger->getOption('event'),
+                            'Timing'    => $trigger->getOption('timing'),
                         ];
                     }),
                 ];
             }),
-            'Views'  => $arrays($this->_detectView(), function (Table $view, $k, $n) use ($arrays) {
+            'Views'    => $arrays($this->_detectView(), function (Table $view, $k, $n) use ($arrays) {
                 return [
                     'No'          => $n + 1,
                     'Name'        => $view->getName(),
                     'Sql'         => $view->getOption('sql'),
+                    'CheckOption' => $view->getOption('view_options')['checkOption'],
+                    'Updatable'   => $view->getOption('view_options')['updatable'],
                     'ColumnCount' => count($view->getColumns()),
                     'IndexCount'  => count($view->getIndexes()),
                     'Columns'     => $arrays($view->getColumns(), function (Column $column, $k, $n) use ($view) {
@@ -375,7 +389,50 @@ class Describer
                     }),
                 ];
             }),
-            'Vars'   => $this->vars,
+            'Routines' => $arrays($this->_detectSchema()->getRoutines(), function (Routine $routine, $k, $n) {
+                [$logicalName, $summary] = $this->_delimitComment($routine->getOption('comment'));
+                return [
+                    'No'          => $n + 1,
+                    'Name'        => $routine->getName(),
+                    'LogicalName' => $logicalName,
+                    'Summary'     => $summary,
+                    'Statement'   => $routine->getStatement(),
+                    'Type'        => $routine->getOption('type'),
+                    'Parameters'  => (function ($parameters) {
+                        $list = [];
+                        foreach ($parameters as $name => $param) {
+                            $list[] = trim($param['mode'] . ' ' . $name . ' ' . $param['typeDeclaration']);
+                        }
+                        return implode(', ', $list);
+                    })($routine->getOption('parameters')),
+                    'Return'      => $routine->getOption('returnTypeDeclaration'),
+                ];
+            }),
+            'Events'   => $arrays($this->_detectSchema()->getEvents(), function (Event $event, $k, $n) {
+                [$logicalName, $summary] = $this->_delimitComment($event->getOption('comment'));
+                return [
+                    'No'        => $n + 1,
+                    'Name'      => $event->getName(),
+                    'LogicalName' => $logicalName,
+                    'Summary'     => $summary,
+                    'Statement' => $event->getStatement(),
+                    'Since'     => $event->getOption('since'),
+                    'Until'     => $event->getOption('until'),
+                    'Interval'  => (function ($interval) {
+                        $concat = fn($digit, $unit) => $digit ? "{$digit}{$unit}" : '';
+                        $interval = new \DateInterval($interval);
+                        return implode('', [
+                            $concat($interval->y, '年'),
+                            $concat($interval->m, 'ヶ月'),
+                            $concat($interval->d, '日'),
+                            $concat($interval->h, '時間'),
+                            $concat($interval->i, '分'),
+                            $concat($interval->s, '秒'),
+                        ]);
+                    })($event->getInterval()),
+                ];
+            }),
+            'Vars'     => $this->vars,
         ];
     }
 
@@ -398,7 +455,7 @@ class Describer
         })($this->template, $schemaObjects);
 
         file_put_contents("$outdir/$dbname.html", $output);
-        return "$outdir/$dbname.html";
+        return $output;
     }
 
     public function generateDot($options = [], &$generated_columns = [])
@@ -429,16 +486,15 @@ class Describer
                 $columns[$tableName] = array_keys($table->getColumns());
             }
             else {
-                $pkcols = $table->hasPrimaryKey() ? $table->getPrimaryKey()->getColumns() : [];
+                $pkcols = $table->getPrimaryKey() ? $table->getPrimaryKey()->getColumns() : [];
                 $columns[$tableName] = array_merge($pkcols, $columns[$tableName]);
                 foreach ($table->getForeignKeys() as $fkey) {
-                    $localTableName = $fkey->getLocalTableName();
                     $foreignTableName = $fkey->getForeignTableName();
                     if (!isset($tables[$foreignTableName])) {
                         continue;
                     }
 
-                    $columns[$localTableName] = array_merge($columns[$localTableName], $fkey->getColumns());
+                    $columns[$tableName] = array_merge($columns[$tableName], $fkey->getLocalColumns());
                     $columns[$foreignTableName] = array_merge($columns[$foreignTableName], $fkey->getForeignColumns());
                 }
             }

@@ -404,6 +404,12 @@ proc: BEGIN
 END//
 DELIMITER ;
 ;
+DELIMITER //
+CREATE DEFINER=`root`@`%` EVENT `sakila`.`event1` ON SCHEDULE EVERY 1 DAY STARTS '2022-01-01 00:00:00' ENDS '2036-12-31 23:59:59' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'event1' DO BEGIN
+  SELECT 1;
+END//
+DELIMITER ;
+;
 USE `sakila`;
 ALTER TABLE `sakila`.`actor` ADD KEY `idx_actor_last_name` (`last_name`);
 USE `sakila`;
@@ -458,11 +464,11 @@ ALTER TABLE `sakila`.`film_actor` ADD KEY `idx_fk_film_id` (`film_id`);
 ALTER TABLE `sakila`.`film_actor` ADD CONSTRAINT `fk_film_actor_actor` FOREIGN KEY (`actor_id`) REFERENCES `actor` (`actor_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE `sakila`.`film_actor` ADD CONSTRAINT `fk_film_actor_film` FOREIGN KEY (`film_id`) REFERENCES `film` (`film_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 USE `sakila`;
-ALTER TABLE `sakila`.`film_text` ADD FULLTEXT KEY `idx_title_description` (`title`,`description`);
-USE `sakila`;
 ALTER TABLE `sakila`.`film_category` ADD KEY `fk_film_category_category` (`category_id`);
 ALTER TABLE `sakila`.`film_category` ADD CONSTRAINT `fk_film_category_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE `sakila`.`film_category` ADD CONSTRAINT `fk_film_category_film` FOREIGN KEY (`film_id`) REFERENCES `film` (`film_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+USE `sakila`;
+ALTER TABLE `sakila`.`film_text` ADD FULLTEXT KEY `idx_title_description` (`title`,`description`);
 USE `sakila`;
 ALTER TABLE `sakila`.`inventory` ADD KEY `idx_fk_film_id` (`film_id`);
 ALTER TABLE `sakila`.`inventory` ADD KEY `idx_store_id_film_id` (`store_id`,`film_id`);

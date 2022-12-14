@@ -2,7 +2,6 @@
   "compression": "GZ",
   "chmod": "0755",
   "files": [
-    "template/standard.xlsx",
     "template/standard.phtml",
     "template/html/script.js.php",
     "template/html/style.css.php"

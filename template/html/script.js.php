@@ -7,6 +7,22 @@
         this.interval = interval;
         this.callback = callback;
     };
+    global.Timer.throttle = function(cb, interval) {
+        var lastTime = Date.now() - interval;
+        return function() {
+            if ((lastTime + interval) < Date.now()) {
+                lastTime = Date.now();
+                cb.apply(this, arguments);
+            }
+        };
+    };
+    global.Timer.debounce = function(cb, interval) {
+        var timer;
+        return function() {
+            clearTimeout(timer);
+            timer = setTimeout(() => cb.apply(this, arguments), interval);
+        };
+    };
     global.Timer.prototype.start = function () {
         clearTimeout(this.timerId);
         this.timerId = setTimeout(this.callback, this.interval);
@@ -202,6 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
         this.$$('.savedata').forEach(function (input) {
             html.dataset[input.id] = input.getValue();
             if (input.id === 'tocWidth') {
+                $('.wy-nav-side').style.width = ''; // reset dragging
                 document.documentElement.style.setProperty('--side-width', input.getValue() + 'px');
             }
             if (input.id === 'fontFamily') {
@@ -404,6 +421,15 @@ document.addEventListener('DOMContentLoaded', function () {
         scrollHideTimer.stop();
         scroller.classList.add('scrolling');
         scrollHideTimer.start();
+    });
+
+    // アウトラインのドラッグリサイズ
+    $('.wy-nav-side').on('mutate', Timer.debounce(function (e) {
+        $('#tocWidth').value = e.target.getBoundingClientRect().width;
+        $('#tocWidth').dispatchEvent(new Event('change', {bubbles: true}));
+    }, 50), {
+        attributes: true,
+        attributeFilter: ["style"],
     });
 
     /// ページ内ジャンプ

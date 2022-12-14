@@ -39,6 +39,11 @@ h2, h3, h4, h5, h6 {
 
 .wy-nav-side {
     width: var(--side-width);
+    max-width: 700px;
+    min-height: calc(100% - 40px);
+    bottom: 40px;
+    resize: horizontal;
+    padding-bottom: 0;
 }
 
 .wy-nav-content-wrap {
@@ -47,6 +52,7 @@ h2, h3, h4, h5, h6 {
 
 .rst-versions {
     width: var(--side-width);
+    height: 40px;
 }
 
 .wy-side-scroll {

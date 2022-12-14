@@ -5,12 +5,12 @@ namespace ryunosuke\DbDescriber;
 use Alom\Graphviz\AttributeSet;
 use Alom\Graphviz\Digraph;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\AbstractAsset;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Event;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Routine;
-use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\Trigger;
 
@@ -19,14 +19,8 @@ class Describer
     /** @var Connection */
     private $connection;
 
-    /** @var Schema */
-    private $schema;
-
-    /** @var Table[] */
-    private $tables = [];
-
-    /** @var Table[] */
-    private $views = [];
+    /** @var AbstractAsset[] */
+    private $objects;
 
     /** @var array */
     private $includes, $excludes, $relation;
@@ -35,7 +29,7 @@ class Describer
     private $delimiter;
 
     /** @var callable */
-    private $schemaCallback, $tableCallback, $viewCallback;
+    private $schemaCallback, $tableCallback, $viewCallback, $routineCallback, $eventCallback;
 
     /** @var string */
     private $template;
@@ -89,6 +83,8 @@ class Describer
         $this->schemaCallback = $config['schemaCallback'];
         $this->tableCallback = $config['tableCallback'];
         $this->viewCallback = $config['viewCallback'];
+        $this->routineCallback = $config['routineCallback'];
+        $this->eventCallback = $config['eventCallback'];
         $this->template = $config['template'];
         $this->vars = $config['vars'];
         $this->graphAttrs = $config['graph'];
@@ -101,16 +97,14 @@ class Describer
 
     private function _detectSchema()
     {
-        if (!$this->schema) {
-            $this->schema = $this->connection->createSchemaManager()->introspectSchema();
-            call_user_func($this->schemaCallback, $this->schema);
-        }
-        return $this->schema;
-    }
+        if ($this->objects === null) {
+            $this->objects = [
+                'table'   => [],
+                'view'    => [],
+                'routine' => [],
+                'event'   => [],
+            ];
 
-    private function _detectTable()
-    {
-        if (!$this->tables) {
             $skip = function ($tablename) {
                 $flag = count($this->includes) > 0;
                 foreach ($this->includes as $include) {
@@ -136,9 +130,25 @@ class Describer
                 return false;
             };
 
-            $triggers = $this->_detectSchema()->getTriggers();
+            $rank = function (Table $table, array $parents) use (&$rank) {
+                $ranks = [];
+                foreach ($table->getForeignKeys() as $fkey) {
+                    if (isset($this->objects['table'][$fkey->getForeignTableName()])) {
+                        $ftable = $this->objects['table'][$fkey->getForeignTableName()];
+                        if (!isset($parents[$ftable->getName()])) {
+                            $ranks[$fkey->getName()] = min($rank($ftable, $parents + [$ftable->getName() => []]) ?: [0]) + 1;
+                        }
+                    }
+                }
+                return $ranks;
+            };
 
-            foreach ($this->_detectSchema()->getTables() as $table) {
+            $schema = $this->connection->createSchemaManager()->introspectSchema();
+            call_user_func($this->schemaCallback, $schema);
+
+            $triggers = $schema->getTriggers();
+
+            foreach ($schema->getTables() as $table) {
                 $tableName = $table->getName();
                 if ($skip($tableName)) {
                     continue;
@@ -171,56 +181,65 @@ class Describer
                     }
                 }
 
-                $this->tables[$tableName] = $table;
+                $this->objects['table'][$tableName] = $table;
             }
 
-            // ランク算出クロージャ
-            $rank = function (Table $table, array $parents) use (&$rank) {
-                $ranks = [];
-                foreach ($table->getForeignKeys() as $fkey) {
-                    if (isset($this->tables[$fkey->getForeignTableName()])) {
-                        $ftable = $this->tables[$fkey->getForeignTableName()];
-                        if (!isset($parents[$ftable->getName()])) {
-                            $ranks[$fkey->getName()] = min($rank($ftable, $parents + [$ftable->getName() => []]) ?: [0]) + 1;
-                        }
-                    }
-                }
-                return $ranks;
-            };
             // 外部キーのための2パス目
-            foreach ($this->tables as $table) {
+            foreach ($this->objects['table'] as $table) {
                 foreach ($table->getForeignKeys() as $fkey) {
                     // exclude されていて相方がいないことがあるのでここで一元担保
-                    if (isset($this->tables[$fkey->getForeignTableName()])) {
+                    if (isset($this->objects['table'][$fkey->getForeignTableName()])) {
                         $lkeys = $table->getOption('foreignKeys') + [$fkey->getName() => $fkey];
                         $table->addOption('foreignKeys', $lkeys);
 
-                        $ftable = $this->tables[$fkey->getForeignTableName()];
+                        $ftable = $this->objects['table'][$fkey->getForeignTableName()];
                         $fkeys = $ftable->getOption('referenceKeys') + [$fkey->getName() => $fkey];
                         $ftable->addOption('referenceKeys', $fkeys);
                     }
                 }
                 $table->addOption('ranks', $rank($table, [$table->getName() => []]));
             }
-        }
-        return $this->tables;
-    }
 
-    private function _detectView()
-    {
-        if (!$this->views) {
-            foreach ($this->_detectSchema()->getViews() as $view) {
+            foreach ($schema->getViews() as $view) {
                 $viewName = $view->getName();
+                if ($skip($viewName)) {
+                    continue;
+                }
                 if (call_user_func($this->viewCallback, $view) === false) {
                     continue;
                 }
 
                 $table = $this->connection->createSchemaManager()->introspectViewAsTable($viewName);
                 $table->addOption('sql', $view->getSql());
-                $this->views[$viewName] = $table;
+
+                $this->objects['view'][$viewName] = $table;
+            }
+
+            foreach ($schema->getRoutines() as $routine) {
+                $routineName = $routine->getName();
+                if ($skip($routineName)) {
+                    continue;
+                }
+                if (call_user_func($this->routineCallback, $routine) === false) {
+                    continue;
+                }
+
+                $this->objects['routine'][$routineName] = $routine;
+            }
+
+            foreach ($schema->getEvents() as $event) {
+                $eventName = $event->getName();
+                if ($skip($eventName)) {
+                    continue;
+                }
+                if (call_user_func($this->eventCallback, $event) === false) {
+                    continue;
+                }
+
+                $this->objects['event'][$eventName] = $event;
             }
         }
-        return $this->views;
+        return $this->objects;
     }
 
     private function _delimitComment($comment)
@@ -238,11 +257,11 @@ class Describer
             return $array;
         };
 
-        $tables = $this->_detectTable();
+        $objects = $this->_detectSchema();
 
         return [
             'Schema'   => $dbname,
-            'Tables'   => $arrays($tables, function (Table $table, $k, $n) use ($tables, $arrays) {
+            'Tables'   => $arrays($objects['table'], function (Table $table, $k, $n) use ($objects, $arrays) {
                 [$logicalName, $summary] = $this->_delimitComment($table->getOption('comment'));
 
                 $indexes = array_filter($table->getIndexes(), fn(Index $index) => !$index->hasFlag('implicit'));
@@ -307,25 +326,25 @@ class Describer
                             'Options' => $index->getOptions(),
                         ];
                     }),
-                    'ForeignKeys'       => $arrays($table->getOption('foreignKeys'), function (ForeignKeyConstraint $foreignKey, $k, $n) use ($tables) {
+                    'ForeignKeys'       => $arrays($table->getOption('foreignKeys'), function (ForeignKeyConstraint $foreignKey, $k, $n) use ($objects) {
                         return [
                             'No'                    => $n + 1,
                             'Name'                  => $foreignKey->getName(),
                             'Columns'               => $foreignKey->getLocalColumns(),
                             'ReferenceTable'        => $foreignKey->getForeignTableName(),
-                            'ReferenceTableComment' => $tables[$foreignKey->getForeignTableName()]->getOption('comment'),
+                            'ReferenceTableComment' => $objects['table'][$foreignKey->getForeignTableName()]->getOption('comment'),
                             'ReferenceColumns'      => $foreignKey->getForeignColumns(),
                             'OnUpdate'              => $foreignKey->hasOption('onUpdate') ? $foreignKey->getOption('onUpdate') : '',
                             'OnDelete'              => $foreignKey->hasOption('onDelete') ? $foreignKey->getOption('onDelete') : '',
                         ];
                     }),
-                    'ReferenceKeys'     => $arrays($table->getOption('referenceKeys'), function (ForeignKeyConstraint $foreignKey, $k, $n) use ($tables) {
+                    'ReferenceKeys'     => $arrays($table->getOption('referenceKeys'), function (ForeignKeyConstraint $foreignKey, $k, $n) use ($objects) {
                         return [
                             'No'                    => $n + 1,
                             'Name'                  => $foreignKey->getName(),
                             'Columns'               => $foreignKey->getForeignColumns(),
                             'ReferenceTable'        => $foreignKey->getLocalTableName(),
-                            'ReferenceTableComment' => $tables[$foreignKey->getLocalTableName()]->getOption('comment'),
+                            'ReferenceTableComment' => $objects['table'][$foreignKey->getLocalTableName()]->getOption('comment'),
                             'ReferenceColumns'      => $foreignKey->getLocalColumns(),
                             'OnUpdate'              => $foreignKey->hasOption('onUpdate') ? $foreignKey->getOption('onUpdate') : '',
                             'OnDelete'              => $foreignKey->hasOption('onDelete') ? $foreignKey->getOption('onDelete') : '',
@@ -342,7 +361,7 @@ class Describer
                     }),
                 ];
             }),
-            'Views'    => $arrays($this->_detectView(), function (Table $view, $k, $n) use ($arrays) {
+            'Views'    => $arrays($objects['view'], function (Table $view, $k, $n) use ($arrays) {
                 return [
                     'No'          => $n + 1,
                     'Name'        => $view->getName(),
@@ -389,7 +408,7 @@ class Describer
                     }),
                 ];
             }),
-            'Routines' => $arrays($this->_detectSchema()->getRoutines(), function (Routine $routine, $k, $n) {
+            'Routines' => $arrays($objects['routine'], function (Routine $routine, $k, $n) {
                 [$logicalName, $summary] = $this->_delimitComment($routine->getOption('comment'));
                 return [
                     'No'          => $n + 1,
@@ -408,7 +427,7 @@ class Describer
                     'Return'      => $routine->getOption('returnTypeDeclaration'),
                 ];
             }),
-            'Events'   => $arrays($this->_detectSchema()->getEvents(), function (Event $event, $k, $n) {
+            'Events'   => $arrays($objects['event'], function (Event $event, $k, $n) {
                 [$logicalName, $summary] = $this->_delimitComment($event->getOption('comment'));
                 return [
                     'No'        => $n + 1,
@@ -476,7 +495,7 @@ class Describer
         };
 
         // テーブル配列
-        $tables = $this->_detectTable();
+        $tables = $this->_detectSchema()['table'];
         $columns = array_fill_keys(array_keys($tables), []);
 
         // グラフ作成のためにランクごとの幅の最大値が必要

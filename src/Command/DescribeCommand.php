@@ -17,8 +17,8 @@ class DescribeCommand extends Command
         $this->setDefinition([
             new InputArgument('dsn', InputArgument::REQUIRED, 'Specify Database DSN'),
             new InputArgument('outdir', InputArgument::OPTIONAL, 'Specify Output directory'),
-            new InputOption('include', 'i', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify Include table', []),
-            new InputOption('exclude', 'e', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify Exclude table', []),
+            new InputOption('include', 'i', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify Include object', []),
+            new InputOption('exclude', 'e', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify Exclude object', []),
             new InputOption('delimiter', 'l', InputOption::VALUE_REQUIRED, 'Specify Comment delimiter for summary', "\n"),
             new InputOption('template', 't', InputOption::VALUE_REQUIRED, 'Specify Spec template'),
             new InputOption('columns', 'c', InputOption::VALUE_REQUIRED, 'Specify Erd columns([related|all])', 'related'),
@@ -40,6 +40,8 @@ class DescribeCommand extends Command
             'schemaCallback'     => function () { },
             'tableCallback'      => function () { },
             'viewCallback'       => function () { },
+            'routineCallback'    => function () { },
+            'eventCallback'      => function () { },
             // spec 用
             'vars'               => [],
             // erd 用

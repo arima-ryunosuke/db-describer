@@ -54,25 +54,7 @@ class DescribeCommandTest extends \ryunosuke\Test\AbstractUnitTestCase
         $this->runApp([
             'dsn'    => TEST_DSN,
             'outdir' => $outdir,
-            '--dot'  => 'viz.js',
-            '--mode' => ["html"],
         ]);
         $this->assertFileExists("$outdir/" . parse_url(TEST_DSN)['path'] . '.html');
-
-        $this->runApp([
-            'dsn'    => TEST_DSN,
-            'outdir' => $outdir,
-            '--dot'  => PHP_BINARY . ' --version',
-            '--mode' => ["spec"],
-        ]);
-        $this->assertFileExists("$outdir/" . parse_url(TEST_DSN)['path'] . '.xlsx');
-
-        $this->runApp([
-            'dsn'    => TEST_DSN,
-            'outdir' => $outdir,
-            '--dot'  => PHP_BINARY . ' --version',
-            '--mode' => ["erd"],
-        ]);
-        $this->assertFileExists("$outdir/" . parse_url(TEST_DSN)['path'] . '.pdf');
     }
 }

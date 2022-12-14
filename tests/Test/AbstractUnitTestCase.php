@@ -4,8 +4,10 @@ namespace ryunosuke\Test;
 
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Event;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\Routine;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\Trigger;
 use Doctrine\DBAL\Schema\View;
@@ -30,7 +32,8 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
         $connection = DriverManager::getConnection($config);
         $connection->connect();
 
-        $connection->createSchemaManager()->createTable(new Table('t_article',
+        $schema_manager = $connection->createSchemaManager();
+        $schema_manager->createTable(new Table('t_article',
             [
                 new Column('article_id', Type::getType('integer'), ['Comment' => "PrimaryKey:summary"]),
                 new Column('title', Type::getType('string')),
@@ -42,19 +45,9 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
             ],
             [],
             [],
-            [
-                new Trigger('ThisIsTrigger', 'BEGIN
-  INSERT INTO t_comment VALUES();
-  INSERT INTO t_comment VALUES();
-  INSERT INTO t_comment VALUES();
-END', [
-                    'Event'  => 'INSERT',
-                    'Timing' => 'AFTER',
-                ]),
-            ],
             ['Comment' => "Article:summary"]
         ));
-        $connection->createSchemaManager()->createTable(new Table('t_comment',
+        $schema_manager->createTable(new Table('t_comment',
             [
                 new Column('comment_id', Type::getType('integer'), ['autoincrement' => true, 'Comment' => "PrimaryKey:summary"]),
                 new Column('article_id', Type::getType('integer')),
@@ -68,19 +61,9 @@ END', [
                     'onDelete' => 'CASCADE',
                 ]),
             ],
-            [
-                new Trigger('insert_before', 'INSERT INTO t_comment VALUES()', [
-                    'Event'  => 'INSERT',
-                    'Timing' => 'BEFORE',
-                ]),
-                new Trigger('delete_after', 'INSERT INTO t_comment VALUES()', [
-                    'Event'  => 'DELETE',
-                    'Timing' => 'AFTER',
-                ]),
-            ],
             ['Comment' => "Comment:summary"]
         ));
-        $connection->createSchemaManager()->createView(new View('v_blog', '
+        $schema_manager->createView(new View('v_blog', '
             SELECT
               A.article_id,
               A.title,
@@ -89,6 +72,47 @@ END', [
             FROM t_article A
             JOIN t_comment C ON A.article_id = C.article_id
         '));
+        $schema_manager->createTrigger(new Trigger('ThisIsTrigger', 'BEGIN
+  INSERT INTO t_comment VALUES();
+  INSERT INTO t_comment VALUES();
+  INSERT INTO t_comment VALUES();
+END', 't_article', [
+            'event'  => 'INSERT',
+            'timing' => 'AFTER',
+        ]));
+        $schema_manager->createTrigger(new Trigger('insert_before', 'INSERT INTO t_comment VALUES()', 't_comment', [
+            'event'  => 'INSERT',
+            'timing' => 'BEFORE',
+        ]));
+        $schema_manager->createTrigger(new Trigger('delete_after', 'INSERT INTO t_comment VALUES()', 't_comment', [
+            'event'  => 'DELETE',
+            'timing' => 'AFTER',
+        ]));
+        $schema_manager->createRoutine(new Routine('function1', 'RETURN 1', [
+            'type'                  => 'FUNCTION',
+            'parameters'            => [],
+            'returnTypeDeclaration' => 'int',
+            'deterministic'         => true,
+            'dataAccess'            => 'READS SQL DATA',
+            'comment'               => 'function1:comment',
+        ]));
+        $schema_manager->createRoutine(new Routine('procedure1', 'SELECT 1', [
+            'type'                  => 'PROCEDURE',
+            'parameters'            => [],
+            'returnTypeDeclaration' => '',
+            'deterministic'         => true,
+            'dataAccess'            => 'READS SQL DATA',
+            'comment'               => 'procedure1:comment',
+        ]));
+        $schema_manager->createEvent(new Event('event1', 'SELECT 1', [
+            'intervalValue' => '1',
+            'intervalField' => 'YEAR',
+            'since'         => '2022-12-24 00:00:00',
+            'until'         => '2023-12-24 00:00:00',
+            'completion'    => 'PRESERVE',
+            'status'        => 'ENABLE',
+            'comment'       => 'event1:comment',
+        ]));
     }
 
     public static function assertException($e, $callback)

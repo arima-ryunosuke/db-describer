@@ -2,10 +2,11 @@
 
 namespace ryunosuke\Test\DbDescriber;
 
+use Doctrine\DBAL\Schema\Event;
+use Doctrine\DBAL\Schema\Routine;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\View;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use ryunosuke\DbDescriber\Describer;
 
 class DescriberTest extends \ryunosuke\Test\AbstractUnitTestCase
@@ -23,10 +24,10 @@ class DescriberTest extends \ryunosuke\Test\AbstractUnitTestCase
                 'schemaCallback'     => function () { },
                 'tableCallback'      => function () { },
                 'viewCallback'       => function () { },
-                'template'           => __DIR__ . '/../../../template/standard.xlsx',
+                'routineCallback'    => function () { },
+                'eventCallback'      => function () { },
+                'template'           => __DIR__ . '/../../../template/standard.phtml',
                 'vars'               => [],
-                'sheets'             => [],
-                'dot'                => null,
                 'columns'            => 'all',
                 'graph'              => [],
                 'node'               => [],
@@ -67,14 +68,17 @@ password = fuga
     {
         $describer = new Describer(TEST_DSN, $this->getConfig());
 
-        $xls = $describer->generateSpec($this->outdir);
-        $book = IOFactory::load($xls);
-        $this->assertEquals(3, $book->getSheetCount());
+        $html = $describer->generateHtml($this->outdir);
+        $this->assertStringContainsString('table-t_article', $html);
+        $this->assertStringContainsString('table-t_comment', $html);
+        $this->assertStringContainsString('view-v_blog', $html);
+        $this->assertStringContainsString('routine-function1', $html);
+        $this->assertStringContainsString('routine-procedure1', $html);
+        $this->assertStringContainsString('event-event1', $html);
 
-        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
-        $content = file_get_contents($dot);
-        $this->assertStringContainsString('t_article', $content);
-        $this->assertStringContainsString('t_comment', $content);
+        $dot = $describer->generateDot([], $tables);
+        $this->assertStringContainsString('cluster_t_article', $dot);
+        $this->assertStringContainsString('cluster_t_comment', $dot);
     }
 
     function test_include()
@@ -83,14 +87,33 @@ password = fuga
             'include' => ['t_article'],
         ]));
 
-        $xls = $describer->generateSpec($this->outdir);
-        $book = IOFactory::load($xls);
-        $this->assertEquals(2, $book->getSheetCount());
+        $html = $describer->generateHtml($this->outdir);
+        $this->assertStringContainsString('table-t_article', $html);
+        $this->assertStringNotContainsString('table-t_comment', $html);
+        $this->assertStringNotContainsString('view-v_blog', $html);
+        $this->assertStringNotContainsString('routine-function1', $html);
+        $this->assertStringNotContainsString('routine-procedure1', $html);
+        $this->assertStringNotContainsString('event-event1', $html);
 
-        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
-        $content = file_get_contents($dot);
-        $this->assertStringContainsString('t_article', $content);
-        $this->assertStringNotContainsString('t_comment', $content);
+        $dot = $describer->generateDot([], $tables);
+        $this->assertStringContainsString('cluster_t_article', $dot);
+        $this->assertStringNotContainsString('cluster_t_comment', $dot);
+
+        $describer = new Describer(TEST_DSN, $this->getConfig([
+            'include' => ['t_article', 'v_blog', 'function1', 'event1'],
+        ]));
+
+        $html = $describer->generateHtml($this->outdir);
+        $this->assertStringContainsString('table-t_article', $html);
+        $this->assertStringNotContainsString('table-t_comment', $html);
+        $this->assertStringContainsString('view-v_blog', $html);
+        $this->assertStringContainsString('routine-function1', $html);
+        $this->assertStringNotContainsString('routine-procedure1', $html);
+        $this->assertStringContainsString('event-event1', $html);
+
+        $dot = $describer->generateDot([], $tables);
+        $this->assertStringContainsString('cluster_t_article', $dot);
+        $this->assertStringNotContainsString('cluster_t_comment', $dot);
     }
 
     function test_exclude()
@@ -99,89 +122,103 @@ password = fuga
             'exclude' => ['t_comment'],
         ]));
 
-        $xls = $describer->generateSpec($this->outdir);
-        $book = IOFactory::load($xls);
-        $this->assertEquals(2, $book->getSheetCount());
+        $html = $describer->generateHtml($this->outdir);
+        $this->assertStringContainsString('table-t_article', $html);
+        $this->assertStringNotContainsString('table-t_comment', $html);
+        $this->assertStringContainsString('view-v_blog', $html);
+        $this->assertStringContainsString('routine-function1', $html);
+        $this->assertStringContainsString('routine-procedure1', $html);
+        $this->assertStringContainsString('event-event1', $html);
 
-        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
-        $content = file_get_contents($dot);
-        $this->assertStringContainsString('t_article', $content);
-        $this->assertStringNotContainsString('t_comment', $content);
+        $dot = $describer->generateDot([], $tables);
+        $this->assertStringContainsString('cluster_t_article', $dot);
+        $this->assertStringNotContainsString('cluster_t_comment', $dot);
+
+        $describer = new Describer(TEST_DSN, $this->getConfig([
+            'exclude' => ['t_comment', 'v_blog', 'procedure1', 'event1'],
+        ]));
+
+        $html = $describer->generateHtml($this->outdir);
+        $this->assertStringContainsString('table-t_article', $html);
+        $this->assertStringNotContainsString('table-t_comment', $html);
+        $this->assertStringNotContainsString('view-v_blog', $html);
+        $this->assertStringContainsString('routine-function1', $html);
+        $this->assertStringNotContainsString('routine-procedure1', $html);
+        $this->assertStringNotContainsString('event-event1', $html);
+
+        $dot = $describer->generateDot([], $tables);
+        $this->assertStringContainsString('cluster_t_article', $dot);
+        $this->assertStringNotContainsString('cluster_t_comment', $dot);
     }
 
     function test_callback()
     {
         $describer = new Describer(TEST_DSN, $this->getConfig([
-            'schemaCallback' => function (Schema $schema) {
+            'schemaCallback'  => function (Schema $schema) {
                 $table = $schema->createTable('tmptable');
                 $table->addColumn('xxx', 'integer');
                 $table->setPrimaryKey(['xxx']);
-
-                $schema->createView('tmpview', 'select 1');
+                $table->addOption('collation', 'utf8_bin');
+                $table->addOption('engine', 'InnoDB');
+                $table->addOption('row_format', 'Compact');
             },
-            'tableCallback'  => function (Table $table) {
+            'tableCallback'   => function (Table $table) {
                 if ($table->getName() === 't_article') {
-                    $table->addOption('comment', $table->getName() . 'ccc');
+                    $table->addOption('comment', 'changed-table-comment');
                 }
                 if ($table->getName() === 't_comment') {
                     return false;
                 }
             },
-            'viewCallback'   => function (View $view) {
-                return false;
+            'viewCallback'    => function (View $view) {
+                if ($view->getName() === 'v_blog') {
+                    return false;
+                }
             },
-            'columns'        => 'related',
+            'routineCallback' => function (Routine $routine) {
+                $routine->addOption('comment', 'changed-routine-comment');
+            },
+            'eventCallback'   => function (Event $event) {
+                $event->addOption('comment', 'changed-event-comment');
+            },
+            'columns'         => 'related',
         ]));
 
-        $xls = @$describer->generateSpec($this->outdir);
-        $book = IOFactory::load($xls);
-        $this->assertEquals(3, $book->getSheetCount());
+        $html = $describer->generateHtml($this->outdir);
+        $this->assertStringContainsString('table-tmptable', $html);
+        $this->assertStringContainsString('changed-table-comment', $html);
+        $this->assertStringNotContainsString('table-t_comment', $html);
+        $this->assertStringNotContainsString('view-v_blog', $html);
+        $this->assertStringContainsString('changed-routine-comment', $html);
+        $this->assertStringContainsString('changed-event-comment', $html);
 
-        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
-        $content = file_get_contents($dot);
-        $this->assertStringContainsString('t_articleccc', $content);
-        $this->assertStringContainsString('cluster_tmptable', $content);
+        $dot = $describer->generateDot([], $tables);
+        $this->assertStringContainsString('changed-table-comment', $dot);
+        $this->assertStringContainsString('cluster_tmptable', $dot);
     }
 
     function test_template()
     {
+        $template = sys_get_temp_dir() . '/template.phtml';
+        file_put_contents($template, <<<'PHP'
+        <?php
+        echo "Tables:" . count($Tables) . "\n";
+        echo "Views:" . count($Views) . "\n";
+        echo "Routines:" . count($Routines) . "\n";
+        echo "Events:" . count($Events) . "\n";
+        PHP,);
         $describer = new Describer(TEST_DSN, $this->getConfig([
-            'template' => __DIR__ . '/_files/sheets.xlsx',
-            'sheets'   => [
-                'sheet1' => [
-                    'v1' => 'hoge',
-                    'v2' => 'fuga',
-                ],
-                'sheet2' => [
-                    'hoge' => 'HOGE',
-                    'fuga' => 'FUGA',
-                ],
-                'index'  => [
-                    'title' => 'schema title',
-                ],
-                'table'  => [
-                    'title' => 'table title',
-                ],
-            ],
+            'template' => $template,
         ]));
 
-        $xls = $describer->generateSpec($this->outdir);
-        $book = IOFactory::load($xls);
-        $this->assertEquals(5, $book->getSheetCount());
-
-        $sheet0 = $book->getSheet(0);
-        $this->assertEquals('hoge', $sheet0->getCell('B1')->getValue());
-        $this->assertEquals('fuga', $sheet0->getCell('B2')->getValue());
-
-        $sheet1 = $book->getSheet(1);
-        $this->assertEquals('HOGE', $sheet1->getCell('B1')->getValue());
-        $this->assertEquals('FUGA', $sheet1->getCell('B2')->getValue());
-
-        $sheet2 = $book->getSheet(2);
-        $this->assertEquals('schema title', $sheet2->getCell('A1')->getValue());
-
-        $sheet3 = $book->getSheet(3);
-        $this->assertEquals('table title', $sheet3->getCell('A1')->getValue());
+        $html = $describer->generateHtml($this->outdir);
+        $this->assertEquals(<<<EXPECTED
+        Tables:2
+        Views:1
+        Routines:2
+        Events:1
+        
+        EXPECTED, $html);
     }
 
     function test_column()
@@ -189,16 +226,16 @@ password = fuga
         $describer = new Describer(TEST_DSN, $this->getConfig([
             'columns' => 'all',
         ]));
-        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
-        $content = file_get_contents($dot);
-        $this->assertStringContainsString('title', $content);
+        $dot = $describer->generateDot([], $tables);
+        $this->assertStringContainsString(':column-t_article.title"', $dot);
+        $this->assertStringContainsString(':column-t_comment.comment"', $dot);
 
         $describer = new Describer(TEST_DSN, $this->getConfig([
             'columns' => 'related',
         ]));
-        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
-        $content = file_get_contents($dot);
-        $this->assertStringNotContainsString('title', $content);
+        $dot = $describer->generateDot([], $tables);
+        $this->assertStringNotContainsString(':column-t_article.title"', $dot);
+        $this->assertStringNotContainsString(':column-t_comment.comment"', $dot);
     }
 
     function test_relation()
@@ -216,10 +253,9 @@ password = fuga
             'columns'  => 'related',
         ]));
 
-        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
-        $content = file_get_contents($dot);
-        $this->assertStringContainsString('column_t_comment_article_id', $content);
-        $this->assertStringContainsString('column_t_comment_comment_id', $content);
+        $dot = $describer->generateDot([], $tables);
+        $this->assertStringContainsString('column_t_comment_article_id', $dot);
+        $this->assertStringContainsString('column_t_comment_comment_id', $dot);
     }
 
     function test_delimiter()
@@ -229,55 +265,8 @@ password = fuga
             'columns'   => 'related',
         ]));
 
-        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
-        $content = file_get_contents($dot);
-        $this->assertStringContainsString('PrimaryKey', $content);
-        $this->assertStringNotContainsString('summary', $content);
-    }
-
-    function test_dot()
-    {
-        $describer = new Describer(TEST_DSN, $this->getConfig([
-            'dot' => 'viz.js',
-        ]));
-
-        $content = $describer->generateDot(['format' => 'pdf'], $tables);
-        $this->assertStringContainsString('digraph erd {', $content);
-        $this->assertStringContainsString('# subgraph-begin', $content);
-        $this->assertStringContainsString('# edge-begin', $content);
-        $this->assertEquals(["t_article", "t_comment"], array_keys($tables));
-    }
-
-    function test_erd()
-    {
-        $describer = new Describer(TEST_DSN, $this->getConfig([
-            'graph'   => [
-                'nodesep' => '99',
-            ],
-            'node'    => [
-                'width' => '99',
-            ],
-            'edge'    => [
-                'arrowsize' => '99',
-            ],
-            'columns' => 'related',
-        ]));
-
-        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
-        $content = file_get_contents($dot);
-        $this->assertStringContainsString('nodesep="99"', $content);
-        $this->assertStringContainsString('width="99"', $content);
-        $this->assertStringContainsString('arrowsize="99"', $content);
-    }
-
-    function test_pdf()
-    {
-        $describer = new Describer(TEST_DSN, $this->getConfig([
-            'dot' => PHP_BINARY . ' --version',
-        ]));
-
-        $dot = $describer->generateErd($this->outdir, ['format' => 'pdf']);
-        $content = file_get_contents($dot);
-        $this->assertStringContainsString(PHP_VERSION, $content);
+        $dot = $describer->generateDot([], $tables);
+        $this->assertStringContainsString('PrimaryKey', $dot);
+        $this->assertStringNotContainsString('summary', $dot);
     }
 }

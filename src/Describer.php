@@ -130,6 +130,41 @@ class Describer
                 return false;
             };
 
+            $reindex = function ($indexes) {
+                $indexes = array_filter($indexes, fn(Index $index) => !$index->hasFlag('implicit'));
+                array_multisort(array_map(fn(Index $v) => $v->isPrimary() ? '' : $v->getName(), $indexes), $indexes);
+                return $indexes;
+            };
+
+            $sortAssets = function ($assets) {
+                uasort($assets, fn(AbstractAsset $a, AbstractAsset $b) => $a->getName() <=> $b->getName());
+                return $assets;
+            };
+
+            $colconstraint = function ($column, $indexes) {
+                $constraints = [];
+                if ($column->getNotnull()) {
+                    $constraints['NotNull'] = 'NotNull';
+                }
+                foreach ($indexes as $iname => $index) {
+                    if ($index->isPrimary()) {
+                        if (in_array($column->getName(), $index->getColumns())) {
+                            unset($constraints['NotNull']);
+                        }
+                    }
+                    if ($index->isUnique()) {
+                        if (($m = array_search($column->getName(), $index->getColumns())) !== false) {
+                            $constraints[] = "$iname-" . ($m + 1);
+                        }
+                    }
+                }
+                return $constraints;
+            };
+
+            $delimit = function ($comment) {
+                return explode($this->delimiter, (string) $comment, 2) + [1 => ''];
+            };
+
             $rank = function (Table $table, array $parents) use (&$rank) {
                 $ranks = [];
                 foreach ($table->getForeignKeys() as $fkey) {
@@ -146,9 +181,9 @@ class Describer
             $schema = $this->connection->createSchemaManager()->introspectSchema();
             call_user_func($this->schemaCallback, $schema);
 
-            $triggers = $schema->getTriggers();
+            $triggers = $sortAssets($schema->getTriggers());
 
-            foreach ($schema->getTables() as $table) {
+            foreach ($sortAssets($schema->getTables()) as $table) {
                 $tableName = $table->getName();
                 if ($skip($tableName)) {
                     continue;
@@ -158,20 +193,25 @@ class Describer
                     continue;
                 }
 
-                $selftriggers = [];
+                $table->addOption('indexes', $reindex($table->getIndexes()));
+
+                foreach ($table->getColumns() as $column) {
+                    [$logicalName, $summary] = $delimit($column->getComment());
+                    $column->setPlatformOption('logicalName', $logicalName);
+                    $column->setPlatformOption('summary', $summary);
+                    $column->setPlatformOption('constraints', $colconstraint($column, $table->getOption('indexes')));
+                }
+
+                $tabletriggers = [];
                 foreach ($triggers as $trigger) {
                     if ($trigger->getTableName() === $tableName) {
-                        $selftriggers[] = $trigger;
+                        $tabletriggers[] = $trigger;
                     }
                 }
-                $table->addOption('triggers', $selftriggers);
+                $table->addOption('triggers', $tabletriggers);
 
-                if (!$table->hasOption('comment')) {
-                    $table->addOption('comment', '');
-                }
-                $empty = [];
-                $table->addOption('foreignKeys', $empty);
-                $table->addOption('referenceKeys', $empty);
+                $table->addOption('foreignKeys', []);
+                $table->addOption('referenceKeys', []);
 
                 if (isset($this->relation[$tableName])) {
                     foreach ($this->relation[$tableName] as $ftable => $misc) {
@@ -180,6 +220,10 @@ class Describer
                         }
                     }
                 }
+
+                [$logicalName, $summary] = $delimit($table->getComment());
+                $table->addOption('logicalName', $logicalName);
+                $table->addOption('summary', $summary);
 
                 $this->objects['table'][$tableName] = $table;
             }
@@ -200,7 +244,7 @@ class Describer
                 $table->addOption('ranks', $rank($table, [$table->getName() => []]));
             }
 
-            foreach ($schema->getViews() as $view) {
+            foreach ($sortAssets($schema->getViews()) as $view) {
                 $viewName = $view->getName();
                 if ($skip($viewName)) {
                     continue;
@@ -209,13 +253,23 @@ class Describer
                     continue;
                 }
 
+                // view はテーブルとして扱う
                 $table = $this->connection->createSchemaManager()->introspectViewAsTable($viewName);
                 $table->addOption('sql', $view->getSql());
+
+                $table->addOption('indexes', $reindex($table->getIndexes()));
+
+                foreach ($table->getColumns() as $column) {
+                    [$logicalName, $summary] = $delimit($column->getComment());
+                    $column->setPlatformOption('logicalName', $logicalName);
+                    $column->setPlatformOption('summary', $summary);
+                    $column->setPlatformOption('constraints', $colconstraint($column, $table->getOption('indexes')));
+                }
 
                 $this->objects['view'][$viewName] = $table;
             }
 
-            foreach ($schema->getRoutines() as $routine) {
+            foreach ($sortAssets($schema->getRoutines()) as $routine) {
                 $routineName = $routine->getName();
                 if ($skip($routineName)) {
                     continue;
@@ -224,10 +278,22 @@ class Describer
                     continue;
                 }
 
+                $routine->addOption('parameter', (function ($parameters) {
+                    $list = [];
+                    foreach ($parameters as $name => $param) {
+                        $list[] = trim($param['mode'] . ' ' . $name . ' ' . $param['typeDeclaration']);
+                    }
+                    return implode(', ', $list);
+                })($routine->getOption('parameters')));
+
+                [$logicalName, $summary] = $delimit(@$routine->getOption('comment'));
+                $routine->addOption('logicalName', $logicalName);
+                $routine->addOption('summary', $summary);
+
                 $this->objects['routine'][$routineName] = $routine;
             }
 
-            foreach ($schema->getEvents() as $event) {
+            foreach ($sortAssets($schema->getEvents()) as $event) {
                 $eventName = $event->getName();
                 if ($skip($eventName)) {
                     continue;
@@ -236,15 +302,27 @@ class Describer
                     continue;
                 }
 
+                $event->addOption('interval', (function ($interval) {
+                    $concat = fn($digit, $unit) => $digit ? "{$digit}{$unit}" : '';
+                    $interval = new \DateInterval($interval);
+                    return implode('', [
+                        $concat($interval->y, '年'),
+                        $concat($interval->m, 'ヶ月'),
+                        $concat($interval->d, '日'),
+                        $concat($interval->h, '時間'),
+                        $concat($interval->i, '分'),
+                        $concat($interval->s, '秒'),
+                    ]);
+                })($event->getOption('interval')));
+
+                [$logicalName, $summary] = $delimit(@$event->getOption('comment'));
+                $event->addOption('logicalName', $logicalName);
+                $event->addOption('summary', $summary);
+
                 $this->objects['event'][$eventName] = $event;
             }
         }
         return $this->objects;
-    }
-
-    private function _delimitComment($comment)
-    {
-        return explode($this->delimiter, $comment, 2) + [1 => ''];
     }
 
     private function _gatherSchemaObject($dbname)
@@ -261,106 +339,64 @@ class Describer
 
         return [
             'Schema'   => $dbname,
-            'Tables'   => $arrays($objects['table'], function (Table $table, $k, $n) use ($objects, $arrays) {
-                [$logicalName, $summary] = $this->_delimitComment($table->getOption('comment'));
-
-                $indexes = array_filter($table->getIndexes(), fn(Index $index) => !$index->hasFlag('implicit'));
-                usort($indexes, function ($a, $b) {
-                    if ($a->isPrimary()) {
-                        return -1;
-                    }
-                    if ($b->isPrimary()) {
-                        return +1;
-                    }
-                    return $a->getName() <=> $b->getName();
-                });
-                return [
-                    'No'                => $n + 1,
-                    'Name'              => $table->getName(),
-                    'LogicalName'       => $logicalName,
-                    'Summary'           => $summary,
-                    'Collation'         => $table->getOption('collation'),
-                    'Format'            => $table->getOption('row_format'),
-                    'Engine'            => $table->getOption('engine'),
-                    'ColumnCount'       => count($table->getColumns()),
-                    'IndexCount'        => count($table->getIndexes()),
-                    'ForeignKeyCount'   => count($table->getOption('foreignKeys')),
-                    'ReferenceKeyCount' => count($table->getOption('referenceKeys')),
-                    'TriggerCount'      => count($table->getOption('triggers')),
-                    'Columns'           => $arrays($table->getColumns(), function (Column $column, $k, $n) use ($table) {
-                        $pkcols = $table->getPrimaryKey() ? $table->getPrimaryKey()->getColumns() : [];
-                        $uniqueable = [];
-                        foreach ($table->getIndexes() as $iname => $index) {
-                            if ($index->isUnique()) {
-                                if (($m = array_search($column->getName(), $index->getColumns())) !== false) {
-                                    $uniqueable[] = "$iname-" . ($m + 1);
-                                }
-                            }
-                        }
-                        [$logicalName, $summary] = $this->_delimitComment($column->getComment());
-                        $platformOptions = $column->getPlatformOptions() + ['generation' => ['type' => '', 'expression' => '']];
-                        return [
-                            'No'          => $n + 1,
-                            'Name'        => $column->getName(),
-                            'LogicalName' => $logicalName,
-                            'Summary'     => $summary,
-                            'Type'        => $column->getType(),
-                            'Default'     => $column->getDefault() === null && $column->getNotnull() ? false : $column->getDefault(),
-                            'Length'      => $column->getLength(),
-                            'Unsigned'    => $column->getUnsigned(),
-                            'Precision'   => $column->getPrecision(),
-                            'Scale'       => $column->getScale(),
-                            'Collation'   => @$column->getPlatformOption('collation'),
-                            'NotNull'     => !in_array($column->getName(), $pkcols) && $column->getNotnull(),
-                            'Unique'      => implode(',', $uniqueable),
-                            'Generated'   => $platformOptions['generation'],
-                        ];
-                    }),
-                    'Indexes'           => $arrays($indexes, function (Index $index, $k, $n) {
-                        return [
-                            'No'      => $n + 1,
-                            'Name'    => $index->getName(),
-                            'Columns' => $index->getColumns(),
-                            'Unique'  => $index->isUnique(),
-                            'Type'    => $index->getFlags(),
-                            'Options' => $index->getOptions(),
-                        ];
-                    }),
-                    'ForeignKeys'       => $arrays($table->getOption('foreignKeys'), function (ForeignKeyConstraint $foreignKey, $k, $n) use ($objects) {
-                        return [
-                            'No'                    => $n + 1,
-                            'Name'                  => $foreignKey->getName(),
-                            'Columns'               => $foreignKey->getLocalColumns(),
-                            'ReferenceTable'        => $foreignKey->getForeignTableName(),
-                            'ReferenceTableComment' => $objects['table'][$foreignKey->getForeignTableName()]->getOption('comment'),
-                            'ReferenceColumns'      => $foreignKey->getForeignColumns(),
-                            'OnUpdate'              => $foreignKey->hasOption('onUpdate') ? $foreignKey->getOption('onUpdate') : '',
-                            'OnDelete'              => $foreignKey->hasOption('onDelete') ? $foreignKey->getOption('onDelete') : '',
-                        ];
-                    }),
-                    'ReferenceKeys'     => $arrays($table->getOption('referenceKeys'), function (ForeignKeyConstraint $foreignKey, $k, $n) use ($objects) {
-                        return [
-                            'No'                    => $n + 1,
-                            'Name'                  => $foreignKey->getName(),
-                            'Columns'               => $foreignKey->getForeignColumns(),
-                            'ReferenceTable'        => $foreignKey->getLocalTableName(),
-                            'ReferenceTableComment' => $objects['table'][$foreignKey->getLocalTableName()]->getOption('comment'),
-                            'ReferenceColumns'      => $foreignKey->getLocalColumns(),
-                            'OnUpdate'              => $foreignKey->hasOption('onUpdate') ? $foreignKey->getOption('onUpdate') : '',
-                            'OnDelete'              => $foreignKey->hasOption('onDelete') ? $foreignKey->getOption('onDelete') : '',
-                        ];
-                    }),
-                    'Triggers'          => $arrays($table->getOption('triggers'), function (Trigger $trigger, $k, $n) {
-                        return [
-                            'No'        => $n + 1,
-                            'Name'      => $trigger->getName(),
-                            'Statement' => $trigger->getStatement(),
-                            'Event'     => $trigger->getOption('event'),
-                            'Timing'    => $trigger->getOption('timing'),
-                        ];
-                    }),
-                ];
-            }),
+            'Tables'   => $arrays($objects['table'], fn(Table $table, $k, $n) => [
+                'No'            => $n + 1,
+                'Name'          => $table->getName(),
+                'LogicalName'   => $table->getOption('logicalName'),
+                'Summary'       => $table->getOption('summary'),
+                'Collation'     => $table->getOption('collation'),
+                'Format'        => $table->getOption('row_format'),
+                'Engine'        => $table->getOption('engine'),
+                'Columns'       => $arrays($table->getColumns(), fn(Column $column, $k, $n) => [
+                    'No'          => $n + 1,
+                    'Name'        => $column->getName(),
+                    'LogicalName' => $column->getPlatformOptions()['logicalName'],
+                    'Summary'     => $column->getPlatformOptions()['summary'],
+                    'Type'        => $column->getType(),
+                    'Default'     => $column->getDefault() === null && $column->getNotnull() ? false : $column->getDefault(),
+                    'Length'      => $column->getLength(),
+                    'Unsigned'    => $column->getUnsigned(),
+                    'Precision'   => $column->getPrecision(),
+                    'Scale'       => $column->getScale(),
+                    'Collation'   => $column->getPlatformOptions()['collation'] ?? '',
+                    'Constraint'  => $column->getPlatformOptions()['constraints'] ?? [],
+                    'Generated'   => $column->getPlatformOptions()['generation'] ?? ['type' => '', 'expression' => ''],
+                ]),
+                'Indexes'       => $arrays($table->getOption('indexes'), fn(Index $index, $k, $n) => [
+                    'No'         => $n + 1,
+                    'Name'       => $index->getName(),
+                    'Columns'    => $index->getColumns(),
+                    'Unique'     => $index->isUnique(),
+                    'Type'       => $index->getFlags(),
+                    'Expression' => $index->getOptions()['expression'] ?? null,
+                    'Options'    => array_diff_key($index->getOptions(), ['expression' => null]),
+                ]),
+                'ForeignKeys'   => $arrays($table->getOption('foreignKeys'), fn(ForeignKeyConstraint $foreignKey, $k, $n) => [
+                    'No'               => $n + 1,
+                    'Name'             => $foreignKey->getName(),
+                    'ReferenceTable'   => $foreignKey->getForeignTableName(),
+                    'Columns'          => $foreignKey->getLocalColumns(),
+                    'ReferenceColumns' => $foreignKey->getForeignColumns(),
+                    'OnUpdate'         => $foreignKey->hasOption('onUpdate') ? $foreignKey->getOption('onUpdate') : '',
+                    'OnDelete'         => $foreignKey->hasOption('onDelete') ? $foreignKey->getOption('onDelete') : '',
+                ]),
+                'ReferenceKeys' => $arrays($table->getOption('referenceKeys'), fn(ForeignKeyConstraint $foreignKey, $k, $n) => [
+                    'No'               => $n + 1,
+                    'Name'             => $foreignKey->getName(),
+                    'ReferenceTable'   => $foreignKey->getLocalTableName(),
+                    'Columns'          => $foreignKey->getForeignColumns(),
+                    'ReferenceColumns' => $foreignKey->getLocalColumns(),
+                    'OnUpdate'         => $foreignKey->hasOption('onUpdate') ? $foreignKey->getOption('onUpdate') : '',
+                    'OnDelete'         => $foreignKey->hasOption('onDelete') ? $foreignKey->getOption('onDelete') : '',
+                ]),
+                'Triggers'      => $arrays($table->getOption('triggers'), fn(Trigger $trigger, $k, $n) => [
+                    'No'        => $n + 1,
+                    'Name'      => $trigger->getName(),
+                    'Statement' => $trigger->getStatement(),
+                    'Event'     => $trigger->getOption('event'),
+                    'Timing'    => $trigger->getOption('timing'),
+                ]),
+            ]),
             'Views'    => $arrays($objects['view'], function (Table $view, $k, $n) use ($arrays) {
                 return [
                     'No'          => $n + 1,
@@ -368,89 +404,51 @@ class Describer
                     'Sql'         => $view->getOption('sql'),
                     'CheckOption' => $view->getOption('view_options')['checkOption'],
                     'Updatable'   => $view->getOption('view_options')['updatable'],
-                    'ColumnCount' => count($view->getColumns()),
-                    'IndexCount'  => count($view->getIndexes()),
-                    'Columns'     => $arrays($view->getColumns(), function (Column $column, $k, $n) use ($view) {
-                        $uniqueable = [];
-                        foreach ($view->getIndexes() as $iname => $index) {
-                            if ($index->isUnique()) {
-                                if (($m = array_search($column->getName(), $index->getColumns())) !== false) {
-                                    $uniqueable[] = "$iname-" . ($m + 1);
-                                }
-                            }
-                        }
-                        [$logicalName, $summary] = $this->_delimitComment($column->getComment());
-                        return [
-                            'No'          => $n + 1,
-                            'Name'        => $column->getName(),
-                            'LogicalName' => $logicalName,
-                            'Summary'     => $summary,
-                            'Type'        => $column->getType(),
-                            'Default'     => $column->getDefault() === null && $column->getNotnull() ? false : $column->getDefault(),
-                            'Length'      => $column->getLength(),
-                            'Unsigned'    => $column->getUnsigned(),
-                            'Precision'   => $column->getPrecision(),
-                            'Scale'       => $column->getScale(),
-                            'Collation'   => @$column->getPlatformOption('collation'),
-                            'NotNull'     => $column->getNotnull(),
-                            'Unique'      => implode(',', $uniqueable),
-                        ];
-                    }),
-                    'Indexes'     => $arrays($view->getIndexes(), function (Index $index, $k, $n) {
-                        return [
-                            'No'      => $n + 1,
-                            'Name'    => $index->getName(),
-                            'Columns' => $index->getColumns(),
-                            'Unique'  => $index->isUnique(),
-                            'Type'    => $index->getFlags(),
-                            'Options' => $index->getOptions(),
-                        ];
-                    }),
+                    'Columns'     => $arrays($view->getColumns(), fn(Column $column, $k, $n) => [
+                        'No'          => $n + 1,
+                        'Name'        => $column->getName(),
+                        'LogicalName' => $column->getPlatformOptions()['logicalName'],
+                        'Summary'     => $column->getPlatformOptions()['summary'],
+                        'Type'        => $column->getType(),
+                        'Default'     => $column->getDefault() === null && $column->getNotnull() ? false : $column->getDefault(),
+                        'Length'      => $column->getLength(),
+                        'Unsigned'    => $column->getUnsigned(),
+                        'Precision'   => $column->getPrecision(),
+                        'Scale'       => $column->getScale(),
+                        'Collation'   => $column->getPlatformOptions()['collation'] ?? '',
+                        'Constraint'  => $column->getPlatformOptions()['constraints'] ?? [],
+                    ]),
+                    'Indexes'     => $arrays($view->getOption('indexes'), fn(Index $index, $k, $n) => [
+                        'No'         => $n + 1,
+                        'Name'       => $index->getName(),
+                        'Columns'    => $index->getColumns(),
+                        'Unique'     => $index->isUnique(),
+                        'Type'       => $index->getFlags(),
+                        'Expression' => $index->getOptions()['expression'] ?? null,
+                        'Options'    => array_diff_key($index->getOptions(), ['expression' => null]),
+                    ]),
                 ];
             }),
-            'Routines' => $arrays($objects['routine'], function (Routine $routine, $k, $n) {
-                [$logicalName, $summary] = $this->_delimitComment($routine->getOption('comment'));
-                return [
-                    'No'          => $n + 1,
-                    'Name'        => $routine->getName(),
-                    'LogicalName' => $logicalName,
-                    'Summary'     => $summary,
-                    'Statement'   => $routine->getStatement(),
-                    'Type'        => $routine->getOption('type'),
-                    'Parameters'  => (function ($parameters) {
-                        $list = [];
-                        foreach ($parameters as $name => $param) {
-                            $list[] = trim($param['mode'] . ' ' . $name . ' ' . $param['typeDeclaration']);
-                        }
-                        return implode(', ', $list);
-                    })($routine->getOption('parameters')),
-                    'Return'      => $routine->getOption('returnTypeDeclaration'),
-                ];
-            }),
-            'Events'   => $arrays($objects['event'], function (Event $event, $k, $n) {
-                [$logicalName, $summary] = $this->_delimitComment($event->getOption('comment'));
-                return [
-                    'No'        => $n + 1,
-                    'Name'      => $event->getName(),
-                    'LogicalName' => $logicalName,
-                    'Summary'     => $summary,
-                    'Statement' => $event->getStatement(),
-                    'Since'     => $event->getOption('since'),
-                    'Until'     => $event->getOption('until'),
-                    'Interval'  => (function ($interval) {
-                        $concat = fn($digit, $unit) => $digit ? "{$digit}{$unit}" : '';
-                        $interval = new \DateInterval($interval);
-                        return implode('', [
-                            $concat($interval->y, '年'),
-                            $concat($interval->m, 'ヶ月'),
-                            $concat($interval->d, '日'),
-                            $concat($interval->h, '時間'),
-                            $concat($interval->i, '分'),
-                            $concat($interval->s, '秒'),
-                        ]);
-                    })($event->getInterval()),
-                ];
-            }),
+            'Routines' => $arrays($objects['routine'], fn(Routine $routine, $k, $n) => [
+                'No'          => $n + 1,
+                'Name'        => $routine->getName(),
+                'LogicalName' => $routine->getOption('logicalName'),
+                'Summary'     => $routine->getOption('summary'),
+                'Statement'   => $routine->getStatement(),
+                'Type'        => $routine->getOption('type'),
+                'Parameter'   => $routine->getOption('parameter'),
+                'Return'      => $routine->getOption('returnTypeDeclaration'),
+            ]),
+            'Events'   => $arrays($objects['event'], fn(Event $event, $k, $n) => [
+                'No'          => $n + 1,
+                'Name'        => $event->getName(),
+                'LogicalName' => $event->getOption('logicalName'),
+                'Summary'     => $event->getOption('summary'),
+                'Statement'   => $event->getStatement(),
+                'Since'       => $event->getOption('since'),
+                'Until'       => $event->getOption('until'),
+                'Interval'    => $event->getOption('interval'),
+            ]),
             'Vars'     => $this->vars,
         ];
     }
@@ -519,9 +517,9 @@ class Describer
             }
 
             $rank = min($table->getOption('ranks') ?: [0]);
-            $widths[$rank][] = mb_strwidth($tableName . $this->_delimitComment($table->getOption('comment'))[0]);
+            $widths[$rank][] = mb_strwidth($tableName . $table->getOption('logicalName'));
             foreach ($columns[$tableName] as $column) {
-                $widths[$rank][] = mb_strwidth($column . $this->_delimitComment($table->getColumn($column)->getComment())[0]);
+                $widths[$rank][] = mb_strwidth($column . $table->getColumn($column)->getPlatformOption('logicalName'));
             }
         }
 
@@ -570,7 +568,7 @@ class Describer
                 continue;
             }
             $tableName = $table->getName();
-            $tableComment = $table->getOption('comment');
+            $tableComment = $table->getOption('logicalName');
             $tableColumns = array_unique($columns[$tableName]);
             $ranks = $table->getOption('ranks');
 
@@ -584,7 +582,7 @@ class Describer
                 'margin'    => 1,
                 'bgcolor'   => '#eeeeee',
                 'color'     => '#606060',
-                'label'     => $tableName . ': ' . $this->_delimitComment($tableComment)[0],
+                'label'     => $tableName . ': ' . $tableComment,
                 'style'     => 'bold',
             ]);
 
@@ -592,7 +590,7 @@ class Describer
             foreach ($tableColumns as $c) {
                 $column = $table->getColumn($c);
                 $columnName = $column->getName();
-                $columnComment = $this->_delimitComment($column->getComment())[0];
+                $columnComment = $column->getPlatformOption('logicalName');
 
                 $generated_columns[$tableName][$c] = $column;
                 $tableGraph->node("column_{$tableName}_{$columnName}", [

@@ -19,7 +19,16 @@
 ## x.y.z
 
 - コードが汚すぎるのでバージョンを上げてリファクタ
-- xlsx+pdf も廃止したい
+
+## 2.0.0
+
+- [template] スキーマオブジェクトが増えたのでテンプレートも修正
+- [*change] include,exclude,callback を全オジェクトに適用
+- [*change] xlsx サポートを削除
+  - ERD も viz.js のみにする
+- [feature] doctrine の最新追従
+  - routine 対応
+  - event 対応
 
 ## 1.0.8
 

@@ -8,12 +8,8 @@ Database Describer
 
 ## Install
 
-```json
-{
-    "require": {
-        "ryunosuke/db-describer": "dev-master"
-    }
-}
+```bash
+wget https://github.com/arima-ryunosuke/db-describer/raw/master/describe.phar
 ```
 
 ## Demo
@@ -31,6 +27,9 @@ sh demo/run.sh
 依存を避けるため phar の利用を推奨します。下記の記述例は phar が前提です。
 
 ```sh
+Description:
+  describe Database.
+
 Usage:
   describe [options] [--] <dsn> [<outdir>]
 
@@ -39,24 +38,18 @@ Arguments:
   outdir                     Specify Output directory
 
 Options:
-  -m, --mode[=MODE]          Specify Output file([html|spec|erd|all]) [default: ["all"]] (multiple values allowed)
-  -i, --include=INCLUDE      Specify Include table (multiple values allowed)
-  -e, --exclude=EXCLUDE      Specify Exclude table (multiple values allowed)
+  -i, --include=INCLUDE      Specify Include object (multiple values allowed)
+  -e, --exclude=EXCLUDE      Specify Exclude object (multiple values allowed)
   -l, --delimiter=DELIMITER  Specify Comment delimiter for summary [default: "\n"]
   -t, --template=TEMPLATE    Specify Spec template
-  -d, --dot=DOT              Specify dot location [default: "dot"]
   -c, --columns=COLUMNS      Specify Erd columns([related|all]) [default: "related"]
   -C, --config=CONFIG        Specify Configuration filepath [default: "config.php"]
-  -h, --help                 Display this help message
+  -h, --help                 Display help for the given command. When no command is given display help for the describe command
   -q, --quiet                Do not output any message
   -V, --version              Display this application version
-      --ansi                 Force ANSI output
-      --no-ansi              Disable ANSI output
+      --ansi|--no-ansi       Force (or disable --no-ansi) ANSI output
   -n, --no-interaction       Do not ask any interactive question
   -v|vv|vvv, --verbose       Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
-
-Help:
-  describe Database.
 ```
 
 ### dsn
@@ -73,25 +66,9 @@ Help:
 ファイルを出力するディレクトリを指定します。
 省略した場合はカレントディレクトリです。
 
-### --mode(m)
-
-出力形式を指定します。
-
-歴史的な経緯により all は spec+erd を表します。
-spec+erd は非推奨であり、将来的にデフォルトは html に変更される予定です。
-
-- all: 下記の両方
-- spec: データベース仕様書（xlsx）
-- erd: ERD（pdf）
-- html: 単独 html ファイル
-
-省略した場合は 'all' です。
-
-- e.g. `--mode html` : html 形式で出力する
-
 ### --include(-i)
 
-出力対象のテーブル名を正規表現で指定します。
+出力対象のオブジェクト名を正規表現で指定します。
 指定の前後に `^$` は付きません。包含一致です。
 
 multiple なので複数のオプションで複数指定できます。その場合は `OR` 動作です。
@@ -101,7 +78,7 @@ multiple なので複数のオプションで複数指定できます。その�
 
 ### --exclude(-e)
 
-除外対象のテーブル名を正規表現で指定します。
+除外対象のオブジェクト名を正規表現で指定します。
 指定の前後に `^$` は付きません。包含一致です。
 
 multiple なので複数のオプションで複数指定できます。その場合は `OR` 動作です。
@@ -123,18 +100,8 @@ multiple なので複数のオプションで複数指定できます。その�
 
 ### --template(t)
 
-データベース仕様書の xlsx テンプレートを指定します。
+データベース仕様書の html テンプレートを指定します。
 省略した場合は組み込みのテンプレートを使います。
-
-出力が html の場合は phtml を指定します。
-
-### --dot(d)
-
-graphviz へのパスを指定します。
-省略した場合は `dot` です。
-
-出力が html でかつ `viz.js` という文字列を指定するとクライアントサイドで dot のレンダリングが行われます。
-将来的にこの動作がデフォルトとなり、サーバーサイドでの dot レンダリングは撤廃される予定です。
 
 ### --columns(c)
 
@@ -144,9 +111,6 @@ ERD の出力カラムを指定します。
 - all: 全カラム
 
 省略した場合は 'related' です。
-
-出力が html の場合は 'related' 固定になります。
-将来的にこのオプションは削除される予定です。
 
 ### --config(C)
 
@@ -212,27 +176,10 @@ ERD の出力カラムを指定します。
     },
     // --template 引数と同じ（同時指定時は引数が優先）
     'template'       => 'standard.xlsx',
-    // カスタムシートの変数を指定します
-    'sheets'         => [
-        // sheetName もレンダリングされるようにします
-        'sheetName' => [
-            'value1' => 'hoge',
-            'value2' => 'fuga',
-        ],
-        // index, table キーは組み込みのテンプレート変数とマージされます
-        'index'     => [
-            // something vars
-        ],
-        'table'     => [
-            // something vars
-        ],
-    ],
     // 汎用変数を指定します（テンプレート内では Vars で参照できます）
     'vars'           => [
         'hoge' => 'HOGE',
     ],
-    // --dot 引数と同じ（同時指定時は引数が優先）
-    'dot'            => 'dot',
     // --columns 引数と同じ（同時指定時は引数が優先）
     'columns'        => 'related',
     // graphviz における Graph の属性です

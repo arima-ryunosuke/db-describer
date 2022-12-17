@@ -44,14 +44,18 @@
   },
   "scripts": {
     "build": [
-      "@composer test",
-      "@composer pharize"
+      "@test",
+      "@pharize",
+      "@demo"
     ],
     "test": [
       "vendor/bin/phpunit --configuration=tests/phpunit.xml"
     ],
     "pharize": [
       "bin/box.phar compile -c box.json"
+    ],
+    "demo": [
+      "@php describe.phar mysql://127.0.0.1/sakila docs/"
     ]
   }
 }

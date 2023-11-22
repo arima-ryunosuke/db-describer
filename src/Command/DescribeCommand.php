@@ -15,7 +15,7 @@ class DescribeCommand extends Command
     {
         $this->setName('describe')->setDescription('describe Database.');
         $this->setDefinition([
-            new InputArgument('dsn', InputArgument::REQUIRED, 'Specify Database DSN'),
+            new InputArgument('dsn', InputArgument::OPTIONAL, 'Specify Database DSN'),
             new InputArgument('outdir', InputArgument::OPTIONAL, 'Specify Output directory'),
             new InputOption('include', 'i', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify Include object', []),
             new InputOption('exclude', 'e', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify Exclude object', []),
@@ -54,9 +54,9 @@ class DescribeCommand extends Command
 
         $config = (file_exists($input->getOption('config')) ? require $input->getOption('config') : []) + $default;
 
-        $describer = new Describer($input->getArgument('dsn'), $config);
+        $describer = new Describer($input->getArgument('dsn') ?? $config[0] ?? $config['dsn'], $config);
 
-        $outdir = $input->getArgument('outdir') ?: getcwd();
+        $outdir = ($input->getArgument('outdir') ?? $config[1] ?? $config['outdir']) ?: getcwd();
         @mkdir($outdir, 0777, true);
 
         $describer->generateHtml($outdir);

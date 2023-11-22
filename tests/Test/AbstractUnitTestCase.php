@@ -26,7 +26,12 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
         $dbname = isset($mparam['dbname']) ? $mparam['dbname'] : (isset($mparam['path']) ? $mparam['path'] : '');
         unset($mparam['url'], $mparam['dbname'], $mparam['path']);
         $schema_manager = DriverManager::getConnection($mparam)->createSchemaManager();
-        $schema_manager->dropDatabase($dbname);
+        try {
+            $schema_manager->dropDatabase($dbname);
+        }
+        catch (\Throwable $t) {
+            // do nothing
+        }
         $schema_manager->createDatabase($dbname);
 
         $connection = DriverManager::getConnection($config);

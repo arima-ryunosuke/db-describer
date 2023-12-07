@@ -55,7 +55,7 @@
       "bin/box.phar compile -c box.json"
     ],
     "demo": [
-      "@php describe.phar mysql://127.0.0.1/sakila docs/"
+      "@php dbdescribe.phar mysql://127.0.0.1/sakila docs/"
     ]
   }
 }

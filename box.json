@@ -6,6 +6,5 @@
     "template/html/script.js.php",
     "template/html/style.css.php"
   ],
-  "output": "describe.phar",
-  "alias": "db-describer.phar"
+  "output": "dbdescribe.phar"
 }

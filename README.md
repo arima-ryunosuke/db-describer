@@ -31,7 +31,7 @@ Description:
   describe Database.
 
 Usage:
-  describe [options] [--] <dsn> [<outdir>]
+  describe [options] [--] [<dsn> [<outdir>]]
 
 Arguments:
   dsn                        Specify Database DSN
@@ -115,14 +115,14 @@ ERD の出力カラムを指定します。
 ### --config(C)
 
 各種設定を外部ファイルから指定します。
-一部、コマンドライン引数と重複しています。
+
+上述した全てのオプションはこのファイルでも指定できます。
+指定した場合、コマンドラインオプションがなかった場合のデフォルト値として使用されます（優先順位が コマンドライン > 外部ファイル ということです）。
 
 ```php
 <?php return [
-    // --include 引数と同じ（同時指定時は引数が優先）
-    'include'        => [],
-    // --exclude 引数と同じ（同時指定時は引数が優先）
-    'exclude'        => [],
+    // 例えばこのようにすると --columns=related と同じ効果があります
+    'columns'        => 'related',
     // カスタムリレーションを指定します
     'relation'       => [
         // 下記の ALTER 文が（擬似的に）適用されたとして外部キーがあるように扱います
@@ -174,14 +174,10 @@ ERD の出力カラムを指定します。
             return false;
         }
     },
-    // --template 引数と同じ（同時指定時は引数が優先）
-    'template'       => 'standard.xlsx',
     // 汎用変数を指定します（テンプレート内では Vars で参照できます）
     'vars'           => [
         'hoge' => 'HOGE',
     ],
-    // --columns 引数と同じ（同時指定時は引数が優先）
-    'columns'        => 'related',
     // graphviz における Graph の属性です
     'graph'          => [],
     // graphviz における Node の属性です

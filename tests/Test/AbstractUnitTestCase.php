@@ -99,6 +99,7 @@ END', 't_article', [
             'returnTypeDeclaration' => 'int',
             'deterministic'         => true,
             'dataAccess'            => 'READS SQL DATA',
+            'securityType'          => 'DEFINER',
             'comment'               => 'function1:comment',
         ]));
         $schema_manager->createRoutine(new Routine('procedure1', 'SELECT 1', [
@@ -107,6 +108,7 @@ END', 't_article', [
             'returnTypeDeclaration' => '',
             'deterministic'         => true,
             'dataAccess'            => 'READS SQL DATA',
+            'securityType'          => 'DEFINER',
             'comment'               => 'procedure1:comment',
         ]));
         $schema_manager->createEvent(new Event('event1', 'SELECT 1', [

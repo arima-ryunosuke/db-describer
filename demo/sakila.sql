@@ -88,7 +88,7 @@ CREATE VIEW `sakila`.`customer_list` AS SELECT
 CREATE TABLE `sakila`.`film` (
 `film_id` smallint unsigned NOT NULL AUTO_INCREMENT,
 `title` varchar(128) NOT NULL,
-`description` text,
+`description` text DEFAULT (_utf8mb4'deftext'),
 `release_year` year DEFAULT NULL,
 `language_id` tinyint unsigned NOT NULL,
 `original_language_id` tinyint unsigned DEFAULT NULL,
@@ -100,6 +100,11 @@ CREATE TABLE `sakila`.`film` (
 PRIMARY KEY (`film_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ;
+USE `sakila`;
+ALTER TABLE `sakila`.`address` ADD KEY `idx_fk_city_id` (`city_id`);
+ALTER TABLE `sakila`.`address` ADD CONSTRAINT `fk_address_city` FOREIGN KEY (`city_id`) REFERENCES `city` (`city_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+USE `sakila`;
+ALTER TABLE `sakila`.`actor` ADD KEY `idx_actor_last_name` (`last_name`);
 CREATE TABLE `sakila`.`film_actor` (
 `actor_id` smallint unsigned NOT NULL,
 `film_id` smallint unsigned NOT NULL,
@@ -107,6 +112,9 @@ CREATE TABLE `sakila`.`film_actor` (
 PRIMARY KEY (`actor_id`,`film_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ;
+USE `sakila`;
+ALTER TABLE `sakila`.`city` ADD KEY `idx_fk_country_id` (`country_id`);
+ALTER TABLE `sakila`.`city` ADD CONSTRAINT `fk_city_country` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 CREATE TABLE `sakila`.`film_category` (
 `film_id` smallint unsigned NOT NULL,
 `category_id` tinyint unsigned NOT NULL,
@@ -114,6 +122,12 @@ CREATE TABLE `sakila`.`film_category` (
 PRIMARY KEY (`film_id`,`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ;
+USE `sakila`;
+ALTER TABLE `sakila`.`customer` ADD KEY `idx_fk_store_id` (`store_id`);
+ALTER TABLE `sakila`.`customer` ADD KEY `idx_fk_address_id` (`address_id`);
+ALTER TABLE `sakila`.`customer` ADD KEY `idx_last_name` (`last_name`);
+ALTER TABLE `sakila`.`customer` ADD CONSTRAINT `fk_customer_address` FOREIGN KEY (`address_id`) REFERENCES `address` (`address_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `sakila`.`customer` ADD CONSTRAINT `fk_customer_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 DROP VIEW IF EXISTS `sakila`.`film_list`;
 CREATE VIEW `sakila`.`film_list` AS SELECT
  1 AS `FID`,
@@ -123,6 +137,41 @@ CREATE VIEW `sakila`.`film_list` AS SELECT
  1 AS `price`,
  1 AS `length`,
  1 AS `actors`
+;
+USE `sakila`;
+ALTER TABLE `sakila`.`film` ADD KEY `idx_title` (`title`);
+ALTER TABLE `sakila`.`film` ADD KEY `idx_fk_language_id` (`language_id`);
+ALTER TABLE `sakila`.`film` ADD KEY `idx_fk_original_language_id` (`original_language_id`);
+ALTER TABLE `sakila`.`film` ADD CONSTRAINT `fk_film_language` FOREIGN KEY (`language_id`) REFERENCES `language` (`language_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `sakila`.`film` ADD CONSTRAINT `fk_film_language_original` FOREIGN KEY (`original_language_id`) REFERENCES `language` (`language_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+DELIMITER //
+/*!50017 CREATE*/ /*!50003 DEFINER=`root`@`%`*/ /*!50017 TRIGGER `sakila`.`ins_film` AFTER INSERT ON `film` FOR EACH ROW BEGIN
+    INSERT INTO film_text (film_id, title, description)
+        VALUES (new.film_id, new.title, new.description);
+  END */
+//
+DELIMITER ;
+;
+DELIMITER //
+/*!50017 CREATE*/ /*!50003 DEFINER=`root`@`%`*/ /*!50017 TRIGGER `sakila`.`upd_film` AFTER UPDATE ON `film` FOR EACH ROW BEGIN
+    IF (old.title != new.title) OR (old.description != new.description) OR (old.film_id != new.film_id)
+    THEN
+        UPDATE film_text
+            SET title=new.title,
+                description=new.description,
+                film_id=new.film_id
+        WHERE film_id=old.film_id;
+    END IF;
+  END */
+//
+DELIMITER ;
+;
+DELIMITER //
+/*!50017 CREATE*/ /*!50003 DEFINER=`root`@`%`*/ /*!50017 TRIGGER `sakila`.`del_film` AFTER DELETE ON `film` FOR EACH ROW BEGIN
+    DELETE FROM film_text WHERE film_id = old.film_id;
+  END */
+//
+DELIMITER ;
 ;
 CREATE TABLE `sakila`.`film_text` (
 `film_id` smallint NOT NULL,
@@ -139,6 +188,10 @@ CREATE TABLE `sakila`.`inventory` (
 PRIMARY KEY (`inventory_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ;
+USE `sakila`;
+ALTER TABLE `sakila`.`film_actor` ADD KEY `idx_fk_film_id` (`film_id`);
+ALTER TABLE `sakila`.`film_actor` ADD CONSTRAINT `fk_film_actor_actor` FOREIGN KEY (`actor_id`) REFERENCES `actor` (`actor_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `sakila`.`film_actor` ADD CONSTRAINT `fk_film_actor_film` FOREIGN KEY (`film_id`) REFERENCES `film` (`film_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 CREATE TABLE `sakila`.`language` (
 `language_id` tinyint unsigned NOT NULL AUTO_INCREMENT,
 `name` char(20) NOT NULL,
@@ -146,6 +199,10 @@ CREATE TABLE `sakila`.`language` (
 PRIMARY KEY (`language_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ;
+USE `sakila`;
+ALTER TABLE `sakila`.`film_category` ADD KEY `fk_film_category_category` (`category_id`);
+ALTER TABLE `sakila`.`film_category` ADD CONSTRAINT `fk_film_category_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `sakila`.`film_category` ADD CONSTRAINT `fk_film_category_film` FOREIGN KEY (`film_id`) REFERENCES `film` (`film_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 DROP VIEW IF EXISTS `sakila`.`nicer_but_slower_film_list`;
 CREATE VIEW `sakila`.`nicer_but_slower_film_list` AS SELECT
  1 AS `FID`,
@@ -156,6 +213,13 @@ CREATE VIEW `sakila`.`nicer_but_slower_film_list` AS SELECT
  1 AS `length`,
  1 AS `actors`
 ;
+USE `sakila`;
+ALTER TABLE `sakila`.`film_text` ADD FULLTEXT KEY `idx_title_description` (`title`,`description`);
+USE `sakila`;
+ALTER TABLE `sakila`.`inventory` ADD KEY `idx_fk_film_id` (`film_id`);
+ALTER TABLE `sakila`.`inventory` ADD KEY `idx_store_id_film_id` (`store_id`,`film_id`);
+ALTER TABLE `sakila`.`inventory` ADD CONSTRAINT `fk_inventory_film` FOREIGN KEY (`film_id`) REFERENCES `film` (`film_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `sakila`.`inventory` ADD CONSTRAINT `fk_inventory_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 CREATE TABLE `sakila`.`payment` (
 `payment_id` smallint unsigned NOT NULL AUTO_INCREMENT,
 `customer_id` smallint unsigned NOT NULL,
@@ -167,6 +231,13 @@ CREATE TABLE `sakila`.`payment` (
 PRIMARY KEY (`payment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ;
+USE `sakila`;
+ALTER TABLE `sakila`.`payment` ADD KEY `idx_fk_staff_id` (`staff_id`);
+ALTER TABLE `sakila`.`payment` ADD KEY `idx_fk_customer_id` (`customer_id`);
+ALTER TABLE `sakila`.`payment` ADD KEY `fk_payment_rental` (`rental_id`);
+ALTER TABLE `sakila`.`payment` ADD CONSTRAINT `fk_payment_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `sakila`.`payment` ADD CONSTRAINT `fk_payment_rental` FOREIGN KEY (`rental_id`) REFERENCES `rental` (`rental_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `sakila`.`payment` ADD CONSTRAINT `fk_payment_staff` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 CREATE TABLE `sakila`.`rental` (
 `rental_id` int NOT NULL AUTO_INCREMENT,
 `rental_date` datetime NOT NULL,
@@ -178,6 +249,14 @@ CREATE TABLE `sakila`.`rental` (
 PRIMARY KEY (`rental_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ;
+USE `sakila`;
+ALTER TABLE `sakila`.`rental` ADD UNIQUE KEY `rental_date` (`rental_date`,`inventory_id`,`customer_id`);
+ALTER TABLE `sakila`.`rental` ADD KEY `idx_fk_inventory_id` (`inventory_id`);
+ALTER TABLE `sakila`.`rental` ADD KEY `idx_fk_customer_id` (`customer_id`);
+ALTER TABLE `sakila`.`rental` ADD KEY `idx_fk_staff_id` (`staff_id`);
+ALTER TABLE `sakila`.`rental` ADD CONSTRAINT `fk_rental_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `sakila`.`rental` ADD CONSTRAINT `fk_rental_inventory` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`inventory_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `sakila`.`rental` ADD CONSTRAINT `fk_rental_staff` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 DROP VIEW IF EXISTS `sakila`.`sales_by_film_category`;
 CREATE VIEW `sakila`.`sales_by_film_category` AS SELECT
  1 AS `category`,
@@ -204,6 +283,11 @@ CREATE TABLE `sakila`.`staff` (
 PRIMARY KEY (`staff_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ;
+USE `sakila`;
+ALTER TABLE `sakila`.`staff` ADD KEY `idx_fk_store_id` (`store_id`);
+ALTER TABLE `sakila`.`staff` ADD KEY `idx_fk_address_id` (`address_id`);
+ALTER TABLE `sakila`.`staff` ADD CONSTRAINT `fk_staff_address` FOREIGN KEY (`address_id`) REFERENCES `address` (`address_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `sakila`.`staff` ADD CONSTRAINT `fk_staff_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 DROP VIEW IF EXISTS `sakila`.`staff_list`;
 CREATE VIEW `sakila`.`staff_list` AS SELECT
  1 AS `ID`,
@@ -223,6 +307,11 @@ CREATE TABLE `sakila`.`store` (
 PRIMARY KEY (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ;
+USE `sakila`;
+ALTER TABLE `sakila`.`store` ADD UNIQUE KEY `idx_unique_manager` (`manager_staff_id`);
+ALTER TABLE `sakila`.`store` ADD KEY `idx_fk_address_id` (`address_id`);
+ALTER TABLE `sakila`.`store` ADD CONSTRAINT `fk_store_address` FOREIGN KEY (`address_id`) REFERENCES `address` (`address_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `sakila`.`store` ADD CONSTRAINT `fk_store_staff` FOREIGN KEY (`manager_staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 DELIMITER //
 CREATE FUNCTION `sakila`.`get_customer_balance`(p_customer_id INT, p_effective_date DATETIME) RETURNS decimal(5,2)
     READS SQL DATA
@@ -410,95 +499,6 @@ CREATE DEFINER=`root`@`%` EVENT `sakila`.`event1` ON SCHEDULE EVERY 1 DAY STARTS
 END//
 DELIMITER ;
 ;
-USE `sakila`;
-ALTER TABLE `sakila`.`actor` ADD KEY `idx_actor_last_name` (`last_name`);
-USE `sakila`;
-ALTER TABLE `sakila`.`address` ADD KEY `idx_fk_city_id` (`city_id`);
-ALTER TABLE `sakila`.`address` ADD CONSTRAINT `fk_address_city` FOREIGN KEY (`city_id`) REFERENCES `city` (`city_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-USE `sakila`;
-ALTER TABLE `sakila`.`city` ADD KEY `idx_fk_country_id` (`country_id`);
-ALTER TABLE `sakila`.`city` ADD CONSTRAINT `fk_city_country` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-USE `sakila`;
-ALTER TABLE `sakila`.`customer` ADD KEY `idx_fk_store_id` (`store_id`);
-ALTER TABLE `sakila`.`customer` ADD KEY `idx_fk_address_id` (`address_id`);
-ALTER TABLE `sakila`.`customer` ADD KEY `idx_last_name` (`last_name`);
-ALTER TABLE `sakila`.`customer` ADD CONSTRAINT `fk_customer_address` FOREIGN KEY (`address_id`) REFERENCES `address` (`address_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `sakila`.`customer` ADD CONSTRAINT `fk_customer_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-USE `sakila`;
-ALTER TABLE `sakila`.`film` ADD KEY `idx_title` (`title`);
-ALTER TABLE `sakila`.`film` ADD KEY `idx_fk_language_id` (`language_id`);
-ALTER TABLE `sakila`.`film` ADD KEY `idx_fk_original_language_id` (`original_language_id`);
-ALTER TABLE `sakila`.`film` ADD CONSTRAINT `fk_film_language` FOREIGN KEY (`language_id`) REFERENCES `language` (`language_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `sakila`.`film` ADD CONSTRAINT `fk_film_language_original` FOREIGN KEY (`original_language_id`) REFERENCES `language` (`language_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-DELIMITER //
-/*!50017 CREATE*/ /*!50003 DEFINER=`root`@`%`*/ /*!50017 TRIGGER `sakila`.`ins_film` AFTER INSERT ON `film` FOR EACH ROW BEGIN
-    INSERT INTO film_text (film_id, title, description)
-        VALUES (new.film_id, new.title, new.description);
-  END */
-//
-DELIMITER ;
-;
-DELIMITER //
-/*!50017 CREATE*/ /*!50003 DEFINER=`root`@`%`*/ /*!50017 TRIGGER `sakila`.`upd_film` AFTER UPDATE ON `film` FOR EACH ROW BEGIN
-    IF (old.title != new.title) OR (old.description != new.description) OR (old.film_id != new.film_id)
-    THEN
-        UPDATE film_text
-            SET title=new.title,
-                description=new.description,
-                film_id=new.film_id
-        WHERE film_id=old.film_id;
-    END IF;
-  END */
-//
-DELIMITER ;
-;
-DELIMITER //
-/*!50017 CREATE*/ /*!50003 DEFINER=`root`@`%`*/ /*!50017 TRIGGER `sakila`.`del_film` AFTER DELETE ON `film` FOR EACH ROW BEGIN
-    DELETE FROM film_text WHERE film_id = old.film_id;
-  END */
-//
-DELIMITER ;
-;
-USE `sakila`;
-ALTER TABLE `sakila`.`film_actor` ADD KEY `idx_fk_film_id` (`film_id`);
-ALTER TABLE `sakila`.`film_actor` ADD CONSTRAINT `fk_film_actor_actor` FOREIGN KEY (`actor_id`) REFERENCES `actor` (`actor_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `sakila`.`film_actor` ADD CONSTRAINT `fk_film_actor_film` FOREIGN KEY (`film_id`) REFERENCES `film` (`film_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-USE `sakila`;
-ALTER TABLE `sakila`.`film_category` ADD KEY `fk_film_category_category` (`category_id`);
-ALTER TABLE `sakila`.`film_category` ADD CONSTRAINT `fk_film_category_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `sakila`.`film_category` ADD CONSTRAINT `fk_film_category_film` FOREIGN KEY (`film_id`) REFERENCES `film` (`film_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-USE `sakila`;
-ALTER TABLE `sakila`.`film_text` ADD FULLTEXT KEY `idx_title_description` (`title`,`description`);
-USE `sakila`;
-ALTER TABLE `sakila`.`inventory` ADD KEY `idx_fk_film_id` (`film_id`);
-ALTER TABLE `sakila`.`inventory` ADD KEY `idx_store_id_film_id` (`store_id`,`film_id`);
-ALTER TABLE `sakila`.`inventory` ADD CONSTRAINT `fk_inventory_film` FOREIGN KEY (`film_id`) REFERENCES `film` (`film_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `sakila`.`inventory` ADD CONSTRAINT `fk_inventory_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-USE `sakila`;
-ALTER TABLE `sakila`.`payment` ADD KEY `idx_fk_staff_id` (`staff_id`);
-ALTER TABLE `sakila`.`payment` ADD KEY `idx_fk_customer_id` (`customer_id`);
-ALTER TABLE `sakila`.`payment` ADD KEY `fk_payment_rental` (`rental_id`);
-ALTER TABLE `sakila`.`payment` ADD CONSTRAINT `fk_payment_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `sakila`.`payment` ADD CONSTRAINT `fk_payment_rental` FOREIGN KEY (`rental_id`) REFERENCES `rental` (`rental_id`) ON DELETE SET NULL ON UPDATE CASCADE;
-ALTER TABLE `sakila`.`payment` ADD CONSTRAINT `fk_payment_staff` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-USE `sakila`;
-ALTER TABLE `sakila`.`rental` ADD UNIQUE KEY `rental_date` (`rental_date`,`inventory_id`,`customer_id`);
-ALTER TABLE `sakila`.`rental` ADD KEY `idx_fk_inventory_id` (`inventory_id`);
-ALTER TABLE `sakila`.`rental` ADD KEY `idx_fk_customer_id` (`customer_id`);
-ALTER TABLE `sakila`.`rental` ADD KEY `idx_fk_staff_id` (`staff_id`);
-ALTER TABLE `sakila`.`rental` ADD CONSTRAINT `fk_rental_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `sakila`.`rental` ADD CONSTRAINT `fk_rental_inventory` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`inventory_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `sakila`.`rental` ADD CONSTRAINT `fk_rental_staff` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-USE `sakila`;
-ALTER TABLE `sakila`.`staff` ADD KEY `idx_fk_store_id` (`store_id`);
-ALTER TABLE `sakila`.`staff` ADD KEY `idx_fk_address_id` (`address_id`);
-ALTER TABLE `sakila`.`staff` ADD CONSTRAINT `fk_staff_address` FOREIGN KEY (`address_id`) REFERENCES `address` (`address_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `sakila`.`staff` ADD CONSTRAINT `fk_staff_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-USE `sakila`;
-ALTER TABLE `sakila`.`store` ADD UNIQUE KEY `idx_unique_manager` (`manager_staff_id`);
-ALTER TABLE `sakila`.`store` ADD KEY `idx_fk_address_id` (`address_id`);
-ALTER TABLE `sakila`.`store` ADD CONSTRAINT `fk_store_address` FOREIGN KEY (`address_id`) REFERENCES `address` (`address_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-ALTER TABLE `sakila`.`store` ADD CONSTRAINT `fk_store_staff` FOREIGN KEY (`manager_staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 DROP VIEW IF EXISTS `sakila`.`actor_info`;
 CREATE ALGORITHM=UNDEFINED VIEW `sakila`.`actor_info` AS select `a`.`actor_id` AS `actor_id`,`a`.`first_name` AS `first_name`,`a`.`last_name` AS `last_name`,group_concat(distinct concat(`c`.`name`,': ',(select group_concat(`f`.`title` order by `f`.`title` ASC separator ', ') from ((`sakila`.`film` `f` join `sakila`.`film_category` `fc` on((`f`.`film_id` = `fc`.`film_id`))) join `sakila`.`film_actor` `fa` on((`f`.`film_id` = `fa`.`film_id`))) where ((`fc`.`category_id` = `c`.`category_id`) and (`fa`.`actor_id` = `a`.`actor_id`)))) order by `c`.`name` ASC separator '; ') AS `film_info` from (((`sakila`.`actor` `a` left join `sakila`.`film_actor` `fa` on((`a`.`actor_id` = `fa`.`actor_id`))) left join `sakila`.`film_category` `fc` on((`fa`.`film_id` = `fc`.`film_id`))) left join `sakila`.`category` `c` on((`fc`.`category_id` = `c`.`category_id`))) group by `a`.`actor_id`,`a`.`first_name`,`a`.`last_name`
 ;

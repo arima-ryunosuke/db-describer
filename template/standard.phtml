@@ -30,7 +30,7 @@ $sql = function ($query) {
     static $formatter = null;
     $formatter ??= (new SqlFormatter(new HtmlHighlighter()));
 
-    $query = $formatter->format($query);
+    $query = $formatter->format($query ?? '');
     return $query;
 };
 ?>

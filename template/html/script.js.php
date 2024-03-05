@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let intoViewScrolling = false;
     outline.on('click', 'a.toc-h', function (e) {
         e.preventDefault();
-        const section = $(e.target.getAttribute('href'));
+        const section = document.getElementById(e.target.getAttribute('href').substring(1));
         intoViewScrolling = true;
         section.scrollIntoView({
             behavior: 'smooth',

@@ -4,6 +4,7 @@ namespace ryunosuke\DbDescriber;
 
 use Alom\Graphviz\AttributeSet;
 use Alom\Graphviz\Digraph;
+use Alom\Graphviz\Graph;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\AbstractAsset;
 use Doctrine\DBAL\Schema\Column;
@@ -573,7 +574,9 @@ class Describer
             $ranks = $table->getOption('ranks');
 
             // サブグラフ
-            $subgraphs[$tableName] = $tableGraph = $graph->subgraph("cluster_{$tableName}");
+            // Alom\Graphviz\Graph に id が escape されない不具合があったので呼び元で呼んでおく
+            $cluster_id = (fn($id) => $this->escape($id))->bindTo($graph, Graph::class)("cluster_{$tableName}");
+            $subgraphs[$tableName] = $tableGraph = $graph->subgraph($cluster_id);
             $tableGraph->attr('graph', [
                 'id'        => "relationship:table-$tableName",
                 'class'     => "table-$tableName " . implode(' ', array_map(fn($c) => "column-$tableName-$c", $tableColumns)),

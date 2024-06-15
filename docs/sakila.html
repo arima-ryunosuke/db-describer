@@ -1475,7 +1475,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let intoViewScrolling = false;
     outline.on('click', 'a.toc-h', function (e) {
         e.preventDefault();
-        const section = $(e.target.getAttribute('href'));
+        const section = document.getElementById(e.target.getAttribute('href').substring(1));
         intoViewScrolling = true;
         section.scrollIntoView({
             behavior: 'smooth',
@@ -1733,7 +1733,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="wy-side-nav-search">
                 <a href="" class="icon icon-home"> sakila</a>
                 <div class="version">
-                    最終更新日 2023/12/07 15:31:07                </div>
+                    最終更新日 2024/06/15 20:24:11                </div>
             </div>
             <div class="wy-menu wy-menu-vertical markdown-toc">
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
@@ -2365,7 +2365,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -2378,7 +2378,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>45</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -2391,7 +2391,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>45</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -2404,7 +2404,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -2579,7 +2579,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -2592,7 +2592,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -2605,7 +2605,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -2618,7 +2618,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>20</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -2631,7 +2631,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -2644,7 +2644,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>10</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -2657,7 +2657,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>20</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -2670,7 +2670,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -2872,7 +2872,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -2885,7 +2885,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>25</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -2898,7 +2898,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -3065,7 +3065,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3078,7 +3078,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -3091,7 +3091,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3104,7 +3104,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -3288,7 +3288,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3301,7 +3301,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -3314,7 +3314,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -3481,7 +3481,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3494,7 +3494,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3507,7 +3507,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>45</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -3520,7 +3520,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>45</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -3533,7 +3533,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -3546,7 +3546,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3559,7 +3559,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> boolean</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;1&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3572,7 +3572,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -3585,7 +3585,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td></td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -3803,7 +3803,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3816,7 +3816,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>128</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -3828,8 +3828,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td></td>
                                                 <td> text</td>
                                                 <td></td>
-                                                <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td>&#039;_utf8mb4\&#039;deftext\&#039;&#039;</td>
+                                                <td></td>
                                                 <td>65535</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -3842,7 +3842,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> date</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3855,7 +3855,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3868,7 +3868,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3881,7 +3881,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;3&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3907,7 +3907,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -3933,7 +3933,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -4207,7 +4207,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -4220,7 +4220,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>primary-2</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -4233,7 +4233,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -4417,7 +4417,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -4430,7 +4430,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>primary-2</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -4443,7 +4443,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -4627,7 +4627,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> smallint</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -4640,7 +4640,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>255</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -4653,7 +4653,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> text</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>65535</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -4819,7 +4819,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned integer</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -4832,7 +4832,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -4845,7 +4845,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -4858,7 +4858,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -5059,7 +5059,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5072,7 +5072,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>20</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -5085,7 +5085,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -5261,7 +5261,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5274,7 +5274,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5287,7 +5287,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5300,7 +5300,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> integer</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5326,7 +5326,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -5339,7 +5339,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td></td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -5548,7 +5548,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> integer</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5561,7 +5561,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull,rental_date-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -5574,7 +5574,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned integer</td>
                                                 <td>NotNull,rental_date-2</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5587,7 +5587,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>NotNull,rental_date-3</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5600,7 +5600,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -5613,7 +5613,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5626,7 +5626,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -5852,7 +5852,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5865,7 +5865,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>45</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -5878,7 +5878,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>45</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -5891,7 +5891,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5904,7 +5904,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> blob</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>65535</td>
                                                 <td></td>
                                                 <td></td>
@@ -5917,7 +5917,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -5930,7 +5930,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5943,7 +5943,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> boolean</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;1&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -5956,7 +5956,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>16</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                 <td></td>
@@ -5969,7 +5969,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>40</td>
                                                 <td>utf8mb4_bin</td>
                                                 <td></td>
@@ -5982,7 +5982,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -6201,7 +6201,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>primary-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -6214,7 +6214,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned boolean</td>
                                                 <td>NotNull,idx_unique_manager-1</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -6227,7 +6227,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td>unsigned smallint</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
@@ -6240,7 +6240,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> datetime</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;CURRENT_TIMESTAMP&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>0</td>
                                                 <td></td>
                                                 <td></td>
@@ -6421,65 +6421,65 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`actor_id`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`first_name`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`first_name`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`last_name`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`last_name`</span><span >,</span>
-  <span style="font-weight:bold;">group_concat</span>(
-    <span style="font-weight:bold;">distinct</span> <span style="font-weight:bold;">concat</span>(
+  <span style="font-weight:bold;">GROUP_CONCAT</span>(
+    <span style="font-weight:bold;">DISTINCT</span> <span style="font-weight:bold;">CONCAT</span>(
       <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`name`</span><span >,</span>
       <span style="color: blue;">': '</span><span >,</span>
       (
-        <span style="font-weight:bold;">select</span>
-          <span style="font-weight:bold;">group_concat</span>(
+        <span style="font-weight:bold;">SELECT</span>
+          <span style="font-weight:bold;">GROUP_CONCAT</span>(
             <span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`title`</span>
-            <span style="font-weight:bold;">order by</span>
-              <span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`title`</span> <span style="font-weight:bold;">ASC</span> <span style="font-weight:bold;">separator</span> <span style="color: blue;">', '</span>
+            <span style="font-weight:bold;">ORDER BY</span>
+              <span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`title`</span> <span style="font-weight:bold;">ASC</span> <span style="font-weight:bold;">SEPARATOR</span> <span style="color: blue;">', '</span>
           )
-        <span style="font-weight:bold;">from</span>
+        <span style="font-weight:bold;">FROM</span>
           (
             (
               <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span> <span style="color: purple;">`f`</span>
-              <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">on</span>(
+              <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">ON</span>(
                 (<span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`film_id`</span>)
               )
             )
-            <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="color: purple;">`fa`</span> <span style="font-weight:bold;">on</span>(
+            <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="color: purple;">`fa`</span> <span style="font-weight:bold;">ON</span>(
               (<span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`fa`</span><span >.</span><span style="color: purple;">`film_id`</span>)
             )
           )
-        <span style="font-weight:bold;">where</span>
+        <span style="font-weight:bold;">WHERE</span>
           (
             (
               <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`category_id`</span> <span >=</span> <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`category_id`</span>
             )
-            <span style="font-weight:bold;">and</span> (<span style="color: purple;">`fa`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span >=</span> <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`actor_id`</span>)
+            <span style="font-weight:bold;">AND</span> (<span style="color: purple;">`fa`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span >=</span> <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`actor_id`</span>)
           )
       )
     )
-    <span style="font-weight:bold;">order by</span>
-      <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`name`</span> <span style="font-weight:bold;">ASC</span> <span style="font-weight:bold;">separator</span> <span style="color: blue;">'; '</span>
+    <span style="font-weight:bold;">ORDER BY</span>
+      <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`name`</span> <span style="font-weight:bold;">ASC</span> <span style="font-weight:bold;">SEPARATOR</span> <span style="color: blue;">'; '</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`film_info`</span>
-<span style="font-weight:bold;">from</span>
+<span style="font-weight:bold;">FROM</span>
   (
     (
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span> <span style="color: purple;">`a`</span>
-        <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="color: purple;">`fa`</span> <span style="font-weight:bold;">on</span>(
+        <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="color: purple;">`fa`</span> <span style="font-weight:bold;">ON</span>(
           (<span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span >=</span> <span style="color: purple;">`fa`</span><span >.</span><span style="color: purple;">`actor_id`</span>)
         )
       )
-      <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">on</span>(
+      <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">ON</span>(
         (<span style="color: purple;">`fa`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`film_id`</span>)
       )
     )
-    <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">on</span>(
+    <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">ON</span>(
       (
         <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`category_id`</span> <span >=</span> <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`category_id`</span>
       )
     )
   )
-<span style="font-weight:bold;">group by</span>
+<span style="font-weight:bold;">GROUP BY</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`actor_id`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`last_name`</span></pre></td>
@@ -6508,10 +6508,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>actor_id</td>
                                                 <td></td>
-                                                <td>Unsigned smallint</td>
+                                                <td>unsigned smallint</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;0&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                                                                 <td></td>
@@ -6523,7 +6523,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>45</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6535,7 +6535,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>45</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6547,7 +6547,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> text</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>65535</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6607,9 +6607,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
   <span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`customer_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`ID`</span><span >,</span>
-  <span style="font-weight:bold;">concat</span>(
+  <span style="font-weight:bold;">CONCAT</span>(
     <span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span> <span style="color: blue;">' '</span><span >,</span> <span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`last_name`</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`name`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`address`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`address`</span><span >,</span>
@@ -6617,26 +6617,26 @@ document.addEventListener('DOMContentLoaded', function () {
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`phone`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`phone`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`city`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`country`</span><span >,</span>
-  <span style="font-weight:bold;">if</span>(<span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`active`</span><span >,</span> <span style="color: blue;">'active'</span><span >,</span> <span style="color: blue;">''</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`notes`</span><span >,</span>
+  <span style="font-weight:bold;">IF</span>(<span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`active`</span><span >,</span> <span style="color: blue;">'active'</span><span >,</span> <span style="color: blue;">''</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`notes`</span><span >,</span>
   <span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`store_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`SID`</span>
-<span style="font-weight:bold;">from</span>
+<span style="font-weight:bold;">FROM</span>
   (
     (
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`customer`</span> <span style="color: purple;">`cu`</span>
-        <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">on</span>(
+        <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">ON</span>(
           (
             <span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`address_id`</span> <span >=</span> <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`address_id`</span>
           )
         )
       )
-      <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">on</span>(
+      <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">ON</span>(
         (
           <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`city_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`city_id`</span>
         )
       )
     )
-    <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">on</span>(
+    <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">ON</span>(
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`country_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span><span >.</span><span style="color: purple;">`country_id`</span>
       )
@@ -6667,10 +6667,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>ID</td>
                                                 <td></td>
-                                                <td>Unsigned smallint</td>
+                                                <td>unsigned smallint</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;0&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                                                                 <td></td>
@@ -6682,7 +6682,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>91</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6694,7 +6694,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6706,7 +6706,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>10</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6718,7 +6718,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>20</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6730,7 +6730,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6742,7 +6742,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6754,7 +6754,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>6</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6763,10 +6763,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">9</td>
                                                 <td>SID</td>
                                                 <td></td>
-                                                <td>Unsigned boolean</td>
+                                                <td>unsigned boolean</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                                                                 <td></td>
@@ -6826,50 +6826,50 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`FID`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`title`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`title`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`description`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`description`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`name`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`category`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`rental_rate`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`price`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`length`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`length`</span><span >,</span>
-  <span style="font-weight:bold;">group_concat</span>(
-    <span style="font-weight:bold;">concat</span>(
+  <span style="font-weight:bold;">GROUP_CONCAT</span>(
+    <span style="font-weight:bold;">CONCAT</span>(
       <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span> <span style="color: blue;">' '</span><span >,</span>
       <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`last_name`</span>
-    ) <span style="font-weight:bold;">separator</span> <span style="color: blue;">', '</span>
+    ) <span style="font-weight:bold;">SEPARATOR</span> <span style="color: blue;">', '</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`actors`</span>
-<span style="font-weight:bold;">from</span>
+<span style="font-weight:bold;">FROM</span>
   (
     (
       (
         (
           <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span>
-          <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="font-weight:bold;">on</span>(
+          <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="font-weight:bold;">ON</span>(
             (
               <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span>
             )
           )
         )
-        <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="font-weight:bold;">on</span>(
+        <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="font-weight:bold;">ON</span>(
           (
             <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`category_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span><span >.</span><span style="color: purple;">`category_id`</span>
           )
         )
       )
-      <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="font-weight:bold;">on</span>(
+      <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="font-weight:bold;">ON</span>(
         (
           <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span><span >.</span><span style="color: purple;">`film_id`</span>
         )
       )
     )
-    <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span> <span style="font-weight:bold;">on</span>(
+    <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span> <span style="font-weight:bold;">ON</span>(
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`actor_id`</span>
       )
     )
   )
-<span style="font-weight:bold;">group by</span>
+<span style="font-weight:bold;">GROUP BY</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`name`</span></pre></td>
                                         </tr>
@@ -6897,10 +6897,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>FID</td>
                                                 <td></td>
-                                                <td>Unsigned smallint</td>
+                                                <td>unsigned smallint</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;0&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                                                                 <td></td>
@@ -6912,7 +6912,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>128</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6923,8 +6923,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td></td>
                                                 <td> text</td>
                                                 <td></td>
-                                                <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td>&#039;&#039;</td>
+                                                <td></td>
                                                 <td>65535</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6936,7 +6936,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>25</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -6957,10 +6957,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">6</td>
                                                 <td>length</td>
                                                 <td></td>
-                                                <td>Unsigned smallint</td>
+                                                <td>unsigned smallint</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                                                                 <td></td>
@@ -6972,7 +6972,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> text</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>65535</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7032,79 +7032,79 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`FID`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`title`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`title`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`description`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`description`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`name`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`category`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`rental_rate`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`price`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`length`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`length`</span><span >,</span>
-  <span style="font-weight:bold;">group_concat</span>(
-    <span style="font-weight:bold;">concat</span>(
-      <span style="font-weight:bold;">concat</span>(
-        <span style="font-weight:bold;">upper</span>(
-          <span style="font-weight:bold;">substr</span>(
+  <span style="font-weight:bold;">GROUP_CONCAT</span>(
+    <span style="font-weight:bold;">CONCAT</span>(
+      <span style="font-weight:bold;">CONCAT</span>(
+        <span style="font-weight:bold;">UPPER</span>(
+          <span style="font-weight:bold;">SUBSTR</span>(
             <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span> <span style="color: green;">1</span><span >,</span>
             <span style="color: green;">1</span>
           )
         )<span >,</span>
-        <span style="font-weight:bold;">lower</span>(
-          <span style="font-weight:bold;">substr</span>(
+        <span style="font-weight:bold;">LOWER</span>(
+          <span style="font-weight:bold;">SUBSTR</span>(
             <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span>
             <span style="color: green;">2</span><span >,</span>
-            <span style="font-weight:bold;">length</span>(<span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`first_name`</span>)
+            <span style="font-weight:bold;">LENGTH</span>(<span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`first_name`</span>)
           )
         )<span >,</span>
         <span style="color: blue;">' '</span><span >,</span>
-        <span style="font-weight:bold;">concat</span>(
-          <span style="font-weight:bold;">upper</span>(
-            <span style="font-weight:bold;">substr</span>(
+        <span style="font-weight:bold;">CONCAT</span>(
+          <span style="font-weight:bold;">UPPER</span>(
+            <span style="font-weight:bold;">SUBSTR</span>(
               <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`last_name`</span><span >,</span> <span style="color: green;">1</span><span >,</span>
               <span style="color: green;">1</span>
             )
           )<span >,</span>
-          <span style="font-weight:bold;">lower</span>(
-            <span style="font-weight:bold;">substr</span>(
+          <span style="font-weight:bold;">LOWER</span>(
+            <span style="font-weight:bold;">SUBSTR</span>(
               <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`last_name`</span><span >,</span>
               <span style="color: green;">2</span><span >,</span>
-              <span style="font-weight:bold;">length</span>(<span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`last_name`</span>)
+              <span style="font-weight:bold;">LENGTH</span>(<span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`last_name`</span>)
             )
           )
         )
       )
-    ) <span style="font-weight:bold;">separator</span> <span style="color: blue;">', '</span>
+    ) <span style="font-weight:bold;">SEPARATOR</span> <span style="color: blue;">', '</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`actors`</span>
-<span style="font-weight:bold;">from</span>
+<span style="font-weight:bold;">FROM</span>
   (
     (
       (
         (
           <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span>
-          <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="font-weight:bold;">on</span>(
+          <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="font-weight:bold;">ON</span>(
             (
               <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span>
             )
           )
         )
-        <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="font-weight:bold;">on</span>(
+        <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="font-weight:bold;">ON</span>(
           (
             <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`category_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span><span >.</span><span style="color: purple;">`category_id`</span>
           )
         )
       )
-      <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="font-weight:bold;">on</span>(
+      <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="font-weight:bold;">ON</span>(
         (
           <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span><span >.</span><span style="color: purple;">`film_id`</span>
         )
       )
     )
-    <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span> <span style="font-weight:bold;">on</span>(
+    <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span> <span style="font-weight:bold;">ON</span>(
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`actor_id`</span>
       )
     )
   )
-<span style="font-weight:bold;">group by</span>
+<span style="font-weight:bold;">GROUP BY</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`name`</span></pre></td>
                                         </tr>
@@ -7132,10 +7132,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>FID</td>
                                                 <td></td>
-                                                <td>Unsigned smallint</td>
+                                                <td>unsigned smallint</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;0&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                                                                 <td></td>
@@ -7147,7 +7147,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>128</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7158,8 +7158,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td></td>
                                                 <td> text</td>
                                                 <td></td>
-                                                <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td>&#039;&#039;</td>
+                                                <td></td>
                                                 <td>65535</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7171,7 +7171,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>25</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7192,10 +7192,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">6</td>
                                                 <td>length</td>
                                                 <td></td>
-                                                <td>Unsigned smallint</td>
+                                                <td>unsigned smallint</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                                                                 <td></td>
@@ -7207,7 +7207,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> text</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>65535</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7267,46 +7267,46 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
   <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`name`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`category`</span><span >,</span>
-  <span style="font-weight:bold;">sum</span>(<span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`amount`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`total_sales`</span>
-<span style="font-weight:bold;">from</span>
+  <span style="font-weight:bold;">SUM</span>(<span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`amount`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`total_sales`</span>
+<span style="font-weight:bold;">FROM</span>
   (
     (
       (
         (
           (
             <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`payment`</span> <span style="color: purple;">`p`</span>
-            <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`rental`</span> <span style="color: purple;">`r`</span> <span style="font-weight:bold;">on</span>(
+            <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`rental`</span> <span style="color: purple;">`r`</span> <span style="font-weight:bold;">ON</span>(
               (
                 <span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`rental_id`</span> <span >=</span> <span style="color: purple;">`r`</span><span >.</span><span style="color: purple;">`rental_id`</span>
               )
             )
           )
-          <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`inventory`</span> <span style="color: purple;">`i`</span> <span style="font-weight:bold;">on</span>(
+          <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`inventory`</span> <span style="color: purple;">`i`</span> <span style="font-weight:bold;">ON</span>(
             (
               <span style="color: purple;">`r`</span><span >.</span><span style="color: purple;">`inventory_id`</span> <span >=</span> <span style="color: purple;">`i`</span><span >.</span><span style="color: purple;">`inventory_id`</span>
             )
           )
         )
-        <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span> <span style="color: purple;">`f`</span> <span style="font-weight:bold;">on</span>(
+        <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span> <span style="color: purple;">`f`</span> <span style="font-weight:bold;">ON</span>(
           (<span style="color: purple;">`i`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`film_id`</span>)
         )
       )
-      <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">on</span>(
+      <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">ON</span>(
         (<span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`film_id`</span>)
       )
     )
-    <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">on</span>(
+    <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">ON</span>(
       (
         <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`category_id`</span> <span >=</span> <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`category_id`</span>
       )
     )
   )
-<span style="font-weight:bold;">group by</span>
+<span style="font-weight:bold;">GROUP BY</span>
   <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`name`</span>
-<span style="font-weight:bold;">order by</span>
-  <span style="color: purple;">`total_sales`</span> <span style="font-weight:bold;">desc</span></pre></td>
+<span style="font-weight:bold;">ORDER BY</span>
+  <span style="color: purple;">`total_sales`</span> <span style="font-weight:bold;">DESC</span></pre></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -7335,7 +7335,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>25</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7407,13 +7407,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
-  <span style="font-weight:bold;">concat</span>(<span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`city`</span><span >,</span> <span style="color: blue;">','</span><span >,</span> <span style="color: purple;">`cy`</span><span >.</span><span style="color: purple;">`country`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`store`</span><span >,</span>
-  <span style="font-weight:bold;">concat</span>(
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
+  <span style="font-weight:bold;">CONCAT</span>(<span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`city`</span><span >,</span> <span style="color: blue;">','</span><span >,</span> <span style="color: purple;">`cy`</span><span >.</span><span style="color: purple;">`country`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`store`</span><span >,</span>
+  <span style="font-weight:bold;">CONCAT</span>(
     <span style="color: purple;">`m`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span> <span style="color: blue;">' '</span><span >,</span> <span style="color: purple;">`m`</span><span >.</span><span style="color: purple;">`last_name`</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`manager`</span><span >,</span>
-  <span style="font-weight:bold;">sum</span>(<span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`amount`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`total_sales`</span>
-<span style="font-weight:bold;">from</span>
+  <span style="font-weight:bold;">SUM</span>(<span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`amount`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`total_sales`</span>
+<span style="font-weight:bold;">FROM</span>
   (
     (
       (
@@ -7422,47 +7422,47 @@ document.addEventListener('DOMContentLoaded', function () {
             (
               (
                 <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`payment`</span> <span style="color: purple;">`p`</span>
-                <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`rental`</span> <span style="color: purple;">`r`</span> <span style="font-weight:bold;">on</span>(
+                <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`rental`</span> <span style="color: purple;">`r`</span> <span style="font-weight:bold;">ON</span>(
                   (
                     <span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`rental_id`</span> <span >=</span> <span style="color: purple;">`r`</span><span >.</span><span style="color: purple;">`rental_id`</span>
                   )
                 )
               )
-              <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`inventory`</span> <span style="color: purple;">`i`</span> <span style="font-weight:bold;">on</span>(
+              <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`inventory`</span> <span style="color: purple;">`i`</span> <span style="font-weight:bold;">ON</span>(
                 (
                   <span style="color: purple;">`r`</span><span >.</span><span style="color: purple;">`inventory_id`</span> <span >=</span> <span style="color: purple;">`i`</span><span >.</span><span style="color: purple;">`inventory_id`</span>
                 )
               )
             )
-            <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`store`</span> <span style="color: purple;">`s`</span> <span style="font-weight:bold;">on</span>(
+            <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`store`</span> <span style="color: purple;">`s`</span> <span style="font-weight:bold;">ON</span>(
               (<span style="color: purple;">`i`</span><span >.</span><span style="color: purple;">`store_id`</span> <span >=</span> <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`store_id`</span>)
             )
           )
-          <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">on</span>(
+          <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">ON</span>(
             (
               <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`address_id`</span> <span >=</span> <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`address_id`</span>
             )
           )
         )
-        <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">on</span>(
+        <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">ON</span>(
           (<span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`city_id`</span> <span >=</span> <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`city_id`</span>)
         )
       )
-      <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="color: purple;">`cy`</span> <span style="font-weight:bold;">on</span>(
+      <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="color: purple;">`cy`</span> <span style="font-weight:bold;">ON</span>(
         (
           <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`country_id`</span> <span >=</span> <span style="color: purple;">`cy`</span><span >.</span><span style="color: purple;">`country_id`</span>
         )
       )
     )
-    <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`staff`</span> <span style="color: purple;">`m`</span> <span style="font-weight:bold;">on</span>(
+    <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`staff`</span> <span style="color: purple;">`m`</span> <span style="font-weight:bold;">ON</span>(
       (
         <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`manager_staff_id`</span> <span >=</span> <span style="color: purple;">`m`</span><span >.</span><span style="color: purple;">`staff_id`</span>
       )
     )
   )
-<span style="font-weight:bold;">group by</span>
+<span style="font-weight:bold;">GROUP BY</span>
   <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`store_id`</span>
-<span style="font-weight:bold;">order by</span>
+<span style="font-weight:bold;">ORDER BY</span>
   <span style="color: purple;">`cy`</span><span >.</span><span style="color: purple;">`country`</span><span >,</span>
   <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`city`</span></pre></td>
                                         </tr>
@@ -7493,7 +7493,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>101</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7505,7 +7505,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>91</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7577,9 +7577,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
   <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`staff_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`ID`</span><span >,</span>
-  <span style="font-weight:bold;">concat</span>(
+  <span style="font-weight:bold;">CONCAT</span>(
     <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span> <span style="color: blue;">' '</span><span >,</span> <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`last_name`</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`name`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`address`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`address`</span><span >,</span>
@@ -7588,24 +7588,24 @@ document.addEventListener('DOMContentLoaded', function () {
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`city`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`country`</span><span >,</span>
   <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`store_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`SID`</span>
-<span style="font-weight:bold;">from</span>
+<span style="font-weight:bold;">FROM</span>
   (
     (
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`staff`</span> <span style="color: purple;">`s`</span>
-        <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">on</span>(
+        <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">ON</span>(
           (
             <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`address_id`</span> <span >=</span> <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`address_id`</span>
           )
         )
       )
-      <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">on</span>(
+      <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">ON</span>(
         (
           <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`city_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`city_id`</span>
         )
       )
     )
-    <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">on</span>(
+    <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">ON</span>(
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`country_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span><span >.</span><span style="color: purple;">`country_id`</span>
       )
@@ -7636,10 +7636,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>ID</td>
                                                 <td></td>
-                                                <td>Unsigned boolean</td>
+                                                <td>unsigned boolean</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;0&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                                                                 <td></td>
@@ -7651,7 +7651,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td>&#039;&#039;</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>91</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7663,7 +7663,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7675,7 +7675,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td></td>
                                                 <td>NULL</td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>10</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7687,7 +7687,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>20</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7699,7 +7699,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7711,7 +7711,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td> string</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td>50</td>
                                                 <td>utf8mb4_0900_ai_ci</td>
                                                                                                 <td></td>
@@ -7720,10 +7720,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">8</td>
                                                 <td>SID</td>
                                                 <td></td>
-                                                <td>Unsigned boolean</td>
+                                                <td>unsigned boolean</td>
                                                 <td>NotNull</td>
                                                 <td></td>
-                                                <td>10, 0</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                                                                 <td></td>

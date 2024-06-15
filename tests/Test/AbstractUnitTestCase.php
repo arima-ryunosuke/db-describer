@@ -37,6 +37,16 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
         $connection = DriverManager::getConnection($config);
         $connection->connect();
 
+        $connection->executeStatement(<<<SQL
+        CREATE TABLE `t_datatype` (
+            `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+            `data` JSON NULL DEFAULT NULL,
+            `latlng` POINT NULL DEFAULT NULL,
+            `yesno` ENUM('Y','N') NULL DEFAULT NULL,
+            PRIMARY KEY (`id`) USING BTREE
+        )
+        SQL);
+
         $schema_manager = $connection->createSchemaManager();
         $schema_manager->createTable(new Table('t_article',
             [

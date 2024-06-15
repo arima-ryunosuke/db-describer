@@ -94,6 +94,9 @@ class Describer
         $this->columns = $config['columns'];
 
         call_user_func($config['connectionCallback'], $this->connection);
+
+        // このライブラリはデータの変換等は伴わず、データ型の識別さえできればそれでいいので未知の型を自動登録する
+        $this->connection->getDatabasePlatform()->enableAutoType(true);
     }
 
     private function _detectSchema()
@@ -349,19 +352,20 @@ class Describer
                 'Format'        => $table->getOption('row_format'),
                 'Engine'        => $table->getOption('engine'),
                 'Columns'       => $arrays($table->getColumns(), fn(Column $column, $k, $n) => [
-                    'No'          => $n + 1,
-                    'Name'        => $column->getName(),
-                    'LogicalName' => $column->getPlatformOptions()['logicalName'],
-                    'Summary'     => $column->getPlatformOptions()['summary'],
-                    'Type'        => $column->getType(),
-                    'Default'     => $column->getDefault() === null && $column->getNotnull() ? false : $column->getDefault(),
-                    'Length'      => $column->getLength(),
-                    'Unsigned'    => $column->getUnsigned(),
-                    'Precision'   => $column->getPrecision(),
-                    'Scale'       => $column->getScale(),
-                    'Collation'   => $column->getPlatformOptions()['collation'] ?? '',
-                    'Constraint'  => $column->getPlatformOptions()['constraints'] ?? [],
-                    'Generated'   => $column->getPlatformOptions()['generation'] ?? ['type' => '', 'expression' => ''],
+                    'No'              => $n + 1,
+                    'Name'            => $column->getName(),
+                    'LogicalName'     => $column->getPlatformOptions()['logicalName'],
+                    'Summary'         => $column->getPlatformOptions()['summary'],
+                    'Type'            => $column->getType(),
+                    'Default'         => $column->getDefault() === null && $column->getNotnull() ? false : $column->getDefault(),
+                    'Length'          => $column->getLength(),
+                    'Unsigned'        => $column->getUnsigned(),
+                    'Precision'       => $column->getPrecision(),
+                    'Scale'           => $column->getScale(),
+                    'TypeDeclaration' => $column->getPlatformOptions()['type-declaration'] ?? '',
+                    'Collation'       => $column->getPlatformOptions()['collation'] ?? '',
+                    'Constraint'      => $column->getPlatformOptions()['constraints'] ?? [],
+                    'Generated'       => $column->getPlatformOptions()['generation'] ?? ['type' => '', 'expression' => ''],
                 ]),
                 'Indexes'       => $arrays($table->getOption('indexes'), fn(Index $index, $k, $n) => [
                     'No'         => $n + 1,
@@ -405,18 +409,19 @@ class Describer
                 'CheckOption' => $view->getOption('view_options')['checkOption'],
                 'Updatable'   => $view->getOption('view_options')['updatable'],
                 'Columns'     => $arrays($view->getColumns(), fn(Column $column, $k, $n) => [
-                    'No'          => $n + 1,
-                    'Name'        => $column->getName(),
-                    'LogicalName' => $column->getPlatformOptions()['logicalName'],
-                    'Summary'     => $column->getPlatformOptions()['summary'],
-                    'Type'        => $column->getType(),
-                    'Default'     => $column->getDefault() === null && $column->getNotnull() ? false : $column->getDefault(),
-                    'Length'      => $column->getLength(),
-                    'Unsigned'    => $column->getUnsigned(),
-                    'Precision'   => $column->getPrecision(),
-                    'Scale'       => $column->getScale(),
-                    'Collation'   => $column->getPlatformOptions()['collation'] ?? '',
-                    'Constraint'  => $column->getPlatformOptions()['constraints'] ?? [],
+                    'No'              => $n + 1,
+                    'Name'            => $column->getName(),
+                    'LogicalName'     => $column->getPlatformOptions()['logicalName'],
+                    'Summary'         => $column->getPlatformOptions()['summary'],
+                    'Type'            => $column->getType(),
+                    'Default'         => $column->getDefault() === null && $column->getNotnull() ? false : $column->getDefault(),
+                    'Length'          => $column->getLength(),
+                    'Unsigned'        => $column->getUnsigned(),
+                    'Precision'       => $column->getPrecision(),
+                    'Scale'           => $column->getScale(),
+                    'TypeDeclaration' => $column->getPlatformOptions()['type-declaration'] ?? '',
+                    'Collation'       => $column->getPlatformOptions()['collation'] ?? '',
+                    'Constraint'      => $column->getPlatformOptions()['constraints'] ?? [],
                 ]),
                 'Indexes'     => $arrays($view->getOption('indexes'), fn(Index $index, $k, $n) => [
                     'No'         => $n + 1,

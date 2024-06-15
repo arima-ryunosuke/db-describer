@@ -39,19 +39,21 @@ class DescriberTest extends \ryunosuke\Test\AbstractUnitTestCase
     {
         /** @var \Doctrine\DBAL\Connection $connection */
 
+        $parts = parse_url(TEST_DSN);
+
         $_SERVER['HOME'] = sys_get_temp_dir();
         @unlink($_SERVER['HOME'] . '/.my.cnf');
-        file_put_contents($_SERVER['HOME'] . '/.my.cnf', '[client]
-user = hoge
-password = fuga
-');
+        file_put_contents($_SERVER['HOME'] . '/.my.cnf', "[client]
+user = {$parts['user']}
+password = {$parts['pass']}
+");
 
         // my.cnf
-        $describer = new Describer('mysql://localhost', $this->getConfig());
+        $describer = new Describer("{$parts['scheme']}://{$parts['host']}", $this->getConfig());
         $connection = (fn() => $this->connection)->call($describer);
         $expected = [
-            'user'     => 'hoge',
-            'password' => 'fuga',
+            'user'     => $parts['user'],
+            'password' => $parts['pass'],
         ];
         $this->assertEquals($expected, array_intersect_key($connection->getParams(), $expected));
 
@@ -213,7 +215,7 @@ password = fuga
 
         $html = $describer->generateHtml($this->outdir);
         $this->assertEquals(<<<EXPECTED
-        Tables:2
+        Tables:3
         Views:1
         Routines:2
         Events:1

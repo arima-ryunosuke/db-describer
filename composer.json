@@ -25,7 +25,7 @@
   "require": {
     "php": ">=7.4",
     "symfony/console": "5.*",
-    "doctrine/dbal": "3.8.*",
+    "doctrine/dbal": "3.9.*",
     "doctrine/sql-formatter": "1.*",
     "alom/graphviz": "1.1.*"
   },

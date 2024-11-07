@@ -895,6 +895,7 @@ pre[data-label]:not([data-label=""]) div.code {
     .sub-section {
         page-break-before: avoid;
     }
+
     .relation-button {
         display: none;
     }
@@ -1006,7 +1007,7 @@ select.option-input {
     border: 2px inset #ddd;
 }
 
-.relationship-list  {
+.relationship-list {
 }
 
 .relationship-list label {
@@ -1016,6 +1017,7 @@ select.option-input {
 .relationship-list .all-checkbox {
     accent-color: red;
 }
+
 .relationship-svg {
     position: relative;
     flex-basis: 100%;
@@ -1104,18 +1106,18 @@ a.disabled {
         this.interval = interval;
         this.callback = callback;
     };
-    global.Timer.throttle = function(cb, interval) {
+    global.Timer.throttle = function (cb, interval) {
         var lastTime = Date.now() - interval;
-        return function() {
+        return function () {
             if ((lastTime + interval) < Date.now()) {
                 lastTime = Date.now();
                 cb.apply(this, arguments);
             }
         };
     };
-    global.Timer.debounce = function(cb, interval) {
+    global.Timer.debounce = function (cb, interval) {
         var timer;
-        return function() {
+        return function () {
             clearTimeout(timer);
             timer = setTimeout(() => cb.apply(this, arguments), interval);
         };
@@ -1204,7 +1206,7 @@ a.disabled {
                 root: null,
                 rootMargin: '0px',
                 threshold: 0,
-            }, data)
+            }, data);
             const observer = new IntersectionObserver(function (entries, observer) {
                 entries.forEach(e => handler(Object.assign(e, {observer: observer})));
             }, opt);
@@ -1220,7 +1222,7 @@ a.disabled {
                 characterDataOldValue: false,
                 childList: false,
                 subtree: false,
-            }, data)
+            }, data);
             const observer = new MutationObserver(function (entries, observer) {
                 entries.forEach(e => handler(Object.assign(e, {observer: observer})));
             });
@@ -1385,8 +1387,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     {
                         a: {
                             class: 'toggler icon',
-                        }
-                    }
+                        },
+                    },
                 ],
             },
         });
@@ -1636,7 +1638,7 @@ document.addEventListener('DOMContentLoaded', function () {
         renderDot();
     });
     relationship.on('mousedown', 'svg', function (e) {
-        const [x, y, ,] = this.getAttribute('viewBox').split(' ').map(v => parseFloat(v));
+        const [x, y, ] = this.getAttribute('viewBox').split(' ').map(v => parseFloat(v));
         this.dragging = {startX: x, mouseX: e.offsetX, startY: y, mouseY: e.offsetY};
         e.preventDefault();
     });
@@ -1733,7 +1735,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="wy-side-nav-search">
                 <a href="" class="icon icon-home"> sakila</a>
                 <div class="version">
-                    最終更新日 2024/12/01 23:25:35                </div>
+                    最終更新日 2024/12/06 21:20:52                </div>
             </div>
             <div class="wy-menu wy-menu-vertical markdown-toc">
                 <p class="caption"><span class="caption-text">Table of Contents</span></p>
@@ -2259,7 +2261,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td><a href="#routine-rewards_report" class="reference">rewards_report</a></td>
                                                 <td>PROCEDURE</td>
                                                 <td></td>
-                                                <td>IN min_monthly_purchases tinyint unsigned, IN min_dollar_amount_purchased decimal(10,2), OUT count_rewardees int</td>
+                                                <td>OUT count_rewardees int, IN min_monthly_purchases tinyint unsigned, IN min_dollar_amount_purchased decimal(10,2)</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -2480,7 +2482,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_film_actor_actor</td>
                                                 <td>actor_id</td>
-                                                <td><a href="#table-film_actor" class="reference">film_actor</a></td>
+                                                <td><a href="#table-actor" class="reference">actor</a></td>
                                                 <td>actor_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -2755,7 +2757,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_customer_address</td>
                                                 <td>address_id</td>
-                                                <td><a href="#table-customer" class="reference">customer</a></td>
+                                                <td><a href="#table-address" class="reference">address</a></td>
                                                 <td>address_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -2764,7 +2766,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">2</td>
                                                 <td>fk_staff_address</td>
                                                 <td>address_id</td>
-                                                <td><a href="#table-staff" class="reference">staff</a></td>
+                                                <td><a href="#table-address" class="reference">address</a></td>
                                                 <td>address_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -2773,7 +2775,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">3</td>
                                                 <td>fk_store_address</td>
                                                 <td>address_id</td>
-                                                <td><a href="#table-store" class="reference">store</a></td>
+                                                <td><a href="#table-address" class="reference">address</a></td>
                                                 <td>address_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -2966,7 +2968,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_film_category_category</td>
                                                 <td>category_id</td>
-                                                <td><a href="#table-film_category" class="reference">film_category</a></td>
+                                                <td><a href="#table-category" class="reference">category</a></td>
                                                 <td>category_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -3189,7 +3191,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_address_city</td>
                                                 <td>city_id</td>
-                                                <td><a href="#table-address" class="reference">address</a></td>
+                                                <td><a href="#table-city" class="reference">city</a></td>
                                                 <td>city_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -3382,7 +3384,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_city_country</td>
                                                 <td>country_id</td>
-                                                <td><a href="#table-city" class="reference">city</a></td>
+                                                <td><a href="#table-country" class="reference">country</a></td>
                                                 <td>country_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -3695,7 +3697,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_payment_customer</td>
                                                 <td>customer_id</td>
-                                                <td><a href="#table-payment" class="reference">payment</a></td>
+                                                <td><a href="#table-customer" class="reference">customer</a></td>
                                                 <td>customer_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -3704,7 +3706,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">2</td>
                                                 <td>fk_rental_customer</td>
                                                 <td>customer_id</td>
-                                                <td><a href="#table-rental" class="reference">rental</a></td>
+                                                <td><a href="#table-customer" class="reference">customer</a></td>
                                                 <td>customer_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -4043,7 +4045,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_film_actor_film</td>
                                                 <td>film_id</td>
-                                                <td><a href="#table-film_actor" class="reference">film_actor</a></td>
+                                                <td><a href="#table-film" class="reference">film</a></td>
                                                 <td>film_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -4052,7 +4054,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">2</td>
                                                 <td>fk_film_category_film</td>
                                                 <td>film_id</td>
-                                                <td><a href="#table-film_category" class="reference">film_category</a></td>
+                                                <td><a href="#table-film" class="reference">film</a></td>
                                                 <td>film_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -4061,7 +4063,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">3</td>
                                                 <td>fk_inventory_film</td>
                                                 <td>film_id</td>
-                                                <td><a href="#table-inventory" class="reference">inventory</a></td>
+                                                <td><a href="#table-film" class="reference">film</a></td>
                                                 <td>film_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -4087,10 +4089,11 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <tr>
                                                 <td></td>
                                                 <td colspan="2" class="wrap"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span>
-<span style="font-weight:bold;">DELETE FROM</span>
-  <span style="color: #333;">film_text</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">old</span><span >.</span><span style="color: #333;">film_id</span><span >;</span> <span style="font-weight:bold;">END</span></pre></td>
+  <span style="font-weight:bold;">DELETE FROM</span>
+    <span style="color: #333;">film_text</span>
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">old</span><span >.</span><span style="color: #333;">film_id</span><span >;</span>
+<span style="font-weight:bold;">END</span></pre></td>
                                             </tr>
                                                                                     <tr>
                                                 <td class="no">2</td>
@@ -4099,11 +4102,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                             </tr>
                                             <tr>
                                                 <td></td>
-                                                <td colspan="2" class="wrap"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span> <span style="font-weight:bold;">INSERT</span> <span style="font-weight:bold;">INTO</span> <span style="color: #333;">film_text</span> (<span style="color: #333;">film_id</span><span >,</span> <span style="color: #333;">title</span><span >,</span> <span style="color: #333;">description</span>)
-<span style="font-weight:bold;">VALUES</span>
-  (
-    <span style="color: #333;">new</span><span >.</span><span style="color: #333;">film_id</span><span >,</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">title</span><span >,</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">description</span>
-  )<span >;</span> <span style="font-weight:bold;">END</span></pre></td>
+                                                <td colspan="2" class="wrap"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span>
+  <span style="font-weight:bold;">INSERT</span> <span style="font-weight:bold;">INTO</span> <span style="color: #333;">film_text</span> (<span style="color: #333;">film_id</span><span >,</span> <span style="color: #333;">title</span><span >,</span> <span style="color: #333;">description</span>)
+  <span style="font-weight:bold;">VALUES</span>
+    (
+      <span style="color: #333;">new</span><span >.</span><span style="color: #333;">film_id</span><span >,</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">title</span><span >,</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">description</span>
+    )<span >;</span>
+<span style="font-weight:bold;">END</span></pre></td>
                                             </tr>
                                                                                     <tr>
                                                 <td class="no">3</td>
@@ -4112,19 +4117,22 @@ document.addEventListener('DOMContentLoaded', function () {
                                             </tr>
                                             <tr>
                                                 <td></td>
-                                                <td colspan="2" class="wrap"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span> <span style="font-weight:bold;">IF</span> (<span style="color: #333;">old</span><span >.</span><span style="color: #333;">title</span> <span >!</span><span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">title</span>)
-<span style="font-weight:bold;">OR</span> (
-  <span style="color: #333;">old</span><span >.</span><span style="color: #333;">description</span> <span >!</span><span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">description</span>
-)
-<span style="font-weight:bold;">OR</span> (<span style="color: #333;">old</span><span >.</span><span style="color: #333;">film_id</span> <span >!</span><span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">film_id</span>) <span style="font-weight:bold;">THEN</span>
-<span style="font-weight:bold;">UPDATE</span>
-  <span style="color: #333;">film_text</span>
-<span style="font-weight:bold;">SET</span>
-  <span style="color: #333;">title</span> <span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">title</span><span >,</span>
-  <span style="color: #333;">description</span> <span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">description</span><span >,</span>
-  <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">film_id</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">old</span><span >.</span><span style="color: #333;">film_id</span><span >;</span> <span style="font-weight:bold;">END</span> <span style="font-weight:bold;">IF</span><span >;</span> <span style="font-weight:bold;">END</span></pre></td>
+                                                <td colspan="2" class="wrap"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span>
+  <span style="font-weight:bold;">IF</span> (<span style="color: #333;">old</span><span >.</span><span style="color: #333;">title</span> <span >!</span><span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">title</span>)
+  <span style="font-weight:bold;">OR</span> (
+    <span style="color: #333;">old</span><span >.</span><span style="color: #333;">description</span> <span >!</span><span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">description</span>
+  )
+  <span style="font-weight:bold;">OR</span> (<span style="color: #333;">old</span><span >.</span><span style="color: #333;">film_id</span> <span >!</span><span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">film_id</span>) <span style="font-weight:bold;">THEN</span>
+    <span style="font-weight:bold;">UPDATE</span>
+      <span style="color: #333;">film_text</span>
+    <span style="font-weight:bold;">SET</span>
+      <span style="color: #333;">title</span> <span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">title</span><span >,</span>
+      <span style="color: #333;">description</span> <span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">description</span><span >,</span>
+      <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">new</span><span >.</span><span style="color: #333;">film_id</span>
+    <span style="font-weight:bold;">WHERE</span>
+      <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">old</span><span >.</span><span style="color: #333;">film_id</span><span >;</span>
+  <span style="font-weight:bold;">END</span> <span style="font-weight:bold;">IF</span><span >;</span>
+<span style="font-weight:bold;">END</span></pre></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -4960,7 +4968,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_rental_inventory</td>
                                                 <td>inventory_id</td>
-                                                <td><a href="#table-rental" class="reference">rental</a></td>
+                                                <td><a href="#table-inventory" class="reference">inventory</a></td>
                                                 <td>inventory_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -5153,7 +5161,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_film_language_original</td>
                                                 <td>language_id</td>
-                                                <td><a href="#table-film" class="reference">film</a></td>
+                                                <td><a href="#table-language" class="reference">language</a></td>
                                                 <td>original_language_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -5162,7 +5170,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">2</td>
                                                 <td>fk_film_language</td>
                                                 <td>language_id</td>
-                                                <td><a href="#table-film" class="reference">film</a></td>
+                                                <td><a href="#table-language" class="reference">language</a></td>
                                                 <td>language_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -5753,7 +5761,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_payment_rental</td>
                                                 <td>rental_id</td>
-                                                <td><a href="#table-payment" class="reference">payment</a></td>
+                                                <td><a href="#table-rental" class="reference">rental</a></td>
                                                 <td>rental_id</td>
                                                 <td>CASCADE</td>
                                                 <td>SET NULL</td>
@@ -6084,7 +6092,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_payment_staff</td>
                                                 <td>staff_id</td>
-                                                <td><a href="#table-payment" class="reference">payment</a></td>
+                                                <td><a href="#table-staff" class="reference">staff</a></td>
                                                 <td>staff_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -6093,7 +6101,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">2</td>
                                                 <td>fk_rental_staff</td>
                                                 <td>staff_id</td>
-                                                <td><a href="#table-rental" class="reference">rental</a></td>
+                                                <td><a href="#table-staff" class="reference">staff</a></td>
                                                 <td>staff_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -6102,7 +6110,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">3</td>
                                                 <td>fk_store_staff</td>
                                                 <td>staff_id</td>
-                                                <td><a href="#table-store" class="reference">store</a></td>
+                                                <td><a href="#table-staff" class="reference">staff</a></td>
                                                 <td>manager_staff_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -6342,7 +6350,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">1</td>
                                                 <td>fk_customer_store</td>
                                                 <td>store_id</td>
-                                                <td><a href="#table-customer" class="reference">customer</a></td>
+                                                <td><a href="#table-store" class="reference">store</a></td>
                                                 <td>store_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -6351,7 +6359,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">2</td>
                                                 <td>fk_inventory_store</td>
                                                 <td>store_id</td>
-                                                <td><a href="#table-inventory" class="reference">inventory</a></td>
+                                                <td><a href="#table-store" class="reference">store</a></td>
                                                 <td>store_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -6360,7 +6368,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                                 <td class="no">3</td>
                                                 <td>fk_staff_store</td>
                                                 <td>store_id</td>
-                                                <td><a href="#table-staff" class="reference">staff</a></td>
+                                                <td><a href="#table-store" class="reference">store</a></td>
                                                 <td>store_id</td>
                                                 <td>CASCADE</td>
                                                 <td></td>
@@ -6421,65 +6429,65 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`actor_id`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`first_name`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`first_name`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`last_name`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`last_name`</span><span >,</span>
-  <span style="font-weight:bold;">GROUP_CONCAT</span>(
-    <span style="font-weight:bold;">DISTINCT</span> <span style="font-weight:bold;">CONCAT</span>(
+  <span style="font-weight:bold;">group_concat</span>(
+    <span style="font-weight:bold;">distinct</span> <span style="font-weight:bold;">concat</span>(
       <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`name`</span><span >,</span>
       <span style="color: blue;">': '</span><span >,</span>
       (
-        <span style="font-weight:bold;">SELECT</span>
-          <span style="font-weight:bold;">GROUP_CONCAT</span>(
+        <span style="font-weight:bold;">select</span>
+          <span style="font-weight:bold;">group_concat</span>(
             <span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`title`</span>
-            <span style="font-weight:bold;">ORDER BY</span>
-              <span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`title`</span> <span style="font-weight:bold;">ASC</span> <span style="font-weight:bold;">SEPARATOR</span> <span style="color: blue;">', '</span>
+            <span style="font-weight:bold;">order by</span>
+              <span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`title`</span> <span style="font-weight:bold;">ASC</span> <span style="font-weight:bold;">separator</span> <span style="color: blue;">', '</span>
           )
-        <span style="font-weight:bold;">FROM</span>
+        <span style="font-weight:bold;">from</span>
           (
             (
               <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span> <span style="color: purple;">`f`</span>
-              <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">ON</span>(
+              <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">on</span>(
                 (<span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`film_id`</span>)
               )
             )
-            <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="color: purple;">`fa`</span> <span style="font-weight:bold;">ON</span>(
+            <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="color: purple;">`fa`</span> <span style="font-weight:bold;">on</span>(
               (<span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`fa`</span><span >.</span><span style="color: purple;">`film_id`</span>)
             )
           )
-        <span style="font-weight:bold;">WHERE</span>
+        <span style="font-weight:bold;">where</span>
           (
             (
               <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`category_id`</span> <span >=</span> <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`category_id`</span>
             )
-            <span style="font-weight:bold;">AND</span> (<span style="color: purple;">`fa`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span >=</span> <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`actor_id`</span>)
+            <span style="font-weight:bold;">and</span> (<span style="color: purple;">`fa`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span >=</span> <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`actor_id`</span>)
           )
       )
     )
-    <span style="font-weight:bold;">ORDER BY</span>
-      <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`name`</span> <span style="font-weight:bold;">ASC</span> <span style="font-weight:bold;">SEPARATOR</span> <span style="color: blue;">'; '</span>
+    <span style="font-weight:bold;">order by</span>
+      <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`name`</span> <span style="font-weight:bold;">ASC</span> <span style="font-weight:bold;">separator</span> <span style="color: blue;">'; '</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`film_info`</span>
-<span style="font-weight:bold;">FROM</span>
+<span style="font-weight:bold;">from</span>
   (
     (
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span> <span style="color: purple;">`a`</span>
-        <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="color: purple;">`fa`</span> <span style="font-weight:bold;">ON</span>(
+        <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="color: purple;">`fa`</span> <span style="font-weight:bold;">on</span>(
           (<span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span >=</span> <span style="color: purple;">`fa`</span><span >.</span><span style="color: purple;">`actor_id`</span>)
         )
       )
-      <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">ON</span>(
+      <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">on</span>(
         (<span style="color: purple;">`fa`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`film_id`</span>)
       )
     )
-    <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">ON</span>(
+    <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">on</span>(
       (
         <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`category_id`</span> <span >=</span> <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`category_id`</span>
       )
     )
   )
-<span style="font-weight:bold;">GROUP BY</span>
+<span style="font-weight:bold;">group by</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`actor_id`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`last_name`</span></pre></td>
@@ -6607,9 +6615,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
   <span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`customer_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`ID`</span><span >,</span>
-  <span style="font-weight:bold;">CONCAT</span>(
+  <span style="font-weight:bold;">concat</span>(
     <span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span> <span style="color: blue;">' '</span><span >,</span> <span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`last_name`</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`name`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`address`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`address`</span><span >,</span>
@@ -6617,26 +6625,26 @@ document.addEventListener('DOMContentLoaded', function () {
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`phone`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`phone`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`city`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`country`</span><span >,</span>
-  <span style="font-weight:bold;">IF</span>(<span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`active`</span><span >,</span> <span style="color: blue;">'active'</span><span >,</span> <span style="color: blue;">''</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`notes`</span><span >,</span>
+  <span style="font-weight:bold;">if</span>(<span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`active`</span><span >,</span> <span style="color: blue;">'active'</span><span >,</span> <span style="color: blue;">''</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`notes`</span><span >,</span>
   <span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`store_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`SID`</span>
-<span style="font-weight:bold;">FROM</span>
+<span style="font-weight:bold;">from</span>
   (
     (
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`customer`</span> <span style="color: purple;">`cu`</span>
-        <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">ON</span>(
+        <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">on</span>(
           (
             <span style="color: purple;">`cu`</span><span >.</span><span style="color: purple;">`address_id`</span> <span >=</span> <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`address_id`</span>
           )
         )
       )
-      <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">ON</span>(
+      <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">on</span>(
         (
           <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`city_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`city_id`</span>
         )
       )
     )
-    <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">ON</span>(
+    <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">on</span>(
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`country_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span><span >.</span><span style="color: purple;">`country_id`</span>
       )
@@ -6826,50 +6834,50 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`FID`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`title`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`title`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`description`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`description`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`name`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`category`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`rental_rate`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`price`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`length`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`length`</span><span >,</span>
-  <span style="font-weight:bold;">GROUP_CONCAT</span>(
-    <span style="font-weight:bold;">CONCAT</span>(
+  <span style="font-weight:bold;">group_concat</span>(
+    <span style="font-weight:bold;">concat</span>(
       <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span> <span style="color: blue;">' '</span><span >,</span>
       <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`last_name`</span>
-    ) <span style="font-weight:bold;">SEPARATOR</span> <span style="color: blue;">', '</span>
+    ) <span style="font-weight:bold;">separator</span> <span style="color: blue;">', '</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`actors`</span>
-<span style="font-weight:bold;">FROM</span>
+<span style="font-weight:bold;">from</span>
   (
     (
       (
         (
           <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span>
-          <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="font-weight:bold;">ON</span>(
+          <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="font-weight:bold;">on</span>(
             (
               <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span>
             )
           )
         )
-        <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="font-weight:bold;">ON</span>(
+        <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="font-weight:bold;">on</span>(
           (
             <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`category_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span><span >.</span><span style="color: purple;">`category_id`</span>
           )
         )
       )
-      <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="font-weight:bold;">ON</span>(
+      <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="font-weight:bold;">on</span>(
         (
           <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span><span >.</span><span style="color: purple;">`film_id`</span>
         )
       )
     )
-    <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span> <span style="font-weight:bold;">ON</span>(
+    <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span> <span style="font-weight:bold;">on</span>(
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`actor_id`</span>
       )
     )
   )
-<span style="font-weight:bold;">GROUP BY</span>
+<span style="font-weight:bold;">group by</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`name`</span></pre></td>
                                         </tr>
@@ -7032,79 +7040,79 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`FID`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`title`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`title`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`description`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`description`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`name`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`category`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`rental_rate`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`price`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`length`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`length`</span><span >,</span>
-  <span style="font-weight:bold;">GROUP_CONCAT</span>(
-    <span style="font-weight:bold;">CONCAT</span>(
-      <span style="font-weight:bold;">CONCAT</span>(
-        <span style="font-weight:bold;">UPPER</span>(
-          <span style="font-weight:bold;">SUBSTR</span>(
+  <span style="font-weight:bold;">group_concat</span>(
+    <span style="font-weight:bold;">concat</span>(
+      <span style="font-weight:bold;">concat</span>(
+        <span style="font-weight:bold;">upper</span>(
+          <span style="font-weight:bold;">substr</span>(
             <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span> <span style="color: green;">1</span><span >,</span>
             <span style="color: green;">1</span>
           )
         )<span >,</span>
-        <span style="font-weight:bold;">LOWER</span>(
-          <span style="font-weight:bold;">SUBSTR</span>(
+        <span style="font-weight:bold;">lower</span>(
+          <span style="font-weight:bold;">substr</span>(
             <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span>
             <span style="color: green;">2</span><span >,</span>
-            <span style="font-weight:bold;">LENGTH</span>(<span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`first_name`</span>)
+            <span style="font-weight:bold;">length</span>(<span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`first_name`</span>)
           )
         )<span >,</span>
         <span style="color: blue;">' '</span><span >,</span>
-        <span style="font-weight:bold;">CONCAT</span>(
-          <span style="font-weight:bold;">UPPER</span>(
-            <span style="font-weight:bold;">SUBSTR</span>(
+        <span style="font-weight:bold;">concat</span>(
+          <span style="font-weight:bold;">upper</span>(
+            <span style="font-weight:bold;">substr</span>(
               <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`last_name`</span><span >,</span> <span style="color: green;">1</span><span >,</span>
               <span style="color: green;">1</span>
             )
           )<span >,</span>
-          <span style="font-weight:bold;">LOWER</span>(
-            <span style="font-weight:bold;">SUBSTR</span>(
+          <span style="font-weight:bold;">lower</span>(
+            <span style="font-weight:bold;">substr</span>(
               <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`last_name`</span><span >,</span>
               <span style="color: green;">2</span><span >,</span>
-              <span style="font-weight:bold;">LENGTH</span>(<span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`last_name`</span>)
+              <span style="font-weight:bold;">length</span>(<span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`last_name`</span>)
             )
           )
         )
       )
-    ) <span style="font-weight:bold;">SEPARATOR</span> <span style="color: blue;">', '</span>
+    ) <span style="font-weight:bold;">separator</span> <span style="color: blue;">', '</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`actors`</span>
-<span style="font-weight:bold;">FROM</span>
+<span style="font-weight:bold;">from</span>
   (
     (
       (
         (
           <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span>
-          <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="font-weight:bold;">ON</span>(
+          <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="font-weight:bold;">on</span>(
             (
               <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span>
             )
           )
         )
-        <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="font-weight:bold;">ON</span>(
+        <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="font-weight:bold;">on</span>(
           (
             <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`category_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span><span >.</span><span style="color: purple;">`category_id`</span>
           )
         )
       )
-      <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="font-weight:bold;">ON</span>(
+      <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span> <span style="font-weight:bold;">on</span>(
         (
           <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span><span >.</span><span style="color: purple;">`film_id`</span>
         )
       )
     )
-    <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span> <span style="font-weight:bold;">ON</span>(
+    <span style="font-weight:bold;">left join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span> <span style="font-weight:bold;">on</span>(
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_actor`</span><span >.</span><span style="color: purple;">`actor_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`actor`</span><span >.</span><span style="color: purple;">`actor_id`</span>
       )
     )
   )
-<span style="font-weight:bold;">GROUP BY</span>
+<span style="font-weight:bold;">group by</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span><span >.</span><span style="color: purple;">`film_id`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span><span >.</span><span style="color: purple;">`name`</span></pre></td>
                                         </tr>
@@ -7267,46 +7275,46 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
   <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`name`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`category`</span><span >,</span>
-  <span style="font-weight:bold;">SUM</span>(<span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`amount`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`total_sales`</span>
-<span style="font-weight:bold;">FROM</span>
+  <span style="font-weight:bold;">sum</span>(<span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`amount`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`total_sales`</span>
+<span style="font-weight:bold;">from</span>
   (
     (
       (
         (
           (
             <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`payment`</span> <span style="color: purple;">`p`</span>
-            <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`rental`</span> <span style="color: purple;">`r`</span> <span style="font-weight:bold;">ON</span>(
+            <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`rental`</span> <span style="color: purple;">`r`</span> <span style="font-weight:bold;">on</span>(
               (
                 <span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`rental_id`</span> <span >=</span> <span style="color: purple;">`r`</span><span >.</span><span style="color: purple;">`rental_id`</span>
               )
             )
           )
-          <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`inventory`</span> <span style="color: purple;">`i`</span> <span style="font-weight:bold;">ON</span>(
+          <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`inventory`</span> <span style="color: purple;">`i`</span> <span style="font-weight:bold;">on</span>(
             (
               <span style="color: purple;">`r`</span><span >.</span><span style="color: purple;">`inventory_id`</span> <span >=</span> <span style="color: purple;">`i`</span><span >.</span><span style="color: purple;">`inventory_id`</span>
             )
           )
         )
-        <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span> <span style="color: purple;">`f`</span> <span style="font-weight:bold;">ON</span>(
+        <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film`</span> <span style="color: purple;">`f`</span> <span style="font-weight:bold;">on</span>(
           (<span style="color: purple;">`i`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`film_id`</span>)
         )
       )
-      <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">ON</span>(
+      <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`film_category`</span> <span style="color: purple;">`fc`</span> <span style="font-weight:bold;">on</span>(
         (<span style="color: purple;">`f`</span><span >.</span><span style="color: purple;">`film_id`</span> <span >=</span> <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`film_id`</span>)
       )
     )
-    <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">ON</span>(
+    <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`category`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">on</span>(
       (
         <span style="color: purple;">`fc`</span><span >.</span><span style="color: purple;">`category_id`</span> <span >=</span> <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`category_id`</span>
       )
     )
   )
-<span style="font-weight:bold;">GROUP BY</span>
+<span style="font-weight:bold;">group by</span>
   <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`name`</span>
-<span style="font-weight:bold;">ORDER BY</span>
-  <span style="color: purple;">`total_sales`</span> <span style="font-weight:bold;">DESC</span></pre></td>
+<span style="font-weight:bold;">order by</span>
+  <span style="color: purple;">`total_sales`</span> <span style="font-weight:bold;">desc</span></pre></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -7407,13 +7415,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
-  <span style="font-weight:bold;">CONCAT</span>(<span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`city`</span><span >,</span> <span style="color: blue;">','</span><span >,</span> <span style="color: purple;">`cy`</span><span >.</span><span style="color: purple;">`country`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`store`</span><span >,</span>
-  <span style="font-weight:bold;">CONCAT</span>(
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
+  <span style="font-weight:bold;">concat</span>(<span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`city`</span><span >,</span> <span style="color: blue;">','</span><span >,</span> <span style="color: purple;">`cy`</span><span >.</span><span style="color: purple;">`country`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`store`</span><span >,</span>
+  <span style="font-weight:bold;">concat</span>(
     <span style="color: purple;">`m`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span> <span style="color: blue;">' '</span><span >,</span> <span style="color: purple;">`m`</span><span >.</span><span style="color: purple;">`last_name`</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`manager`</span><span >,</span>
-  <span style="font-weight:bold;">SUM</span>(<span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`amount`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`total_sales`</span>
-<span style="font-weight:bold;">FROM</span>
+  <span style="font-weight:bold;">sum</span>(<span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`amount`</span>) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`total_sales`</span>
+<span style="font-weight:bold;">from</span>
   (
     (
       (
@@ -7422,47 +7430,47 @@ document.addEventListener('DOMContentLoaded', function () {
             (
               (
                 <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`payment`</span> <span style="color: purple;">`p`</span>
-                <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`rental`</span> <span style="color: purple;">`r`</span> <span style="font-weight:bold;">ON</span>(
+                <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`rental`</span> <span style="color: purple;">`r`</span> <span style="font-weight:bold;">on</span>(
                   (
                     <span style="color: purple;">`p`</span><span >.</span><span style="color: purple;">`rental_id`</span> <span >=</span> <span style="color: purple;">`r`</span><span >.</span><span style="color: purple;">`rental_id`</span>
                   )
                 )
               )
-              <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`inventory`</span> <span style="color: purple;">`i`</span> <span style="font-weight:bold;">ON</span>(
+              <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`inventory`</span> <span style="color: purple;">`i`</span> <span style="font-weight:bold;">on</span>(
                 (
                   <span style="color: purple;">`r`</span><span >.</span><span style="color: purple;">`inventory_id`</span> <span >=</span> <span style="color: purple;">`i`</span><span >.</span><span style="color: purple;">`inventory_id`</span>
                 )
               )
             )
-            <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`store`</span> <span style="color: purple;">`s`</span> <span style="font-weight:bold;">ON</span>(
+            <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`store`</span> <span style="color: purple;">`s`</span> <span style="font-weight:bold;">on</span>(
               (<span style="color: purple;">`i`</span><span >.</span><span style="color: purple;">`store_id`</span> <span >=</span> <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`store_id`</span>)
             )
           )
-          <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">ON</span>(
+          <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">on</span>(
             (
               <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`address_id`</span> <span >=</span> <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`address_id`</span>
             )
           )
         )
-        <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">ON</span>(
+        <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="color: purple;">`c`</span> <span style="font-weight:bold;">on</span>(
           (<span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`city_id`</span> <span >=</span> <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`city_id`</span>)
         )
       )
-      <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="color: purple;">`cy`</span> <span style="font-weight:bold;">ON</span>(
+      <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="color: purple;">`cy`</span> <span style="font-weight:bold;">on</span>(
         (
           <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`country_id`</span> <span >=</span> <span style="color: purple;">`cy`</span><span >.</span><span style="color: purple;">`country_id`</span>
         )
       )
     )
-    <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`staff`</span> <span style="color: purple;">`m`</span> <span style="font-weight:bold;">ON</span>(
+    <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`staff`</span> <span style="color: purple;">`m`</span> <span style="font-weight:bold;">on</span>(
       (
         <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`manager_staff_id`</span> <span >=</span> <span style="color: purple;">`m`</span><span >.</span><span style="color: purple;">`staff_id`</span>
       )
     )
   )
-<span style="font-weight:bold;">GROUP BY</span>
+<span style="font-weight:bold;">group by</span>
   <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`store_id`</span>
-<span style="font-weight:bold;">ORDER BY</span>
+<span style="font-weight:bold;">order by</span>
   <span style="color: purple;">`cy`</span><span >.</span><span style="color: purple;">`country`</span><span >,</span>
   <span style="color: purple;">`c`</span><span >.</span><span style="color: purple;">`city`</span></pre></td>
                                         </tr>
@@ -7577,9 +7585,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">SELECT</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">select</span>
   <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`staff_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`ID`</span><span >,</span>
-  <span style="font-weight:bold;">CONCAT</span>(
+  <span style="font-weight:bold;">concat</span>(
     <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`first_name`</span><span >,</span> <span style="color: blue;">' '</span><span >,</span> <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`last_name`</span>
   ) <span style="font-weight:bold;">AS</span> <span style="color: purple;">`name`</span><span >,</span>
   <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`address`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`address`</span><span >,</span>
@@ -7588,24 +7596,24 @@ document.addEventListener('DOMContentLoaded', function () {
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`city`</span><span >,</span>
   <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`country`</span><span >,</span>
   <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`store_id`</span> <span style="font-weight:bold;">AS</span> <span style="color: purple;">`SID`</span>
-<span style="font-weight:bold;">FROM</span>
+<span style="font-weight:bold;">from</span>
   (
     (
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`staff`</span> <span style="color: purple;">`s`</span>
-        <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">ON</span>(
+        <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`address`</span> <span style="color: purple;">`a`</span> <span style="font-weight:bold;">on</span>(
           (
             <span style="color: purple;">`s`</span><span >.</span><span style="color: purple;">`address_id`</span> <span >=</span> <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`address_id`</span>
           )
         )
       )
-      <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">ON</span>(
+      <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span> <span style="font-weight:bold;">on</span>(
         (
           <span style="color: purple;">`a`</span><span >.</span><span style="color: purple;">`city_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`city_id`</span>
         )
       )
     )
-    <span style="font-weight:bold;">JOIN</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">ON</span>(
+    <span style="font-weight:bold;">join</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span> <span style="font-weight:bold;">on</span>(
       (
         <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`city`</span><span >.</span><span style="color: purple;">`country_id`</span> <span >=</span> <span style="color: purple;">`sakila`</span><span >.</span><span style="color: purple;">`country`</span><span >.</span><span style="color: purple;">`country_id`</span>
       )
@@ -7790,22 +7798,24 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <tr>
                                             <th>SQL</th>
                                             <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="color: #333;">inventory_id</span>
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">inventory</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">p_film_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">store_id</span> <span >=</span> <span style="color: #333;">p_store_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">inventory_in_stock</span>(<span style="color: #333;">inventory_id</span>)<span >;</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="font-weight:bold;">COUNT</span>(<span >*</span>)
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">inventory</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">p_film_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">store_id</span> <span >=</span> <span style="color: #333;">p_store_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">inventory_in_stock</span>(<span style="color: #333;">inventory_id</span>) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">p_film_count</span><span >;</span> <span style="font-weight:bold;">END</span></pre></td>
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="color: #333;">inventory_id</span>
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">inventory</span>
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">p_film_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">store_id</span> <span >=</span> <span style="color: #333;">p_store_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">inventory_in_stock</span>(<span style="color: #333;">inventory_id</span>)<span >;</span>
+
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="font-weight:bold;">COUNT</span>(<span >*</span>)
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">inventory</span>
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">p_film_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">store_id</span> <span >=</span> <span style="color: #333;">p_store_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">inventory_in_stock</span>(<span style="color: #333;">inventory_id</span>) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">p_film_count</span><span >;</span>
+<span style="font-weight:bold;">END</span></pre></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -7849,22 +7859,24 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <tr>
                                             <th>SQL</th>
                                             <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="color: #333;">inventory_id</span>
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">inventory</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">p_film_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">store_id</span> <span >=</span> <span style="color: #333;">p_store_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="font-weight:bold;">NOT</span> <span style="color: #333;">inventory_in_stock</span>(<span style="color: #333;">inventory_id</span>)<span >;</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="font-weight:bold;">COUNT</span>(<span >*</span>)
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">inventory</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">p_film_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">store_id</span> <span >=</span> <span style="color: #333;">p_store_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="font-weight:bold;">NOT</span> <span style="color: #333;">inventory_in_stock</span>(<span style="color: #333;">inventory_id</span>) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">p_film_count</span><span >;</span> <span style="font-weight:bold;">END</span></pre></td>
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="color: #333;">inventory_id</span>
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">inventory</span>
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">p_film_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">store_id</span> <span >=</span> <span style="color: #333;">p_store_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="font-weight:bold;">NOT</span> <span style="color: #333;">inventory_in_stock</span>(<span style="color: #333;">inventory_id</span>)<span >;</span>
+
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="font-weight:bold;">COUNT</span>(<span >*</span>)
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">inventory</span>
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">p_film_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">store_id</span> <span >=</span> <span style="color: #333;">p_store_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="font-weight:bold;">NOT</span> <span style="color: #333;">inventory_in_stock</span>(<span style="color: #333;">inventory_id</span>) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">p_film_count</span><span >;</span>
+<span style="font-weight:bold;">END</span></pre></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -7907,57 +7919,68 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span> <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_rentfees</span> <span style="color: #333;">DECIMAL</span>(<span style="color: green;">5</span><span >,</span> <span style="color: green;">2</span>)<span >;</span> <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_overfees</span> <span style="color: #333;">INTEGER</span><span >;</span> <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_payments</span> <span style="color: #333;">DECIMAL</span>(<span style="color: green;">5</span><span >,</span> <span style="color: green;">2</span>)<span >;</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="font-weight:bold;">IFNULL</span>(
-    <span style="font-weight:bold;">SUM</span>(<span style="color: #333;">film</span><span >.</span><span style="color: #333;">rental_rate</span>)<span >,</span>
-    <span style="color: green;">0</span>
-  ) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_rentfees</span>
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">film</span><span >,</span>
-  <span style="color: #333;">inventory</span><span >,</span>
-  <span style="color: #333;">rental</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">film</span><span >.</span><span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">inventory</span><span >.</span><span style="color: #333;">film_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">inventory</span><span >.</span><span style="color: #333;">inventory_id</span> <span >=</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">inventory_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">rental_date</span> <span >&lt;</span><span >=</span> <span style="color: #333;">p_effective_date</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">customer_id</span> <span >=</span> <span style="color: #333;">p_customer_id</span><span >;</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="font-weight:bold;">IFNULL</span>(
-    <span style="font-weight:bold;">SUM</span>(
-      <span style="font-weight:bold;">IF</span>(
-        (
-          <span style="font-weight:bold;">TO_DAYS</span>(<span style="color: #333;">rental</span><span >.</span><span style="color: #333;">return_date</span>) <span >-</span> <span style="font-weight:bold;">TO_DAYS</span>(<span style="color: #333;">rental</span><span >.</span><span style="color: #333;">rental_date</span>)
-        ) <span >&gt;</span> <span style="color: #333;">film</span><span >.</span><span style="color: #333;">rental_duration</span><span >,</span>
-        (
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span>
+  <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_rentfees</span> <span style="font-weight:bold;">DECIMAL</span>(<span style="color: green;">5</span><span >,</span> <span style="color: green;">2</span>)<span >;</span>
+
+  <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_overfees</span> <span style="font-weight:bold;">INTEGER</span><span >;</span>
+
+  <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_payments</span> <span style="font-weight:bold;">DECIMAL</span>(<span style="color: green;">5</span><span >,</span> <span style="color: green;">2</span>)<span >;</span>
+
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="font-weight:bold;">IFNULL</span>(
+      <span style="font-weight:bold;">SUM</span>(<span style="color: #333;">film</span><span >.</span><span style="color: #333;">rental_rate</span>)<span >,</span>
+      <span style="color: green;">0</span>
+    ) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_rentfees</span>
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">film</span><span >,</span>
+    <span style="color: #333;">inventory</span><span >,</span>
+    <span style="color: #333;">rental</span>
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="color: #333;">film</span><span >.</span><span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">inventory</span><span >.</span><span style="color: #333;">film_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">inventory</span><span >.</span><span style="color: #333;">inventory_id</span> <span >=</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">inventory_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">rental_date</span> <span >&lt;</span><span >=</span> <span style="color: #333;">p_effective_date</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">customer_id</span> <span >=</span> <span style="color: #333;">p_customer_id</span><span >;</span>
+
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="font-weight:bold;">IFNULL</span>(
+      <span style="font-weight:bold;">SUM</span>(
+        <span style="font-weight:bold;">IF</span>(
           (
             <span style="font-weight:bold;">TO_DAYS</span>(<span style="color: #333;">rental</span><span >.</span><span style="color: #333;">return_date</span>) <span >-</span> <span style="font-weight:bold;">TO_DAYS</span>(<span style="color: #333;">rental</span><span >.</span><span style="color: #333;">rental_date</span>)
-          ) <span >-</span> <span style="color: #333;">film</span><span >.</span><span style="color: #333;">rental_duration</span>
-        )<span >,</span>
-        <span style="color: green;">0</span>
-      )
-    )<span >,</span>
-    <span style="color: green;">0</span>
-  ) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_overfees</span>
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">rental</span><span >,</span>
-  <span style="color: #333;">inventory</span><span >,</span>
-  <span style="color: #333;">film</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">film</span><span >.</span><span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">inventory</span><span >.</span><span style="color: #333;">film_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">inventory</span><span >.</span><span style="color: #333;">inventory_id</span> <span >=</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">inventory_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">rental_date</span> <span >&lt;</span><span >=</span> <span style="color: #333;">p_effective_date</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">customer_id</span> <span >=</span> <span style="color: #333;">p_customer_id</span><span >;</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="font-weight:bold;">IFNULL</span>(
-    <span style="font-weight:bold;">SUM</span>(<span style="color: #333;">payment</span><span >.</span><span style="color: #333;">amount</span>)<span >,</span>
-    <span style="color: green;">0</span>
-  ) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_payments</span>
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">payment</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">payment</span><span >.</span><span style="color: #333;">payment_date</span> <span >&lt;</span><span >=</span> <span style="color: #333;">p_effective_date</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">payment</span><span >.</span><span style="color: #333;">customer_id</span> <span >=</span> <span style="color: #333;">p_customer_id</span><span >;</span> <span style="font-weight:bold;">RETURN</span> <span style="color: #333;">v_rentfees</span> <span >+</span> <span style="color: #333;">v_overfees</span> <span >-</span> <span style="color: #333;">v_payments</span><span >;</span> <span style="font-weight:bold;">END</span></pre></td>
+          ) <span >&gt;</span> <span style="color: #333;">film</span><span >.</span><span style="color: #333;">rental_duration</span><span >,</span>
+          (
+            (
+              <span style="font-weight:bold;">TO_DAYS</span>(<span style="color: #333;">rental</span><span >.</span><span style="color: #333;">return_date</span>) <span >-</span> <span style="font-weight:bold;">TO_DAYS</span>(<span style="color: #333;">rental</span><span >.</span><span style="color: #333;">rental_date</span>)
+            ) <span >-</span> <span style="color: #333;">film</span><span >.</span><span style="color: #333;">rental_duration</span>
+          )<span >,</span>
+          <span style="color: green;">0</span>
+        )
+      )<span >,</span>
+      <span style="color: green;">0</span>
+    ) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_overfees</span>
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">rental</span><span >,</span>
+    <span style="color: #333;">inventory</span><span >,</span>
+    <span style="color: #333;">film</span>
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="color: #333;">film</span><span >.</span><span style="color: #333;">film_id</span> <span >=</span> <span style="color: #333;">inventory</span><span >.</span><span style="color: #333;">film_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">inventory</span><span >.</span><span style="color: #333;">inventory_id</span> <span >=</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">inventory_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">rental_date</span> <span >&lt;</span><span >=</span> <span style="color: #333;">p_effective_date</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">customer_id</span> <span >=</span> <span style="color: #333;">p_customer_id</span><span >;</span>
+
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="font-weight:bold;">IFNULL</span>(
+      <span style="font-weight:bold;">SUM</span>(<span style="color: #333;">payment</span><span >.</span><span style="color: #333;">amount</span>)<span >,</span>
+      <span style="color: green;">0</span>
+    ) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_payments</span>
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">payment</span>
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="color: #333;">payment</span><span >.</span><span style="color: #333;">payment_date</span> <span >&lt;</span><span >=</span> <span style="color: #333;">p_effective_date</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">payment</span><span >.</span><span style="color: #333;">customer_id</span> <span >=</span> <span style="color: #333;">p_customer_id</span><span >;</span>
+
+  <span style="font-weight:bold;">RETURN</span> <span style="color: #333;">v_rentfees</span> <span >+</span> <span style="color: #333;">v_overfees</span> <span >-</span> <span style="color: #333;">v_payments</span><span >;</span>
+<span style="font-weight:bold;">END</span></pre></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -8000,14 +8023,21 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span> <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_customer_id</span> <span style="color: #333;">INT</span><span >;</span> <span style="color: #333;">DECLARE</span> <span style="color: #333;">EXIT</span> <span style="color: #333;">HANDLER</span> <span style="font-weight:bold;">FOR</span> <span style="font-weight:bold;">NOT</span> <span style="color: #333;">FOUND</span> <span style="font-weight:bold;">RETURN</span> <span style="font-weight:bold;">NULL</span><span >;</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="color: #333;">customer_id</span> <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_customer_id</span>
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">rental</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">return_date</span> <span style="font-weight:bold;">IS</span> <span style="font-weight:bold;">NULL</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">inventory_id</span> <span >=</span> <span style="color: #333;">p_inventory_id</span><span >;</span> <span style="font-weight:bold;">RETURN</span> <span style="color: #333;">v_customer_id</span><span >;</span> <span style="font-weight:bold;">END</span></pre></td>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span>
+  <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_customer_id</span> <span style="font-weight:bold;">INT</span><span >;</span>
+
+  <span style="color: #333;">DECLARE</span> <span style="color: #333;">EXIT</span> <span style="color: #333;">HANDLER</span> <span style="font-weight:bold;">FOR</span> <span style="font-weight:bold;">NOT</span> <span style="color: #333;">FOUND</span> <span style="font-weight:bold;">RETURN</span> <span style="font-weight:bold;">NULL</span><span >;</span>
+
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="color: #333;">customer_id</span> <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_customer_id</span>
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">rental</span>
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="color: #333;">return_date</span> <span style="font-weight:bold;">IS</span> <span style="font-weight:bold;">NULL</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">inventory_id</span> <span >=</span> <span style="color: #333;">p_inventory_id</span><span >;</span>
+
+  <span style="font-weight:bold;">RETURN</span> <span style="color: #333;">v_customer_id</span><span >;</span>
+<span style="font-weight:bold;">END</span></pre></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -8050,21 +8080,37 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span> <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_rentals</span> <span style="color: #333;">INT</span><span >;</span> <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_out</span> <span style="color: #333;">INT</span><span >;</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="font-weight:bold;">COUNT</span>(<span >*</span>) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_rentals</span>
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">rental</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">inventory_id</span> <span >=</span> <span style="color: #333;">p_inventory_id</span><span >;</span> <span style="font-weight:bold;">IF</span> <span style="color: #333;">v_rentals</span> <span >=</span> <span style="color: green;">0</span> <span style="font-weight:bold;">THEN</span> <span style="font-weight:bold;">RETURN</span> <span style="font-weight:bold;">TRUE</span><span >;</span> <span style="font-weight:bold;">END</span> <span style="font-weight:bold;">IF</span><span >;</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="font-weight:bold;">COUNT</span>(<span style="color: #333;">rental_id</span>) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_out</span>
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">inventory</span>
-  <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: #333;">rental</span> <span style="font-weight:bold;">USING</span>(<span style="color: #333;">inventory_id</span>)
-<span style="font-weight:bold;">WHERE</span>
-  <span style="color: #333;">inventory</span><span >.</span><span style="color: #333;">inventory_id</span> <span >=</span> <span style="color: #333;">p_inventory_id</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">return_date</span> <span style="font-weight:bold;">IS</span> <span style="font-weight:bold;">NULL</span><span >;</span> <span style="font-weight:bold;">IF</span> <span style="color: #333;">v_out</span> <span >&gt;</span> <span style="color: green;">0</span> <span style="font-weight:bold;">THEN</span> <span style="font-weight:bold;">RETURN</span> <span style="color: #333;">FALSE</span><span >;</span> <span style="font-weight:bold;">ELSE</span> <span style="font-weight:bold;">RETURN</span> <span style="font-weight:bold;">TRUE</span><span >;</span> <span style="font-weight:bold;">END</span> <span style="font-weight:bold;">IF</span><span >;</span> <span style="font-weight:bold;">END</span></pre></td>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span>
+  <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_rentals</span> <span style="font-weight:bold;">INT</span><span >;</span>
+
+  <span style="color: #333;">DECLARE</span> <span style="color: #333;">v_out</span> <span style="font-weight:bold;">INT</span><span >;</span>
+
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="font-weight:bold;">COUNT</span>(<span >*</span>) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_rentals</span>
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">rental</span>
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="color: #333;">inventory_id</span> <span >=</span> <span style="color: #333;">p_inventory_id</span><span >;</span>
+
+  <span style="font-weight:bold;">IF</span> <span style="color: #333;">v_rentals</span> <span >=</span> <span style="color: green;">0</span> <span style="font-weight:bold;">THEN</span>
+    <span style="font-weight:bold;">RETURN</span> <span style="font-weight:bold;">TRUE</span><span >;</span>
+  <span style="font-weight:bold;">END</span> <span style="font-weight:bold;">IF</span><span >;</span>
+
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="font-weight:bold;">COUNT</span>(<span style="color: #333;">rental_id</span>) <span style="font-weight:bold;">INTO</span> <span style="color: #333;">v_out</span>
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">inventory</span>
+    <span style="font-weight:bold;">LEFT JOIN</span> <span style="color: #333;">rental</span> <span style="font-weight:bold;">USING</span>(<span style="color: #333;">inventory_id</span>)
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="color: #333;">inventory</span><span >.</span><span style="color: #333;">inventory_id</span> <span >=</span> <span style="color: #333;">p_inventory_id</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">rental</span><span >.</span><span style="color: #333;">return_date</span> <span style="font-weight:bold;">IS</span> <span style="font-weight:bold;">NULL</span><span >;</span>
+
+  <span style="font-weight:bold;">IF</span> <span style="color: #333;">v_out</span> <span >&gt;</span> <span style="color: green;">0</span> <span style="font-weight:bold;">THEN</span>
+    <span style="font-weight:bold;">RETURN</span> <span style="font-weight:bold;">FALSE</span><span >;</span>
+  <span style="font-weight:bold;">ELSE</span>
+    <span style="font-weight:bold;">RETURN</span> <span style="font-weight:bold;">TRUE</span><span >;</span>
+  <span style="font-weight:bold;">END</span> <span style="font-weight:bold;">IF</span><span >;</span>
+<span style="font-weight:bold;">END</span></pre></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -8099,7 +8145,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>引数</th>
-                                            <td colspan="3">IN min_monthly_purchases tinyint unsigned, IN min_dollar_amount_purchased decimal(10,2), OUT count_rewardees int</td>
+                                            <td colspan="3">OUT count_rewardees int, IN min_monthly_purchases tinyint unsigned, IN min_dollar_amount_purchased decimal(10,2)</td>
                                         </tr>
                                         <tr>
                                             <th>備考</th>
@@ -8107,53 +8153,77 @@ document.addEventListener('DOMContentLoaded', function () {
                                         </tr>
                                         <tr>
                                             <th>SQL</th>
-                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="color: #333;">proc</span> <span >:</span> <span style="font-weight:bold;">BEGIN</span> <span style="color: #333;">DECLARE</span> <span style="color: #333;">last_month_start</span> <span style="color: #333;">DATE</span><span >;</span> <span style="color: #333;">DECLARE</span> <span style="color: #333;">last_month_end</span> <span style="color: #333;">DATE</span><span >;</span> <span style="font-weight:bold;">IF</span> <span style="color: #333;">min_monthly_purchases</span> <span >=</span> <span style="color: green;">0</span> <span style="font-weight:bold;">THEN</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="color: blue;">'Minimum monthly purchases parameter must be &gt; 0'</span><span >;</span> <span style="color: #333;">LEAVE</span> <span style="color: #333;">proc</span><span >;</span> <span style="font-weight:bold;">END</span> <span style="font-weight:bold;">IF</span><span >;</span> <span style="font-weight:bold;">IF</span> <span style="color: #333;">min_dollar_amount_purchased</span> <span >=</span> <span style="color: green;">0.00</span> <span style="font-weight:bold;">THEN</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="color: blue;">'Minimum monthly dollar amount purchased parameter must be &gt; $0.00'</span><span >;</span> <span style="color: #333;">LEAVE</span> <span style="color: #333;">proc</span><span >;</span> <span style="font-weight:bold;">END</span> <span style="font-weight:bold;">IF</span><span >;</span>
-<span style="font-weight:bold;">SET</span>
-  <span style="color: #333;">last_month_start</span> <span >=</span> <span style="font-weight:bold;">DATE_SUB</span>(
-    <span style="font-weight:bold;">CURRENT_DATE</span>()<span >,</span>
-    <span style="font-weight:bold;">INTERVAL</span> <span style="color: green;">1</span> <span style="font-weight:bold;">MONTH</span>
+                                            <td colspan="3"><pre style="color: black; background-color: white;"><span style="color: #333;">proc</span> <span >:</span> <span style="font-weight:bold;">BEGIN</span>
+  <span style="color: #333;">DECLARE</span> <span style="color: #333;">last_month_start</span> <span style="color: #333;">DATE</span><span >;</span>
+
+  <span style="color: #333;">DECLARE</span> <span style="color: #333;">last_month_end</span> <span style="color: #333;">DATE</span><span >;</span>
+
+  <span style="font-weight:bold;">IF</span> <span style="color: #333;">min_monthly_purchases</span> <span >=</span> <span style="color: green;">0</span> <span style="font-weight:bold;">THEN</span>
+    <span style="font-weight:bold;">SELECT</span>
+      <span style="color: blue;">'Minimum monthly purchases parameter must be &gt; 0'</span><span >;</span>
+
+    <span style="color: #333;">LEAVE</span> <span style="color: #333;">proc</span><span >;</span>
+  <span style="font-weight:bold;">END</span> <span style="font-weight:bold;">IF</span><span >;</span>
+
+  <span style="font-weight:bold;">IF</span> <span style="color: #333;">min_dollar_amount_purchased</span> <span >=</span> <span style="color: green;">0.00</span> <span style="font-weight:bold;">THEN</span>
+    <span style="font-weight:bold;">SELECT</span>
+      <span style="color: blue;">'Minimum monthly dollar amount purchased parameter must be &gt; $0.00'</span><span >;</span>
+
+    <span style="color: #333;">LEAVE</span> <span style="color: #333;">proc</span><span >;</span>
+  <span style="font-weight:bold;">END</span> <span style="font-weight:bold;">IF</span><span >;</span>
+
+  <span style="font-weight:bold;">SET</span>
+    <span style="color: #333;">last_month_start</span> <span >=</span> <span style="font-weight:bold;">DATE_SUB</span>(
+      <span style="font-weight:bold;">CURRENT_DATE</span>()<span >,</span>
+      <span style="font-weight:bold;">INTERVAL</span> <span style="color: green;">1</span> <span style="font-weight:bold;">MONTH</span>
+    )<span >;</span>
+
+  <span style="font-weight:bold;">SET</span>
+    <span style="color: #333;">last_month_start</span> <span >=</span> <span style="font-weight:bold;">STR_TO_DATE</span>(
+      <span style="font-weight:bold;">CONCAT</span>(
+        <span style="font-weight:bold;">YEAR</span>(<span style="color: #333;">last_month_start</span>)<span >,</span>
+        <span style="color: blue;">'-'</span><span >,</span>
+        <span style="font-weight:bold;">MONTH</span>(<span style="color: #333;">last_month_start</span>)<span >,</span>
+        <span style="color: blue;">'-01'</span>
+      )<span >,</span>
+      <span style="color: blue;">'%Y-%m-%d'</span>
+    )<span >;</span>
+
+  <span style="font-weight:bold;">SET</span>
+    <span style="color: #333;">last_month_end</span> <span >=</span> <span style="font-weight:bold;">LAST_DAY</span>(<span style="color: #333;">last_month_start</span>)<span >;</span>
+
+  <span style="font-weight:bold;">CREATE</span> <span style="font-weight:bold;">TEMPORARY</span> <span style="font-weight:bold;">TABLE</span> <span style="color: #333;">tmpCustomer</span> (
+    <span style="color: #333;">customer_id</span> <span style="font-weight:bold;">SMALLINT</span> <span style="font-weight:bold;">UNSIGNED</span> <span style="font-weight:bold;">NOT</span> <span style="font-weight:bold;">NULL</span> <span style="font-weight:bold;">PRIMARY</span> <span style="font-weight:bold;">KEY</span>
   )<span >;</span>
-<span style="font-weight:bold;">SET</span>
-  <span style="color: #333;">last_month_start</span> <span >=</span> <span style="font-weight:bold;">STR_TO_DATE</span>(
-    <span style="font-weight:bold;">CONCAT</span>(
-      <span style="font-weight:bold;">YEAR</span>(<span style="color: #333;">last_month_start</span>)<span >,</span>
-      <span style="color: blue;">'-'</span><span >,</span>
-      <span style="font-weight:bold;">MONTH</span>(<span style="color: #333;">last_month_start</span>)<span >,</span>
-      <span style="color: blue;">'-01'</span>
-    )<span >,</span>
-    <span style="color: blue;">'%Y-%m-%d'</span>
-  )<span >;</span>
-<span style="font-weight:bold;">SET</span>
-  <span style="color: #333;">last_month_end</span> <span >=</span> <span style="font-weight:bold;">LAST_DAY</span>(<span style="color: #333;">last_month_start</span>)<span >;</span> <span style="font-weight:bold;">CREATE</span> <span style="font-weight:bold;">TEMPORARY</span> <span style="font-weight:bold;">TABLE</span> <span style="color: #333;">tmpCustomer</span> (
-    <span style="color: #333;">customer_id</span> <span style="color: #333;">SMALLINT</span> <span style="font-weight:bold;">UNSIGNED</span> <span style="font-weight:bold;">NOT</span> <span style="font-weight:bold;">NULL</span> <span style="font-weight:bold;">PRIMARY</span> <span style="font-weight:bold;">KEY</span>
-  )<span >;</span> <span style="font-weight:bold;">INSERT</span> <span style="font-weight:bold;">INTO</span> <span style="color: #333;">tmpCustomer</span> (<span style="color: #333;">customer_id</span>)
-<span style="font-weight:bold;">SELECT</span>
-  <span style="color: #333;">p</span><span >.</span><span style="color: #333;">customer_id</span>
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">payment</span> <span style="font-weight:bold;">AS</span> <span style="color: #333;">p</span>
-<span style="font-weight:bold;">WHERE</span>
-  <span style="font-weight:bold;">DATE</span>(<span style="color: #333;">p</span><span >.</span><span style="color: #333;">payment_date</span>) <span style="font-weight:bold;">BETWEEN</span> <span style="color: #333;">last_month_start</span>
-  <span style="font-weight:bold;">AND</span> <span style="color: #333;">last_month_end</span>
-<span style="font-weight:bold;">GROUP BY</span>
-  <span style="color: #333;">customer_id</span>
-<span style="font-weight:bold;">HAVING</span>
-  <span style="font-weight:bold;">SUM</span>(<span style="color: #333;">p</span><span >.</span><span style="color: #333;">amount</span>) <span >&gt;</span> <span style="color: #333;">min_dollar_amount_purchased</span>
-  <span style="font-weight:bold;">AND</span> <span style="font-weight:bold;">COUNT</span>(<span style="color: #333;">customer_id</span>) <span >&gt;</span> <span style="color: #333;">min_monthly_purchases</span><span >;</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="font-weight:bold;">COUNT</span>(<span >*</span>)
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">tmpCustomer</span> <span style="font-weight:bold;">INTO</span> <span style="color: #333;">count_rewardees</span><span >;</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="color: #333;">c</span><span >.</span><span >*</span>
-<span style="font-weight:bold;">FROM</span>
-  <span style="color: #333;">tmpCustomer</span> <span style="font-weight:bold;">AS</span> <span style="color: #333;">t</span>
-  <span style="font-weight:bold;">INNER JOIN</span> <span style="color: #333;">customer</span> <span style="font-weight:bold;">AS</span> <span style="color: #333;">c</span> <span style="font-weight:bold;">ON</span> <span style="color: #333;">t</span><span >.</span><span style="color: #333;">customer_id</span> <span >=</span> <span style="color: #333;">c</span><span >.</span><span style="color: #333;">customer_id</span><span >;</span>
-<span style="font-weight:bold;">DROP</span>
-  <span style="font-weight:bold;">TABLE</span> <span style="color: #333;">tmpCustomer</span><span >;</span> <span style="font-weight:bold;">END</span></pre></td>
+
+  <span style="font-weight:bold;">INSERT</span> <span style="font-weight:bold;">INTO</span> <span style="color: #333;">tmpCustomer</span> (<span style="color: #333;">customer_id</span>)
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="color: #333;">p</span><span >.</span><span style="color: #333;">customer_id</span>
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">payment</span> <span style="font-weight:bold;">AS</span> <span style="color: #333;">p</span>
+  <span style="font-weight:bold;">WHERE</span>
+    <span style="font-weight:bold;">DATE</span>(<span style="color: #333;">p</span><span >.</span><span style="color: #333;">payment_date</span>) <span style="font-weight:bold;">BETWEEN</span> <span style="color: #333;">last_month_start</span>
+    <span style="font-weight:bold;">AND</span> <span style="color: #333;">last_month_end</span>
+  <span style="font-weight:bold;">GROUP BY</span>
+    <span style="color: #333;">customer_id</span>
+  <span style="font-weight:bold;">HAVING</span>
+    <span style="font-weight:bold;">SUM</span>(<span style="color: #333;">p</span><span >.</span><span style="color: #333;">amount</span>) <span >&gt;</span> <span style="color: #333;">min_dollar_amount_purchased</span>
+    <span style="font-weight:bold;">AND</span> <span style="font-weight:bold;">COUNT</span>(<span style="color: #333;">customer_id</span>) <span >&gt;</span> <span style="color: #333;">min_monthly_purchases</span><span >;</span>
+
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="font-weight:bold;">COUNT</span>(<span >*</span>)
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">tmpCustomer</span> <span style="font-weight:bold;">INTO</span> <span style="color: #333;">count_rewardees</span><span >;</span>
+
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="color: #333;">c</span><span >.</span><span >*</span>
+  <span style="font-weight:bold;">FROM</span>
+    <span style="color: #333;">tmpCustomer</span> <span style="font-weight:bold;">AS</span> <span style="color: #333;">t</span>
+    <span style="font-weight:bold;">INNER JOIN</span> <span style="color: #333;">customer</span> <span style="font-weight:bold;">AS</span> <span style="color: #333;">c</span> <span style="font-weight:bold;">ON</span> <span style="color: #333;">t</span><span >.</span><span style="color: #333;">customer_id</span> <span >=</span> <span style="color: #333;">c</span><span >.</span><span style="color: #333;">customer_id</span><span >;</span>
+
+  <span style="font-weight:bold;">DROP</span>
+    <span style="font-weight:bold;">TABLE</span> <span style="color: #333;">tmpCustomer</span><span >;</span>
+<span style="font-weight:bold;">END</span></pre></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -8197,8 +8267,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <tr>
                                             <th>SQL</th>
                                             <td colspan="3"><pre style="color: black; background-color: white;"><span style="font-weight:bold;">BEGIN</span>
-<span style="font-weight:bold;">SELECT</span>
-  <span style="color: green;">1</span><span >;</span> <span style="font-weight:bold;">END</span></pre></td>
+  <span style="font-weight:bold;">SELECT</span>
+    <span style="color: green;">1</span><span >;</span>
+<span style="font-weight:bold;">END</span></pre></td>
                                         </tr>
                                         </tbody>
                                     </table>

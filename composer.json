@@ -1,7 +1,7 @@
 {
   "config": {
     "platform": {
-      "php": "7.4"
+      "php": "8.1"
     }
   },
   "name": "ryunosuke/db-describer",
@@ -23,14 +23,14 @@
     "bin/describe"
   ],
   "require": {
-    "php": ">=7.4",
+    "php": ">=8.1",
     "symfony/console": "5.*",
-    "doctrine/dbal": "3.9.*",
+    "doctrine/dbal": "4.2.*",
     "doctrine/sql-formatter": "1.*",
     "alom/graphviz": "1.1.*"
   },
   "require-dev": {
-    "phpunit/phpunit": "8.*"
+    "phpunit/phpunit": "9.*"
   },
   "autoload": {
     "psr-4": {

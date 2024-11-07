@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.github.com/sebastianbergmann/phpunit/master/phpunit.xsd" bootstrap="bootstrap.php">
+<phpunit
+        bootstrap="bootstrap.php"
+        colors="true"
+>
     <testsuites>
         <testsuite name="tests">
             <directory>./Test/</directory>
@@ -10,9 +12,9 @@
         <const name="TEST_DSN" value="mysql://user:pass@hostname:3306/test_describer?charset=utf8"/>
     </php>
 
-    <filter>
-        <whitelist>
+    <coverage>
+        <include>
             <directory suffix=".php">../src</directory>
-        </whitelist>
-    </filter>
+        </include>
+    </coverage>
 </phpunit>

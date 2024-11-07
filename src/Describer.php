@@ -14,6 +14,7 @@ use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Routine;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\Trigger;
+use Doctrine\DBAL\Tools\DsnParser;
 
 class Describer
 {
@@ -50,9 +51,8 @@ class Describer
         $dsn = str_replace(':///', '://127.0.0.1/', $dsn);
 
         // parse DSN url
-        $parseDatabaseUrl = new \ReflectionMethod('Doctrine\\DBAL\\DriverManager', 'parseDatabaseUrl');
-        $parseDatabaseUrl->setAccessible(true);
-        $params = $parseDatabaseUrl->invoke(null, ['url' => $dsn]);
+        $parser = new DsnParser([]);
+        $params = $parser->parse($dsn);
 
         // for mysql. .my.cnf
         if (isset($_SERVER['HOME']) && stripos($params['driver'], 'mysql') !== false) {
@@ -388,7 +388,7 @@ class Describer
                 'ReferenceKeys' => $arrays($table->getOption('referenceKeys'), fn(ForeignKeyConstraint $foreignKey, $k, $n) => [
                     'No'               => $n + 1,
                     'Name'             => $foreignKey->getName(),
-                    'ReferenceTable'   => $foreignKey->getLocalTableName(),
+                    'ReferenceTable'   => $table->getName(),
                     'Columns'          => $foreignKey->getForeignColumns(),
                     'ReferenceColumns' => $foreignKey->getLocalColumns(),
                     'OnUpdate'         => $foreignKey->hasOption('onUpdate') ? $foreignKey->getOption('onUpdate') : '',
@@ -504,7 +504,7 @@ class Describer
         $widths = [];
         foreach ($tables as $tableName => $table) {
             if ($this->columns === 'all') {
-                $columns[$tableName] = array_keys($table->getColumns());
+                $columns[$tableName] = array_map(fn($c) => $c->getName(), $table->getColumns());
             }
             else {
                 $pkcols = $table->getPrimaryKey() ? $table->getPrimaryKey()->getColumns() : [];
@@ -612,7 +612,7 @@ class Describer
 
             // エッジ
             foreach ($table->getOption('foreignKeys') as $fkey) {
-                $localTableName = $fkey->getLocalTableName();
+                $localTableName = $table->getName();
                 $foreignTableName = $fkey->getForeignTableName();
 
                 $localColumns = $fkey->getLocalColumns();

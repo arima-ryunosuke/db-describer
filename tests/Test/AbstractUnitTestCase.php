@@ -11,6 +11,7 @@ use Doctrine\DBAL\Schema\Routine;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\Trigger;
 use Doctrine\DBAL\Schema\View;
+use Doctrine\DBAL\Tools\DsnParser;
 use Doctrine\DBAL\Types\Type;
 use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\Exception;
@@ -21,8 +22,9 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
     {
         parent::setUpBeforeClass();
 
-        $config = ['url' => TEST_DSN];
-        $mparam = DriverManager::getConnection($config)->getParams();
+        $parser = new DsnParser([]);
+
+        $mparam = DriverManager::getConnection($parser->parse(TEST_DSN))->getParams();
         $dbname = isset($mparam['dbname']) ? $mparam['dbname'] : (isset($mparam['path']) ? $mparam['path'] : '');
         unset($mparam['url'], $mparam['dbname'], $mparam['path']);
         $schema_manager = DriverManager::getConnection($mparam)->createSchemaManager();
@@ -34,8 +36,7 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
         }
         $schema_manager->createDatabase($dbname);
 
-        $connection = DriverManager::getConnection($config);
-        $connection->connect();
+        $connection = DriverManager::getConnection($parser->parse(TEST_DSN));
 
         $connection->executeStatement(<<<SQL
         CREATE TABLE `t_datatype` (
@@ -51,7 +52,7 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
         $schema_manager->createTable(new Table('t_article',
             [
                 new Column('article_id', Type::getType('integer'), ['Comment' => "PrimaryKey:summary"]),
-                new Column('title', Type::getType('string')),
+                new Column('title', Type::getType('string'), ['length' => 64]),
             ],
             [
                 new Index('PRIMARY', ['article_id'], true, true),
@@ -66,7 +67,7 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
             [
                 new Column('comment_id', Type::getType('integer'), ['autoincrement' => true, 'Comment' => "PrimaryKey:summary"]),
                 new Column('article_id', Type::getType('integer')),
-                new Column('comment', Type::getType('text')),
+                new Column('comment', Type::getType('text'), ['length' => 1024]),
             ],
             [new Index('PRIMARY', ['comment_id'], true, true)],
             [],
@@ -170,7 +171,6 @@ END', 't_article', [
             $parts = explode('::', $callable);
             $method = new \ReflectionMethod($parts[0], $parts[1]);
             if (!$method->isPublic() && $method->isStatic()) {
-                $method->setAccessible(true);
                 return function () use ($method) {
                     return $method->invokeArgs(null, func_get_args());
                 };
@@ -181,7 +181,6 @@ END', 't_article', [
             try {
                 $method = new \ReflectionMethod($callable[0], $callable[1]);
                 if (!$method->isPublic()) {
-                    $method->setAccessible(true);
                     return function () use ($callable, $method) {
                         return $method->invokeArgs($callable[0], func_get_args());
                     };

@@ -50,7 +50,7 @@ password = {$parts['pass']}
 
         // my.cnf
         $describer = new Describer("{$parts['scheme']}://{$parts['host']}", $this->getConfig());
-        $connection = (fn() => $this->connection)->call($describer);
+        $connection = (fn() => $this->connection)->bindTo($describer, Describer::class)();
         $expected = [
             'user'     => $parts['user'],
             'password' => $parts['pass'],
@@ -58,8 +58,8 @@ password = {$parts['pass']}
         $this->assertEquals($expected, array_intersect_key($connection->getParams(), $expected));
 
         // posix_geteuid
-        $describer = new Describer('sqlite://localhost:1234/:memory:', $this->getConfig());
-        $connection = (fn() => $this->connection)->call($describer);
+        $describer = new Describer('pdo-sqlite://localhost:1234/:memory:', $this->getConfig());
+        $connection = (fn() => $this->connection)->bindTo($describer, Describer::class)();
         $expected = [
             'user' => (posix_getpwuid(posix_geteuid())['name']),
         ];

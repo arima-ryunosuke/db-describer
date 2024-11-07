@@ -9,6 +9,7 @@
  * @var array $Events
  */
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\SqlFormatter\HtmlHighlighter;
 use Doctrine\SqlFormatter\SqlFormatter;
 
@@ -25,6 +26,9 @@ $a = function ($array) use (&$a, $h) {
         ']'  => '',
     ]);
     return $h(trim($string, '{}'));
+};
+$t = function ($type) {
+    return Type::lookupName($type);
 };
 $sql = function ($query) {
     static $formatter = null;
@@ -292,10 +296,10 @@ $sql = function ($query) {
                                                 <td class="no"><?= $h($Column['No']) ?></td>
                                                 <td><?= $h($Column['Name']) ?></td>
                                                 <td><?= $h($Column['LogicalName']) ?></td>
-                                                <td><?= $h($Column['Unsigned'] ? "unsigned" : "") ?> <?= $h($Column['Type']->getName()) ?><?= $h($Column['TypeDeclaration']) ?></td>
+                                                <td><?= $h($Column['Unsigned'] ? "unsigned" : "") ?> <?= $h($t($Column['Type'])) ?><?= $h($Column['TypeDeclaration']) ?></td>
                                                 <td><?= $h(implode(',', $Column['Constraint'])) ?></td>
                                                 <td><?= $h($Column['Default'] === false ? "" : var_export($Column['Default'], true)) ?></td>
-                                                <td><?= $h(implode(', ', array_filter([$Column['Precision'] ?? '', $Column['Scale'] ?? ''], 'strlen'))) ?></td>
+                                                <td><?= $h(implode(', ', array_filter([$Column['Precision'], $Column['Scale']]))) ?></td>
                                                 <td><?= $h($Column['Length']) ?></td>
                                                 <td><?= $h($Column['Collation']) ?></td>
                                                 <td><?= $h($Column['Generated']['expression'] ? "{$Column['Generated']['expression']}({$Column['Generated']['type']})" : '') ?></td>
@@ -478,10 +482,10 @@ $sql = function ($query) {
                                                 <td class="no"><?= $h($Column['No']) ?></td>
                                                 <td><?= $h($Column['Name']) ?></td>
                                                 <td><?= $h($Column['LogicalName']) ?></td>
-                                                <td><?= $h($Column['Unsigned'] ? "unsigned" : "") ?> <?= $h($Column['Type']->getName()) ?><?= $h($Column['TypeDeclaration']) ?></td>
+                                                <td><?= $h($Column['Unsigned'] ? "unsigned" : "") ?> <?= $h($t($Column['Type'])) ?><?= $h($Column['TypeDeclaration']) ?></td>
                                                 <td><?= $h(implode(',', $Column['Constraint'])) ?></td>
                                                 <td><?= $h($Column['Default'] === false ? "" : var_export($Column['Default'], true)) ?></td>
-                                                <td><?= $h(implode(', ', array_filter([$Column['Precision'] ?? '', $Column['Scale'] ?? ''], 'strlen'))) ?></td>
+                                                <td><?= $h(implode(', ', array_filter([$Column['Precision'], $Column['Scale']]))) ?></td>
                                                 <td><?= $h($Column['Length']) ?></td>
                                                 <td><?= $h($Column['Collation']) ?></td>
                                                 <?php /*view に生成列は派生しない<td>生成列</td>*/ ?>

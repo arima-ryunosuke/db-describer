@@ -55,7 +55,7 @@
       "bin/box.phar compile -c box.json"
     ],
     "demo": [
-      "@php dbdescribe.phar mysql://127.0.0.1/sakila docs/"
+      "@php dbdescribe.phar pdo-mysql://root:Password1234@127.0.0.1/sakila docs/"
     ]
   }
 }

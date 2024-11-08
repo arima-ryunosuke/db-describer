@@ -7,18 +7,18 @@
         this.interval = interval;
         this.callback = callback;
     };
-    global.Timer.throttle = function(cb, interval) {
+    global.Timer.throttle = function (cb, interval) {
         var lastTime = Date.now() - interval;
-        return function() {
+        return function () {
             if ((lastTime + interval) < Date.now()) {
                 lastTime = Date.now();
                 cb.apply(this, arguments);
             }
         };
     };
-    global.Timer.debounce = function(cb, interval) {
+    global.Timer.debounce = function (cb, interval) {
         var timer;
-        return function() {
+        return function () {
             clearTimeout(timer);
             timer = setTimeout(() => cb.apply(this, arguments), interval);
         };
@@ -107,7 +107,7 @@
                 root: null,
                 rootMargin: '0px',
                 threshold: 0,
-            }, data)
+            }, data);
             const observer = new IntersectionObserver(function (entries, observer) {
                 entries.forEach(e => handler(Object.assign(e, {observer: observer})));
             }, opt);
@@ -123,7 +123,7 @@
                 characterDataOldValue: false,
                 childList: false,
                 subtree: false,
-            }, data)
+            }, data);
             const observer = new MutationObserver(function (entries, observer) {
                 entries.forEach(e => handler(Object.assign(e, {observer: observer})));
             });
@@ -288,8 +288,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     {
                         a: {
                             class: 'toggler icon',
-                        }
-                    }
+                        },
+                    },
                 ],
             },
         });
@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function () {
         renderDot();
     });
     relationship.on('mousedown', 'svg', function (e) {
-        const [x, y, ,] = this.getAttribute('viewBox').split(' ').map(v => parseFloat(v));
+        const [x, y, ] = this.getAttribute('viewBox').split(' ').map(v => parseFloat(v));
         this.dragging = {startX: x, mouseX: e.offsetX, startY: y, mouseY: e.offsetY};
         e.preventDefault();
     });

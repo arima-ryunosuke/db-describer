@@ -31,7 +31,7 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
         try {
             $schema_manager->dropDatabase($dbname);
         }
-        catch (\Throwable $t) {
+        catch (\Throwable) {
             // do nothing
         }
         $schema_manager->createDatabase($dbname);
@@ -46,7 +46,7 @@ abstract class AbstractUnitTestCase extends \PHPUnit\Framework\TestCase
             `yesno` ENUM('Y','N') NULL DEFAULT NULL,
             PRIMARY KEY (`id`) USING BTREE
         )
-        SQL);
+        SQL,);
 
         $schema_manager = $connection->createSchemaManager();
         $schema_manager->createTable(new Table('t_article',
@@ -186,7 +186,7 @@ END', 't_article', [
                     };
                 }
             }
-            catch (\ReflectionException $ex) {
+            catch (\ReflectionException) {
                 // __call を考慮するとどうしようもない
             }
         }

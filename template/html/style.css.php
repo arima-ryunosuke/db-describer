@@ -667,6 +667,7 @@ pre[data-label]:not([data-label=""]) div.code {
     .sub-section {
         page-break-before: avoid;
     }
+
     .relation-button {
         display: none;
     }
@@ -778,7 +779,7 @@ select.option-input {
     border: 2px inset #ddd;
 }
 
-.relationship-list  {
+.relationship-list {
 }
 
 .relationship-list label {
@@ -788,6 +789,7 @@ select.option-input {
 .relationship-list .all-checkbox {
     accent-color: red;
 }
+
 .relationship-svg {
     position: relative;
     flex-basis: 100%;

@@ -50,7 +50,7 @@ class DescribeCommand extends Command
             'node'               => [],
             'edge'               => [],
         ];
-        $default['template'] = $input->getOption('template') ?: __DIR__ . '/../../template/standard.phtml';
+        $default['template'] = $input->getOption('template') ?: __DIR__ . '/../../template/html.php';
 
         $config = (file_exists($input->getOption('config')) ? require $input->getOption('config') : []) + $default;
 
@@ -59,7 +59,7 @@ class DescribeCommand extends Command
         $outdir = ($input->getArgument('outdir') ?? $config[1] ?? $config['outdir']) ?: getcwd();
         @mkdir($outdir, 0777, true);
 
-        $describer->generateHtml($outdir);
+        $describer->generate($outdir);
 
         return 0;
     }

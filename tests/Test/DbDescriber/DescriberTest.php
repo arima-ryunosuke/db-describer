@@ -7,6 +7,7 @@ use Doctrine\DBAL\Schema\Routine;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\View;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use ryunosuke\DbDescriber\Describer;
 
 class DescriberTest extends \ryunosuke\Test\AbstractUnitTestCase
@@ -26,7 +27,7 @@ class DescriberTest extends \ryunosuke\Test\AbstractUnitTestCase
                 'viewCallback'       => function () { },
                 'routineCallback'    => function () { },
                 'eventCallback'      => function () { },
-                'template'           => __DIR__ . '/../../../template/standard.phtml',
+                'template'           => __DIR__ . '/../../../template/html.php',
                 'vars'               => [],
                 'columns'            => 'all',
                 'graph'              => [],
@@ -70,7 +71,7 @@ password = {$parts['pass']}
     {
         $describer = new Describer(TEST_DSN, $this->getConfig());
 
-        $html = $describer->generateHtml($this->outdir);
+        $html = file_get_contents($describer->generate($this->outdir)[0]);
         $this->assertStringContainsString('table-t_article', $html);
         $this->assertStringContainsString('table-t_comment', $html);
         $this->assertStringContainsString('view-v_blog', $html);
@@ -89,7 +90,7 @@ password = {$parts['pass']}
             'include' => ['t_article'],
         ]));
 
-        $html = $describer->generateHtml($this->outdir);
+        $html = file_get_contents($describer->generate($this->outdir)[0]);
         $this->assertStringContainsString('table-t_article', $html);
         $this->assertStringNotContainsString('table-t_comment', $html);
         $this->assertStringNotContainsString('view-v_blog', $html);
@@ -105,7 +106,7 @@ password = {$parts['pass']}
             'include' => ['t_article', 'v_blog', 'function1', 'event1'],
         ]));
 
-        $html = $describer->generateHtml($this->outdir);
+        $html = file_get_contents($describer->generate($this->outdir)[0]);
         $this->assertStringContainsString('table-t_article', $html);
         $this->assertStringNotContainsString('table-t_comment', $html);
         $this->assertStringContainsString('view-v_blog', $html);
@@ -124,7 +125,7 @@ password = {$parts['pass']}
             'exclude' => ['t_comment'],
         ]));
 
-        $html = $describer->generateHtml($this->outdir);
+        $html = file_get_contents($describer->generate($this->outdir)[0]);
         $this->assertStringContainsString('table-t_article', $html);
         $this->assertStringNotContainsString('table-t_comment', $html);
         $this->assertStringContainsString('view-v_blog', $html);
@@ -140,7 +141,7 @@ password = {$parts['pass']}
             'exclude' => ['t_comment', 'v_blog', 'procedure1', 'event1'],
         ]));
 
-        $html = $describer->generateHtml($this->outdir);
+        $html = file_get_contents($describer->generate($this->outdir)[0]);
         $this->assertStringContainsString('table-t_article', $html);
         $this->assertStringNotContainsString('table-t_comment', $html);
         $this->assertStringNotContainsString('view-v_blog', $html);
@@ -186,7 +187,7 @@ password = {$parts['pass']}
             'columns'         => 'related',
         ]));
 
-        $html = $describer->generateHtml($this->outdir);
+        $html = file_get_contents($describer->generate($this->outdir)[0]);
         $this->assertStringContainsString('table-tmptable', $html);
         $this->assertStringContainsString('changed-table-comment', $html);
         $this->assertStringNotContainsString('table-t_comment', $html);
@@ -199,21 +200,48 @@ password = {$parts['pass']}
         $this->assertStringContainsString('cluster_tmptable', $dot);
     }
 
+    function test_xlsx()
+    {
+        $describer = new Describer(TEST_DSN, $this->getConfig([
+            'template' => __DIR__ . '/../../../template/xlsx.php',
+        ]));
+        /** @var \Doctrine\DBAL\Connection $connection */
+        $connection = (fn() => $this->connection)->call($describer);
+        $dbname = $connection->getDatabase();
+
+        [$xlsx, $erd] = $describer->generate($this->outdir);
+
+        $book = IOFactory::load($xlsx);
+        $this->assertEquals([$dbname, 't_article', 't_comment', 't_datatype'], $book->getSheetNames());
+        $this->assertEquals('t_article', $book->getSheetByName($dbname)->getCell('C3')->getValue());
+        $this->assertEquals('t_article', $book->getSheetByName('t_article')->getCell('D3')->getValue());
+
+        $html = file_get_contents($erd);
+        $this->assertStringContainsString('graph', $html);
+        $this->assertStringContainsString('subgraph', $html);
+        $this->assertStringContainsString('node', $html);
+        $this->assertStringContainsString('edge', $html);
+    }
+
     function test_template()
     {
         $template = sys_get_temp_dir() . '/template.phtml';
         file_put_contents($template, <<<'PHP'
         <?php
-        echo "Tables:" . count($Tables) . "\n";
-        echo "Views:" . count($Views) . "\n";
-        echo "Routines:" . count($Routines) . "\n";
-        echo "Events:" . count($Events) . "\n";
+        return function ($outdir, $dbname, $schemaObjects) {
+            ob_start();
+            echo "Tables:" . count($schemaObjects['Tables']) . "\n";
+            echo "Views:" . count($schemaObjects['Views']) . "\n";
+            echo "Routines:" . count($schemaObjects['Routines']) . "\n";
+            echo "Events:" . count($schemaObjects['Events']) . "\n";
+            return [ob_get_clean()];
+        };
         PHP,);
         $describer = new Describer(TEST_DSN, $this->getConfig([
             'template' => $template,
         ]));
 
-        $html = $describer->generateHtml($this->outdir);
+        $html = $describer->generate($this->outdir)[0];
         $this->assertEquals(<<<EXPECTED
         Tables:3
         Views:1

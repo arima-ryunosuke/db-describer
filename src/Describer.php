@@ -457,26 +457,17 @@ class Describer
         ];
     }
 
-    public function generateHtml($outdir)
+    public function generate($outdir)
     {
         $dbname = $this->connection->getDatabase();
 
-        $schemaObjects = $this->_gatherSchemaObject($dbname);
-        $schemaObjects['Erddot'] = $this->generateDot([
+        $schemaErd = [];
+        $schemaErd['Erddot'] = $this->generateDot([
             'skipNoRelation' => true,
         ], $generated);
-        $schemaObjects['TableNames'] = array_keys($generated);
+        $schemaErd['TableNames'] = array_keys($generated);
 
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
-        $output = (static function () {
-            extract(func_get_arg(1));
-            ob_start();
-            include func_get_arg(0);
-            return ob_get_clean();
-        })($this->template, $schemaObjects);
-
-        file_put_contents("$outdir/$dbname.html", $output);
-        return $output;
+        return (require $this->template)($outdir, $dbname, $this->_gatherSchemaObject($dbname), $schemaErd);
     }
 
     public function generateDot($options = [], &$generated_columns = [])

@@ -258,7 +258,7 @@ class Describer
                 }
 
                 // view はテーブルとして扱う
-                $table = $this->connection->createSchemaManager()->introspectViewAsTable($viewName);
+                $table = $this->connection->createSchemaManager()->introspectViewAsTable(strtolower($viewName));
                 $table->addOption('sql', $view->getSql());
 
                 $table->addOption('indexes', $reindex($table->getIndexes()));

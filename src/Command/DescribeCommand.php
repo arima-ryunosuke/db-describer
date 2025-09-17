@@ -50,7 +50,12 @@ class DescribeCommand extends Command
             'node'               => [],
             'edge'               => [],
         ];
-        $default['template'] = $input->getOption('template') ?: __DIR__ . '/../../template/html.php';
+
+        $template = $input->getOption('template');
+        if (strlen($template) && realpath($template) === false) {
+            $template = __DIR__ . "/../../template/$template";
+        }
+        $default['template'] = $template ?: __DIR__ . '/../../template/html.php';
 
         $config = (file_exists($input->getOption('config')) ? require $input->getOption('config') : []) + $default;
 

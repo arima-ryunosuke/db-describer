@@ -20,6 +20,13 @@
 
 - コードが汚すぎるのでバージョンを上げてリファクタ
 
+## 2.0.7
+
+- [fixbug] 大文字 view が not found になる
+- [fixbug] 相対パスの template が読み込めない不具合
+- [change] Panzoom がよかったので html でも取り込み
+- [feature] template の構成変更と xlsx の追加
+
 ## 2.0.6
 
 - [bin] box を v4 系に変更

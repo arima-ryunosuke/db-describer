@@ -20,6 +20,10 @@
 
 - コードが汚すぎるのでバージョンを上げてリファクタ
 
+## 2.1.2
+
+- [fixbug] Doctrine\DBAL\Types\Type::getName
+
 ## 2.1.1
 
 - Merge tag 'v2.0.7'

@@ -501,6 +501,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     fade(old, false, duration, node => node.remove());
                 }
                 relationship_svg.appendChild(svg);
+
+                const panzoom = Panzoom(svg);
+                svg.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
             })
             .catch(error => console.error(error))
         ;
@@ -537,39 +540,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         all_checkbox.indeterminate = !all_checked && any_checked;
         renderDot();
-    });
-    relationship.on('mousedown', 'svg', function (e) {
-        const [x, y, ] = this.getAttribute('viewBox').split(' ').map(v => parseFloat(v));
-        this.dragging = {startX: x, mouseX: e.offsetX, startY: y, mouseY: e.offsetY};
-        e.preventDefault();
-    });
-    relationship.on('mousemove', 'svg', function (e) {
-        if (this.dragging) {
-            const [, , w, h] = this.getAttribute('viewBox').split(' ').map(v => parseFloat(v));
-            const scale = w / this.clientWidth;
-            const newX = this.dragging.startX + (this.dragging.mouseX - e.offsetX) * scale;
-            const newY = this.dragging.startY + (this.dragging.mouseY - e.offsetY) * scale;
-            this.setAttribute('viewBox', [newX, newY, w, h].join(' '));
-        }
-        e.preventDefault();
-    });
-    relationship.on('mouseup', 'svg', function (e) {
-        this.dragging = undefined;
-        e.preventDefault();
-    });
-    relationship.on('wheel', 'svg', function (e) {
-        const ratio = 1.2;
-        const scale = (1 / e.deltaY < 0 ? 1 / ratio : ratio) - 1;
-        const [x, y, w, h] = this.getAttribute('viewBox').split(' ').map(v => parseFloat(v));
-
-        const targetX = w * scale * e.offsetX / this.clientWidth;
-        const targetY = h * scale * e.offsetY / this.clientHeight;
-        const targetW = w * scale;
-        const targetH = h * scale;
-
-        this.setAttribute('viewBox', [x - targetX, y - targetY, w + targetW, h + targetH].join(' '));
-
-        e.preventDefault();
     });
     relationship.on('dblclick', 'g.cluster', function (e) {
         const g = this;

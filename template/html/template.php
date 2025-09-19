@@ -47,11 +47,12 @@ $sql = function ($query) {
     <title><?= $h($Schema) ?></title>
 
     <link id="sphinx_rtd_theme" href="https://cdn.jsdelivr.net/npm/sphinx_rtd_theme@0.4.2/css/theme.css" rel="stylesheet">
-    <style><?php include __DIR__ . '/html/style.css.php' ?></style>
+    <style><?php include __DIR__ . '/style.css.php' ?></style>
 
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
-    <script defer><?php include __DIR__ . '/html/script.js.php' ?></script>
+    <script defer src="https://unpkg.com/@panzoom/panzoom@4.6.0/dist/panzoom.min.js"></script>
+    <script defer><?php include __DIR__ . '/script.js.php' ?></script>
 </head>
 
 <body class="wy-body-for-nav">

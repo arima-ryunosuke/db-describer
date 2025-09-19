@@ -2,9 +2,13 @@
   "compression": "GZ",
   "chmod": "0755",
   "files": [
-    "template/standard.phtml",
+    "template/html.php",
+    "template/html/template.php",
     "template/html/script.js.php",
-    "template/html/style.css.php"
+    "template/html/style.css.php",
+    "template/xlsx.php",
+    "template/xlsx/template.xlsx",
+    "template/xlsx/erd.php"
   ],
   "output": "dbdescribe.phar"
 }
